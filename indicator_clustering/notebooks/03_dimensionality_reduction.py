@@ -11,7 +11,10 @@ import matplotlib
 matplotlib.rcParams['figure.dpi'] = 120
 
 # --- Environment Auto-Detection ---
-IS_COLAB = 'google.colab' in str(get_ipython())
+try:
+    IS_COLAB = 'google.colab' in str(get_ipython())
+except NameError:
+    IS_COLAB = False
 IS_GREATLAKES = 'SLURM_JOB_ID' in os.environ  # Great Lakes sets this automatically
 
 if IS_COLAB:
