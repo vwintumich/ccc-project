@@ -6,6 +6,7 @@ prompts/
 # Indicator clustering data and outputs (large files, not tracked)
 indicator_clustering/data/*
 !indicator_clustering/data/.gitkeep
+!indicator_clustering/data/wordplay_seeds.xlsx
 indicator_clustering/outputs/*
 !indicator_clustering/outputs/.gitkeep
 
