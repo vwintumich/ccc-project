@@ -9,7 +9,6 @@ from sklearn.metrics import (
     davies_bouldin_score,
     calinski_harabasz_score,
 )
-from sklearn.metrics.pairwise import cosine_distances
 from scipy.spatial.distance import pdist
 
 import hdbscan  # install via: pip install hdbscan
