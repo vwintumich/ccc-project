@@ -86,6 +86,8 @@ Last updated: February 19, 2026
 
 **Current direction:** Unresolved. May be worth trying if baseline single-stage clustering fails to find meaningful wordplay-level groups.
 
+**New evidence (Feb 20, 2026):** The Stage 3 UMAP visualization confirms that morphological variant groups (e.g., "contribute to / contributes to / contributing / contributing in / contributing to / contribution from / contribution to / contributors to") form tight local clumps in embedding space. This is the expected behavior of the embedding model, but it means that fine-grained clustering will likely find variant-level clusters rather than wordplay-type clusters. The two-stage approach — first grouping variants into concept clusters, then clustering concept clusters into wordplay types — may be necessary if single-stage clustering at k=8 fails to produce interpretable wordplay-type groups. Stage 4 will attempt single-stage k=8 first as a baseline.
+
 ---
 
 ### Q6: Which seed set should be used for constrained clustering?

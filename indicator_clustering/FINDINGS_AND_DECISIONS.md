@@ -5,6 +5,25 @@ Older entries at the bottom reflect earlier states of understanding that may hav
 
 ---
 
+## February 20, 2026 — Dimensionality Reduction (Notebook 03)
+
+**FINDING: PCA captures very little structure in BGE-M3 embeddings.**
+The scree plot shows no sharp elbow. The top principal component explains only ~4% of variance, 10 components explain 22.3%, and 100 components reach only ~70%. This confirms the embedding space is highly nonlinear and PCA is inadequate as a primary reduction method.
+
+**FINDING: UMAP reveals clear local cluster structure that PCA misses.**
+The 2D UMAP projection shows many small dense clumps connected by sparser regions, with isolated clusters at the periphery. The 2D PCA projection shows a diffuse, structureless blob. UMAP with cosine metric is the correct choice for dimensionality reduction before clustering.
+
+**FINDING: UMAP clumps likely reflect morphological variant groups, not wordplay types.**
+Because indicators were embedded without stemming or lemmatization (per the settled decision that the embedding model handles morphological variation), variant groups like "contribute to / contributes to / contributing / contributing in / contributing to / contribution from / contribution to / contributors to" receive nearly identical embeddings and form tight local neighborhoods in UMAP space. This explains why earlier HDBSCAN runs found 353 fine-grained clusters — they are likely capturing variant-level groupings rather than wordplay-type-level groupings. This is consistent with OPEN_QUESTIONS.md Q5 (two-stage clustering) and suggests that a second pass may be needed to aggregate variant-level clusters into higher-level wordplay-type clusters.
+
+**FINDING: Overall UMAP shape supports the primary hypothesis.**
+The indicator embedding space forms one large connected mass rather than 8 cleanly separated islands. This is consistent with the hypothesis that indicators will not cluster cleanly into 8 wordplay types, but meaningful local structure exists for density-based methods to discover.
+
+**SETTLED: Dimensionality reduction parameters.**
+UMAP: n_neighbors=15, min_dist=0.1, metric='cosine', random_state=42. These are starting values and have not been systematically tuned (see OPEN_QUESTIONS.md). PCA is retained as a baseline comparison only.
+
+---
+
 ## February 8, 2026 — Current State of Findings
 
 ### Data Cleaning
