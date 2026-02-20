@@ -15,18 +15,16 @@ try:
     IS_COLAB = 'google.colab' in str(get_ipython())
 except NameError:
     IS_COLAB = False
-IS_GREATLAKES = 'SLURM_JOB_ID' in os.environ  # Great Lakes sets this automatically
 
 if IS_COLAB:
     from google.colab import drive
     drive.mount('/content/drive')
     PROJECT_ROOT = Path('/content/drive/MyDrive/SIADS 692 Milestone II/Milestone II - NLP Cryptic Crossword Clues')
-elif IS_GREATLAKES:
-    # Update YOUR_UNIQNAME to your actual UMich uniqname
-    PROJECT_ROOT = Path('/scratch/YOUR_UNIQNAME/ccc_project')
 else:
-    # Local: move up from notebooks/ to project root
-    PROJECT_ROOT = Path.cwd().parent
+    try:
+        PROJECT_ROOT = Path(__file__).resolve().parent.parent
+    except NameError:
+        PROJECT_ROOT = Path.cwd().parent
 
 DATA_DIR = PROJECT_ROOT / 'data'
 OUTPUT_DIR = PROJECT_ROOT / 'outputs'
