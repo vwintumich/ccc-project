@@ -1,0 +1,192 @@
+=== Starting notebook 00: Data Extraction ===
+   rowid     wordplay                indicator                   clue_rowids
+0      1  alternation                 abnormal  [623961](/data/clues/623961)
+1      2  alternation         after odd losses  [139327](/data/clues/139327)
+2      3  alternation  after regular excisions  [107211](/data/clues/107211)
+   ind_id     wordplay                indicator                      clue_ids
+0       1  alternation                 abnormal  [623961](/data/clues/623961)
+1       2  alternation         after odd losses  [139327](/data/clues/139327)
+2       3  alternation  after regular excisions  [107211](/data/clues/107211)
+   clue_rowid alternation       anagram  ... homophone insertion          reversal
+0          90              transforming  ...                                      
+1          97                    ground  ...                                      
+2         101                            ...  verbally                            
+3         142                            ...                      about to go back
+
+[4 rows x 9 columns]
+
+   clue_id alternation       anagram  ... homophone insertion          reversal
+0       90              transforming  ...                                      
+1       97                    ground  ...                                      
+2      101                            ...  verbally                            
+3      142                            ...                      about to go back
+
+[4 rows x 9 columns]
+                                         alternation  ...                                           reversal
+0  abnormal\nafter odd losses\nafter regular exci...  ...  a cleric raised\na fastening device put up\na ...
+
+[1 rows x 8 columns]
+
+   rowid  ...           source
+0      1  ...  times_xwd_times
+1      2  ...  times_xwd_times
+2      3  ...  times_xwd_times
+
+[3 rows x 9 columns]
+   clue_id  ...           source
+0        1  ...  times_xwd_times
+1        2  ...  times_xwd_times
+2        3  ...  times_xwd_times
+
+[3 rows x 9 columns]
+   rowid charade answer                                        clue_rowids
+0      1       a  ALPHA                       [108948](/data/clues/108948)
+1      2       a     AN  [79856](/data/clues/79856), [162234](/data/clu...
+2      3       a     AR                       [384876](/data/clues/384876)
+   charade_id  ...                                           clue_ids
+0           1  ...                       [108948](/data/clues/108948)
+1           2  ...  [79856](/data/clues/79856), [162234](/data/clu...
+2           3  ...                       [384876](/data/clues/384876)
+
+[3 rows x 4 columns]
+   clue_rowid                 charade   answer
+0           1                    chap     COVE
+1           1            as we see it    TO US
+2          21  give the thing acclaim  LAUD IT
+   clue_id                 charade charade_answer
+0        1                    chap           COVE
+1        1            as we see it          TO US
+2       21  give the thing acclaim        LAUD IT
+=== Finished notebook 00 ===
+=== Starting notebook 01: Data Cleaning ===
+<pandas.io.formats.style.Styler object at 0x15065c1450a0>
+
+Empty DataFrame
+Columns: [clue_id, charade, charade_answer]
+Index: []
+
+       clue_id alternation anagram  ... homophone insertion reversal
+81182   623961    abnormal     NaN  ...       NaN       NaN      NaN
+
+[1 rows x 9 columns]
+
+   ind_id     wordplay indicator  clue_ids  num_clues
+0       1  alternation  abnormal  [623961]          1
+alternation: 244
+anagram: 7346
+container: 1950
+deletion: 877
+hidden: 1110
+homophone: 669
+insertion: 2173
+reversal: 1692
+Total Number of Clues: 658,031
+Total Unique Indicators: 15,735
+Total Instances of Indicators in All Clues: 93,867
+Total Number of Clues Containing Indicator(s): 88,037
+num_chars
+2       12
+3       83
+4      342
+5      595
+6      919
+7     1445
+8     1555
+9     1501
+10    1501
+11    1270
+12    1078
+13     911
+14     704
+15     653
+16     424
+17     350
+18     248
+19     170
+20     110
+21     110
+22      58
+23      51
+24      36
+25      19
+26      15
+27      11
+28      10
+29       5
+31       5
+32       2
+33       1
+36       1
+Name: count, dtype: int64
+13920
+12622
+Saved 12622 unique indicator strings to verified_indicators_unique.csv
+<pandas.io.formats.style.Styler object at 0x1505dd27b9e0>
+
+Empty DataFrame
+Columns: [clue_id, charade, charade_answer]
+Index: []
+
+Empty DataFrame
+Columns: [clue_id, alternation, anagram, container, deletion, hidden, homophone, insertion, reversal]
+Index: []
+
+Empty DataFrame
+Columns: [ind_id, wordplay, indicator, clue_ids, num_clues, clue_ids_verified, num_clues_verified, num_chars, ind_wc]
+Index: []
+Rows after explode + merge: 76,015
+Unique clue_ids: 70,959
+Unique indicators: 12,622
+
+Saved 76,015 rows to verified_clues_labeled.csv
+=== wordplay_ho (Ho blog label) distribution ===
+wordplay_ho
+anagram        38226
+container      10836
+reversal       10149
+insertion       8305
+homophone       3642
+hidden          2595
+deletion        1608
+alternation      654
+
+=== wordplay_gt (ground-truth label) distribution ===
+wordplay_gt
+None           56212
+anagram        15661
+hidden          2457
+reversal        1459
+alternation      226
+
+=== label_match ===
+Rows with a ground-truth label: 19,803 / 76,015
+Label match rate (where GT exists): 92.6%
+
+=== Duplicate (clue_id, indicator) pairs (multi-label cases) ===
+Rows involved in multi-label pairs: 620
+Unique (clue_id, indicator) pairs with >1 wordplay_ho: 310
+
+=== Sample rows ===
+=== Finished notebook 01 ===
+=== Starting notebook 02: Embedding Generation ===
+Project root: /home/vwinters/ccc-project/indicator_clustering
+Data directory: /home/vwinters/ccc-project/indicator_clustering/data
+Batch size: 64
+Loaded 12,622 unique indicators
+Examples: ['a bad way', 'a bit', 'a bit differently', 'a bit of', 'a bit of this']
+Shortest: "by" (2 chars)
+Longest: "students excluded from participation" (36 chars)
+Model loaded: 1024 dimensions
+Batches:   0%|          | 0/198 [00:00<?, ?it/s]Batches:   1%|          | 1/198 [00:01<04:14,  1.29s/it]Batches:   1%|          | 2/198 [00:02<03:20,  1.02s/it]Batches:   2%|▏         | 3/198 [00:03<03:10,  1.03it/s]Batches:   2%|▏         | 4/198 [00:03<02:58,  1.08it/s]Batches:   3%|▎         | 5/198 [00:04<02:46,  1.16it/s]Batches:   3%|▎         | 6/198 [00:05<02:43,  1.17it/s]Batches:   4%|▎         | 7/198 [00:06<02:36,  1.22it/s]Batches:   4%|▍         | 8/198 [00:07<02:36,  1.21it/s]Batches:   5%|▍         | 9/198 [00:07<02:32,  1.24it/s]Batches:   5%|▌         | 10/198 [00:08<02:33,  1.23it/s]Batches:   6%|▌         | 11/198 [00:09<02:25,  1.29it/s]Batches:   6%|▌         | 12/198 [00:10<02:23,  1.30it/s]Batches:   7%|▋         | 13/198 [00:10<02:21,  1.30it/s]Batches:   7%|▋         | 14/198 [00:11<02:16,  1.35it/s]Batches:   8%|▊         | 15/198 [00:12<02:16,  1.35it/s]Batches:   8%|▊         | 16/198 [00:13<02:16,  1.34it/s]Batches:   9%|▊         | 17/198 [00:13<02:15,  1.33it/s]Batches:   9%|▉         | 18/198 [00:14<02:15,  1.33it/s]Batches:  10%|▉         | 19/198 [00:15<02:14,  1.33it/s]Batches:  10%|█         | 20/198 [00:16<02:09,  1.37it/s]Batches:  11%|█         | 21/198 [00:16<02:06,  1.40it/s]Batches:  11%|█         | 22/198 [00:17<02:04,  1.42it/s]Batches:  12%|█▏        | 23/198 [00:18<02:02,  1.43it/s]Batches:  12%|█▏        | 24/198 [00:18<02:00,  1.45it/s]Batches:  13%|█▎        | 25/198 [00:19<02:03,  1.41it/s]Batches:  13%|█▎        | 26/198 [00:20<02:00,  1.42it/s]Batches:  14%|█▎        | 27/198 [00:20<01:58,  1.44it/s]Batches:  14%|█▍        | 28/198 [00:21<01:58,  1.43it/s]Batches:  15%|█▍        | 29/198 [00:22<01:57,  1.44it/s]Batches:  15%|█▌        | 30/198 [00:22<01:57,  1.44it/s]Batches:  16%|█▌        | 31/198 [00:23<01:59,  1.40it/s]Batches:  16%|█▌        | 32/198 [00:24<02:01,  1.37it/s]Batches:  17%|█▋        | 33/198 [00:25<01:58,  1.39it/s]Batches:  17%|█▋        | 34/198 [00:25<01:56,  1.40it/s]Batches:  18%|█▊        | 35/198 [00:26<01:54,  1.42it/s]Batches:  18%|█▊        | 36/198 [00:27<01:52,  1.44it/s]Batches:  19%|█▊        | 37/198 [00:27<01:51,  1.45it/s]Batches:  19%|█▉        | 38/198 [00:28<01:49,  1.46it/s]Batches:  20%|█▉        | 39/198 [00:29<01:52,  1.41it/s]Batches:  20%|██        | 40/198 [00:29<01:50,  1.43it/s]Batches:  21%|██        | 41/198 [00:30<01:48,  1.44it/s]Batches:  21%|██        | 42/198 [00:31<01:43,  1.51it/s]Batches:  22%|██▏       | 43/198 [00:31<01:43,  1.50it/s]Batches:  22%|██▏       | 44/198 [00:32<01:43,  1.49it/s]Batches:  23%|██▎       | 45/198 [00:33<01:46,  1.44it/s]Batches:  23%|██▎       | 46/198 [00:34<01:44,  1.45it/s]Batches:  24%|██▎       | 47/198 [00:34<01:43,  1.46it/s]Batches:  24%|██▍       | 48/198 [00:35<01:42,  1.47it/s]Batches:  25%|██▍       | 49/198 [00:36<01:41,  1.47it/s]Batches:  25%|██▌       | 50/198 [00:36<01:40,  1.47it/s]Batches:  26%|██▌       | 51/198 [00:37<01:40,  1.47it/s]Batches:  26%|██▋       | 52/198 [00:38<01:39,  1.47it/s]Batches:  27%|██▋       | 53/198 [00:38<01:39,  1.46it/s]Batches:  27%|██▋       | 54/198 [00:39<01:34,  1.53it/s]Batches:  28%|██▊       | 55/198 [00:40<01:34,  1.51it/s]Batches:  28%|██▊       | 56/198 [00:40<01:35,  1.49it/s]Batches:  29%|██▉       | 57/198 [00:41<01:35,  1.48it/s]Batches:  29%|██▉       | 58/198 [00:42<01:34,  1.48it/s]Batches:  30%|██▉       | 59/198 [00:42<01:34,  1.47it/s]Batches:  30%|███       | 60/198 [00:43<01:30,  1.53it/s]Batches:  31%|███       | 61/198 [00:43<01:26,  1.58it/s]Batches:  31%|███▏      | 62/198 [00:44<01:24,  1.61it/s]Batches:  32%|███▏      | 63/198 [00:45<01:22,  1.63it/s]Batches:  32%|███▏      | 64/198 [00:45<01:25,  1.58it/s]Batches:  33%|███▎      | 65/198 [00:46<01:26,  1.54it/s]Batches:  33%|███▎      | 66/198 [00:47<01:23,  1.58it/s]Batches:  34%|███▍      | 67/198 [00:47<01:24,  1.54it/s]Batches:  34%|███▍      | 68/198 [00:48<01:26,  1.50it/s]Batches:  35%|███▍      | 69/198 [00:49<01:26,  1.49it/s]Batches:  35%|███▌      | 70/198 [00:49<01:22,  1.54it/s]Batches:  36%|███▌      | 71/198 [00:50<01:23,  1.52it/s]Batches:  36%|███▋      | 72/198 [00:51<01:24,  1.48it/s]Batches:  37%|███▋      | 73/198 [00:51<01:24,  1.48it/s]Batches:  37%|███▋      | 74/198 [00:52<01:23,  1.48it/s]Batches:  38%|███▊      | 75/198 [00:53<01:23,  1.47it/s]Batches:  38%|███▊      | 76/198 [00:53<01:20,  1.52it/s]Batches:  39%|███▉      | 77/198 [00:54<01:17,  1.57it/s]Batches:  39%|███▉      | 78/198 [00:55<01:18,  1.54it/s]Batches:  40%|███▉      | 79/198 [00:55<01:15,  1.58it/s]Batches:  40%|████      | 80/198 [00:56<01:12,  1.62it/s]Batches:  41%|████      | 81/198 [00:56<01:11,  1.63it/s]Batches:  41%|████▏     | 82/198 [00:57<01:13,  1.57it/s]Batches:  42%|████▏     | 83/198 [00:58<01:11,  1.61it/s]Batches:  42%|████▏     | 84/198 [00:58<01:09,  1.64it/s]Batches:  43%|████▎     | 85/198 [00:59<01:08,  1.66it/s]Batches:  43%|████▎     | 86/198 [01:00<01:10,  1.59it/s]Batches:  44%|████▍     | 87/198 [01:00<01:08,  1.62it/s]Batches:  44%|████▍     | 88/198 [01:01<01:06,  1.65it/s]Batches:  45%|████▍     | 89/198 [01:01<01:05,  1.66it/s]Batches:  45%|████▌     | 90/198 [01:02<01:07,  1.60it/s]Batches:  46%|████▌     | 91/198 [01:03<01:05,  1.63it/s]Batches:  46%|████▋     | 92/198 [01:03<01:07,  1.58it/s]Batches:  47%|████▋     | 93/198 [01:04<01:05,  1.61it/s]Batches:  47%|████▋     | 94/198 [01:04<01:03,  1.64it/s]Batches:  48%|████▊     | 95/198 [01:05<01:02,  1.66it/s]Batches:  48%|████▊     | 96/198 [01:06<01:01,  1.67it/s]Batches:  49%|████▉     | 97/198 [01:06<01:03,  1.60it/s]Batches:  49%|████▉     | 98/198 [01:07<01:01,  1.63it/s]Batches:  50%|█████     | 99/198 [01:07<00:59,  1.65it/s]Batches:  51%|█████     | 100/198 [01:08<00:58,  1.67it/s]Batches:  51%|█████     | 101/198 [01:09<00:57,  1.68it/s]Batches:  52%|█████▏    | 102/198 [01:09<00:56,  1.69it/s]Batches:  52%|█████▏    | 103/198 [01:10<00:56,  1.69it/s]Batches:  53%|█████▎    | 104/198 [01:10<00:55,  1.70it/s]Batches:  53%|█████▎    | 105/198 [01:11<00:57,  1.62it/s]Batches:  54%|█████▎    | 106/198 [01:12<00:55,  1.65it/s]Batches:  54%|█████▍    | 107/198 [01:12<00:54,  1.66it/s]Batches:  55%|█████▍    | 108/198 [01:13<00:53,  1.68it/s]Batches:  55%|█████▌    | 109/198 [01:14<00:55,  1.61it/s]Batches:  56%|█████▌    | 110/198 [01:14<00:53,  1.64it/s]Batches:  56%|█████▌    | 111/198 [01:15<00:52,  1.66it/s]Batches:  57%|█████▋    | 112/198 [01:15<00:51,  1.67it/s]Batches:  57%|█████▋    | 113/198 [01:16<00:50,  1.68it/s]Batches:  58%|█████▊    | 114/198 [01:16<00:49,  1.69it/s]Batches:  58%|█████▊    | 115/198 [01:17<00:48,  1.69it/s]Batches:  59%|█████▊    | 116/198 [01:18<00:48,  1.70it/s]Batches:  59%|█████▉    | 117/198 [01:18<00:47,  1.70it/s]Batches:  60%|█████▉    | 118/198 [01:19<00:47,  1.70it/s]Batches:  60%|██████    | 119/198 [01:19<00:46,  1.70it/s]Batches:  61%|██████    | 120/198 [01:20<00:45,  1.70it/s]Batches:  61%|██████    | 121/198 [01:21<00:45,  1.70it/s]Batches:  62%|██████▏   | 122/198 [01:21<00:44,  1.70it/s]Batches:  62%|██████▏   | 123/198 [01:22<00:43,  1.71it/s]Batches:  63%|██████▎   | 124/198 [01:22<00:43,  1.71it/s]Batches:  63%|██████▎   | 125/198 [01:23<00:40,  1.79it/s]Batches:  64%|██████▎   | 126/198 [01:23<00:40,  1.76it/s]Batches:  64%|██████▍   | 127/198 [01:24<00:40,  1.74it/s]Batches:  65%|██████▍   | 128/198 [01:25<00:42,  1.65it/s]Batches:  65%|██████▌   | 129/198 [01:25<00:41,  1.66it/s]Batches:  66%|██████▌   | 130/198 [01:26<00:41,  1.65it/s]Batches:  66%|██████▌   | 131/198 [01:26<00:40,  1.67it/s]Batches:  67%|██████▋   | 132/198 [01:27<00:39,  1.68it/s]Batches:  67%|██████▋   | 133/198 [01:28<00:38,  1.68it/s]Batches:  68%|██████▊   | 134/198 [01:28<00:36,  1.74it/s]Batches:  68%|██████▊   | 135/198 [01:29<00:34,  1.82it/s]Batches:  69%|██████▊   | 136/198 [01:29<00:34,  1.78it/s]Batches:  69%|██████▉   | 137/198 [01:30<00:34,  1.75it/s]Batches:  70%|██████▉   | 138/198 [01:30<00:34,  1.72it/s]Batches:  70%|███████   | 139/198 [01:31<00:32,  1.80it/s]Batches:  71%|███████   | 140/198 [01:32<00:32,  1.77it/s]Batches:  71%|███████   | 141/198 [01:32<00:32,  1.74it/s]Batches:  72%|███████▏  | 142/198 [01:33<00:32,  1.71it/s]Batches:  72%|███████▏  | 143/198 [01:33<00:32,  1.71it/s]Batches:  73%|███████▎  | 144/198 [01:34<00:30,  1.80it/s]Batches:  73%|███████▎  | 145/198 [01:34<00:30,  1.76it/s]Batches:  74%|███████▎  | 146/198 [01:35<00:29,  1.74it/s]Batches:  74%|███████▍  | 147/198 [01:35<00:28,  1.82it/s]Batches:  75%|███████▍  | 148/198 [01:36<00:26,  1.88it/s]Batches:  75%|███████▌  | 149/198 [01:36<00:25,  1.92it/s]Batches:  76%|███████▌  | 150/198 [01:37<00:26,  1.85it/s]Batches:  76%|███████▋  | 151/198 [01:38<00:26,  1.80it/s]Batches:  77%|███████▋  | 152/198 [01:38<00:25,  1.77it/s]Batches:  77%|███████▋  | 153/198 [01:39<00:24,  1.84it/s]Batches:  78%|███████▊  | 154/198 [01:39<00:23,  1.89it/s]Batches:  78%|███████▊  | 155/198 [01:40<00:23,  1.83it/s]Batches:  79%|███████▉  | 156/198 [01:40<00:23,  1.79it/s]Batches:  79%|███████▉  | 157/198 [01:41<00:22,  1.86it/s]Batches:  80%|███████▉  | 158/198 [01:41<00:20,  1.91it/s]Batches:  80%|████████  | 159/198 [01:42<00:20,  1.95it/s]Batches:  81%|████████  | 160/198 [01:42<00:19,  1.97it/s]Batches:  81%|████████▏ | 161/198 [01:43<00:19,  1.89it/s]Batches:  82%|████████▏ | 162/198 [01:43<00:18,  1.93it/s]Batches:  82%|████████▏ | 163/198 [01:44<00:18,  1.86it/s]Batches:  83%|████████▎ | 164/198 [01:45<00:18,  1.81it/s]Batches:  83%|████████▎ | 165/198 [01:45<00:17,  1.88it/s]Batches:  84%|████████▍ | 166/198 [01:46<00:16,  1.92it/s]Batches:  84%|████████▍ | 167/198 [01:46<00:15,  1.96it/s]Batches:  85%|████████▍ | 168/198 [01:47<00:15,  1.88it/s]Batches:  85%|████████▌ | 169/198 [01:47<00:15,  1.92it/s]Batches:  86%|████████▌ | 170/198 [01:48<00:14,  1.96it/s]Batches:  86%|████████▋ | 171/198 [01:48<00:13,  1.98it/s]Batches:  87%|████████▋ | 172/198 [01:49<00:13,  1.89it/s]Batches:  87%|████████▋ | 173/198 [01:49<00:12,  1.93it/s]Batches:  88%|████████▊ | 174/198 [01:50<00:12,  1.97it/s]Batches:  88%|████████▊ | 175/198 [01:50<00:11,  1.99it/s]Batches:  89%|████████▉ | 176/198 [01:51<00:10,  2.01it/s]Batches:  89%|████████▉ | 177/198 [01:51<00:10,  2.02it/s]Batches:  90%|████████▉ | 178/198 [01:52<00:09,  2.02it/s]Batches:  90%|█████████ | 179/198 [01:52<00:09,  2.03it/s]Batches:  91%|█████████ | 180/198 [01:53<00:08,  2.03it/s]Batches:  91%|█████████▏| 181/198 [01:53<00:08,  2.04it/s]Batches:  92%|█████████▏| 182/198 [01:54<00:07,  2.04it/s]Batches:  92%|█████████▏| 183/198 [01:54<00:07,  1.93it/s]Batches:  93%|█████████▎| 184/198 [01:55<00:07,  1.96it/s]Batches:  93%|█████████▎| 185/198 [01:55<00:06,  1.98it/s]Batches:  94%|█████████▍| 186/198 [01:56<00:06,  1.99it/s]Batches:  94%|█████████▍| 187/198 [01:56<00:05,  2.00it/s]Batches:  95%|█████████▍| 188/198 [01:57<00:04,  2.01it/s]Batches:  95%|█████████▌| 189/198 [01:57<00:04,  2.01it/s]Batches:  96%|█████████▌| 190/198 [01:58<00:03,  2.02it/s]Batches:  96%|█████████▋| 191/198 [01:58<00:03,  2.01it/s]Batches:  97%|█████████▋| 192/198 [01:59<00:02,  2.01it/s]Batches:  97%|█████████▋| 193/198 [01:59<00:02,  2.02it/s]Batches:  98%|█████████▊| 194/198 [02:00<00:01,  2.02it/s]Batches:  98%|█████████▊| 195/198 [02:00<00:01,  2.12it/s]Batches:  99%|█████████▉| 196/198 [02:00<00:00,  2.20it/s]Batches:  99%|█████████▉| 197/198 [02:01<00:00,  2.22it/s]Batches: 100%|██████████| 198/198 [02:01<00:00,  2.62it/s]Batches: 100%|██████████| 198/198 [02:01<00:00,  1.63it/s]
+Embeddings shape: (12622, 1024)
+Dtype: float32
+Memory: 49.3 MB
+Saved embeddings to /home/vwinters/ccc-project/indicator_clustering/data/embeddings_bge_m3_all.npy
+Saved indicator index to /home/vwinters/ccc-project/indicator_clustering/data/indicator_index_all.csv
+Embeddings: (12622, 1024)
+Index: 12622 rows
+All checks passed.
+
+Spot check: "about" is at row 79, embedding L2 norm = 1.0000
+=== Finished notebook 02 ===
+=== All done! ===

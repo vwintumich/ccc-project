@@ -1,0 +1,56 @@
+=== Starting notebook 00: Data Extraction ===
+Traceback (most recent call last):
+  File "/home/vwinters/.conda/envs/nlp_env/lib/python3.12/site-packages/pandas/io/sql.py", line 2702, in execute
+    cur.execute(sql, *args)
+sqlite3.OperationalError: no such table: clues
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/vwinters/ccc-project/indicator_clustering/notebooks/00_data_extraction_Victoria.py", line 61, in <module>
+    row_count = pd.read_sql(f"SELECT COUNT(*) AS n FROM {t};", conn).iloc[0]["n"]
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vwinters/.conda/envs/nlp_env/lib/python3.12/site-packages/pandas/io/sql.py", line 702, in read_sql
+    return pandas_sql.read_query(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vwinters/.conda/envs/nlp_env/lib/python3.12/site-packages/pandas/io/sql.py", line 2766, in read_query
+    cursor = self.execute(sql, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vwinters/.conda/envs/nlp_env/lib/python3.12/site-packages/pandas/io/sql.py", line 2714, in execute
+    raise ex from exc
+pandas.errors.DatabaseError: Execution failed on sql 'SELECT COUNT(*) AS n FROM clues;': no such table: clues
+=== Finished notebook 00 ===
+=== Starting notebook 01: Data Cleaning ===
+Traceback (most recent call last):
+  File "/home/vwinters/ccc-project/indicator_clustering/notebooks/01_data_cleaning_Victoria.py", line 56, in <module>
+    df_clues = pd.read_csv(f'{DATA_DIR}/clues_raw.csv')
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vwinters/.conda/envs/nlp_env/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 873, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vwinters/.conda/envs/nlp_env/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 300, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vwinters/.conda/envs/nlp_env/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1645, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vwinters/.conda/envs/nlp_env/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1904, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "/home/vwinters/.conda/envs/nlp_env/lib/python3.12/site-packages/pandas/io/common.py", line 926, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vwinters/ccc-project/indicator_clustering/data/clues_raw.csv'
+=== Finished notebook 01 ===
+=== Starting notebook 02: Embedding Generation ===
+Project root: /home/vwinters/ccc-project/indicator_clustering
+Data directory: /home/vwinters/ccc-project/indicator_clustering/data
+Batch size: 64
+Traceback (most recent call last):
+  File "/home/vwinters/ccc-project/indicator_clustering/notebooks/02_embedding_generation_Victoria.py", line 42, in <module>
+    assert input_file.exists(), (
+           ^^^^^^^^^^^^^^^^^^^
+AssertionError: Missing input file: /home/vwinters/ccc-project/indicator_clustering/data/verified_indicators_unique.csv
+Run 01_data_cleaning_Victoria.ipynb first to produce this file.
+=== Finished notebook 02 ===
+=== All done! ===

@@ -1,0 +1,6 @@
+=== Starting notebook 00: Data Extraction ===
+Traceback (most recent call last):
+  File "/home/vwinters/ccc-project/indicator_clustering/notebooks/00_data_extraction_Victoria.py", line 95, in <module>
+    display(df_indicators.head(3))
+    ^^^^^^^
+NameError: name 'display' is not defined
