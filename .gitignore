@@ -1,0 +1,13 @@
+.DS_Store
+.claude/
+prompts/
+*.sqlite3
+
+# Indicator clustering data and outputs (large files, not tracked)
+indicator_clustering/data/*
+!indicator_clustering/data/.gitkeep
+indicator_clustering/outputs/*
+!indicator_clustering/outputs/.gitkeep
+
+# Notebook checkpoints
+**/.ipynb_checkpoints/
