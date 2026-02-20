@@ -24,6 +24,8 @@ Last updated: February 19, 2026
 
 **Current direction:** Try multiple values. Report k=8 as primary, compare to DBSCAN/HDBSCAN free-form results. Use the hierarchical dendrogram to show the full range.
 
+**New evidence (Feb 20, 2026):** Stage 4 results suggest the answer is "more granular than 8." Agglomerative metrics improve with increasing k (best at k=34), and HDBSCAN naturally finds 281 clusters. The wordplay-type level (k=8) does not emerge as a natural grouping. The conceptual metaphor level appears to be the right granularity for this data.
+
 ---
 
 ### Q2: How should we handle indicators that appear under multiple wordplay types?
@@ -54,6 +56,8 @@ Last updated: February 19, 2026
 5. Report a sensitivity analysis showing how results change with epsilon
 
 **Current direction:** This must be done before any clustering results are reported as final.
+
+**Resolved (Feb 20, 2026):** Pairwise distance analysis completed. Epsilon candidates selected from distance distribution percentiles. Sensitivity analysis shows sharp transition from 281 clusters (eps=0) to 3-4 clusters (eps≥1.5) with no stable middle ground. See FINDINGS_AND_DECISIONS.md for full results. Move to resolved.
 
 ---
 
@@ -140,6 +144,8 @@ Seeds do not need to be unique across wordplay types.
 4. Report noise as a finding, not a problem to hide
 
 **Current direction:** Unresolved. Must address before results are final.
+
+**New evidence (Feb 20, 2026):** HDBSCAN (eps=0) classified 4,193 points (33%) as noise. Many form visible clumps in the 2D UMAP projection but fall below min_cluster_size=10 or lack sufficient density in 10D. Investigation needed in Notebook 05: examine what indicators are noise, try lower min_cluster_size, check if noise is disproportionately from certain wordplay types.
 
 ---
 

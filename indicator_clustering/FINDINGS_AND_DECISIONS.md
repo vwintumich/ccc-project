@@ -22,6 +22,26 @@ The indicator embedding space forms one large connected mass rather than 8 clean
 **SETTLED: Dimensionality reduction parameters.**
 UMAP: n_neighbors=15, min_dist=0.1, metric='cosine', random_state=42. These are starting values and have not been systematically tuned (see OPEN_QUESTIONS.md). PCA is retained as a baseline comparison only.
 
+### Clustering (Notebook 04)
+
+**FINDING: HDBSCAN epsilon sensitivity reveals no stable intermediate clustering level.**
+At epsilon=0, HDBSCAN finds 281 clusters with 33% noise (silhouette 0.630). At epsilon=0.78, it collapses to 11 clusters. At epsilon=1.5+, just 3-4 mega-clusters. There is no epsilon value that produces a moderate number of clusters (8-20) with reasonable noise. The wordplay-type level of structure does not emerge naturally from density-based clustering.
+
+**FINDING: HDBSCAN fine-grained clusters (eps=0) correspond to conceptual metaphor subgroups.**
+The 281 clusters are semantically coherent and many align strongly with single wordplay types. Cluster 271 is 100% anagram (DAMAGE metaphor). Cluster 133 is 98.8% homophone (HEARING metaphor). Clusters 21 and 130 are 89-92% reversal (RETURN and UPWARD MOVEMENT metaphors). Cluster 76 (mixed container/hidden/insertion — CONCEALMENT metaphor) confirms that placement-oriented types share overlapping vocabulary.
+
+**FINDING: Agglomerative k=8 does not recover the 8 labeled wordplay types.**
+Every cluster is dominated by anagram (24-77%), because anagram is the largest class and its vocabulary spans the entire embedding space. The most distinctive cluster is Cluster 3 (insertion 36% + container 33%). No cluster cleanly corresponds to a single non-anagram type. This confirms the hypothesis that 8 wordplay types is not the natural granularity of indicator semantics.
+
+**FINDING: Wordplay types vary in separability.**
+Label-side evaluation shows homophone indicators concentrate in a distinct region of the embedding space. Reversal is partially concentrated. Container is diffuse, confirming the prediction that container, insertion, and hidden overlap due to shared placement metaphors.
+
+**FINDING: Finer-grained clustering fits the data better.**
+Agglomerative silhouette scores increase with k (0.259 at k=6 → 0.322 at k=34) and Davies-Bouldin decreases. Consistent with HDBSCAN finding 281 natural clusters. The natural structure of indicator semantics appears to live at the conceptual metaphor level, not the wordplay type level.
+
+**SETTLED: Pairwise distance analysis procedure.**
+Computed Euclidean pairwise distances on 2,000 random samples from 10D UMAP embeddings. Median distance 3.55, range 0.003-8.51. Epsilon candidates selected from percentiles of this distribution: 0, 0.78, 1.50, 1.93, 2.23, 2.47, 2.68. This procedure follows KCT's requirement (Feb 15) for principled epsilon selection.
+
 ---
 
 ## February 8, 2026 — Current State of Findings
