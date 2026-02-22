@@ -116,47 +116,81 @@ print(f"Output directory: {OUTPUT_DIR}")
 ---
 
 ## Modular Pipeline Architecture
-
 The project is divided into sequential stages. Each stage saves its outputs as files. Downstream notebooks must load from those files — never recompute embeddings or earlier outputs inside a downstream notebook.
+
+The clustering analysis is split across two notebooks (04 and 05) with distinct
+research questions, and a third notebook (06) handles evaluation and report figures.
 
 ```
 Stage 0: Data Extraction
-  Notebook: 00_data_extraction_Victoria.ipynb
+  Notebook: 00_data_extraction.ipynb
   Inputs:  data.sqlite3 (SQLite database from cryptics.georgeho.org)
   Outputs: clues_raw.csv, indicators_raw.csv, indicators_by_clue_raw.csv,
            indicators_consolidated_raw.csv, charades_raw.csv, charades_by_clue_raw.csv
   Runs on: Local or Colab
 
 Stage 1: Data Cleaning & Verification
-  Notebook: 01_data_cleaning_Victoria.ipynb
+  Notebook: 01_data_cleaning.ipynb
   Inputs:  *_raw.csv files from Stage 0
   Outputs: verified_indicators_unique.csv   (12,622 unique indicator strings)
            verified_clues_labeled.csv       (76,015 clue-indicator pairs with labels)
   Runs on: Local or Colab
 
 Stage 2: Embedding Generation                [GREAT LAKES or COLAB GPU]
-  Notebook: 02_embedding_generation_Victoria.ipynb
+  Notebook: 02_embedding_generation.ipynb
   Inputs:  verified_indicators_unique.csv
   Outputs: embeddings_bge_m3_all.npy        (shape: 12622 x 1024)
            indicator_index_all.csv          (row number -> indicator string)
   Model:   BAAI/bge-m3 via SentenceTransformer
 
 Stage 3: Dimensionality Reduction
-  Inputs:  embeddings_bge_m3_*.npy
+  Notebook: 03_dimensionality_reduction.ipynb
+  Inputs:  embeddings_bge_m3_all.npy
   Outputs: embeddings_umap_2d.npy           (for visualization)
            embeddings_umap_10d.npy          (for clustering input)
            embeddings_pca_Nd.npy            (as needed)
   Runs on: Great Lakes or Colab (GPU helps)
 
-Stage 4: Clustering
-  Inputs:  Dimensionality-reduced embeddings
-  Outputs: cluster_labels_hdbscan.csv
-           cluster_labels_agglomerative.csv
+Stage 4: Baseline Clustering (Unconstrained Exploration)
+  Notebook: 04_clustering.ipynb
+  Research question: "What structure emerges when we let the algorithms find it
+  without guidance?"
+  Inputs:  embeddings_umap_10d.npy, embeddings_umap_2d.npy, indicator_index_all.csv
+  NOTE:    This notebook does NOT load verified_clues_labeled.csv. No wordplay
+           labels (Ho or GT) are used. Evaluation against labels happens in 05/06.
+  Methods: HDBSCAN (epsilon sensitivity sweep), Agglomerative/Ward's (multiple k)
+  Outputs: cluster_labels_hdbscan_eps_*.csv
+           cluster_labels_agglo_k*.csv
+           clustering_metrics_summary.csv
+           figures/ (sensitivity plots, cluster scatter plots, dendrograms)
   Runs on: Great Lakes (parameter sweeps); Colab (single runs)
 
-Stage 5: Evaluation and Visualization
-  Inputs:  Cluster label files + indicator index
-  Outputs: figures/ directory, metrics_summary.csv
+Stage 5: Constrained and Targeted Experiments
+  Notebook: 05_constrained_and_targeted.ipynb
+  Research question: "Does expert knowledge improve clustering, and do theoretically
+  motivated subsets behave as predicted?"
+  Inputs:  All Stage 4 outputs + verified_clues_labeled.csv + seed word data
+  Methods: Constrained agglomerative with seed word connectivity matrix,
+           subset experiments (easy-separation pairs, hard-overlap pairs,
+           anagram sub-clustering), definitions-as-control comparison
+  NOTE:    This is where wordplay labels (both Ho and GT) and domain knowledge
+           (seed words, conceptual framework) are first introduced into the
+           clustering analysis.
+  Outputs: cluster_labels_constrained_*.csv, subset experiment results,
+           definitions comparison results
+  Runs on: Great Lakes (for definitions embedding); Colab (for subset experiments)
+
+Stage 6: Evaluation and Report Figures
+  Notebook: 06_evaluation_and_figures.ipynb
+  Purpose: Load all results from Stages 4 and 5, produce publication-quality
+           figures and systematic comparisons for the final report.
+  Inputs:  All cluster label CSVs from 04 and 05, verified_clues_labeled.csv,
+           embeddings_umap_2d.npy, indicator_index_all.csv
+  Methods: Per-type overlays (Ho and GT labels), cross-method metrics comparison,
+           noise point investigation, report-ready figures
+  NOTE:    No new clustering is performed here. This notebook only loads,
+           visualizes, and evaluates.
+  Outputs: figures/ directory (publication-quality), metrics tables for report
   Runs on: Local or Colab
 ```
 
