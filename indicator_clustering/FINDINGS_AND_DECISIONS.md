@@ -61,6 +61,86 @@ At k=8, clusters are broad mixtures — centroids pull together indicators from 
 **SETTLED: Pairwise distance analysis procedure.**
 Computed Euclidean pairwise distances on 2,000 random samples from 10D UMAP embeddings. Median distance 3.55, range 0.003-8.51. Epsilon candidates selected from percentiles of this distribution, with 6 fine-grained candidates in the 0-to-5th-percentile transition zone plus 6 coarse candidates from 5th-25th percentiles. This procedure follows KCT's requirement (Feb 15) for principled epsilon selection.
 
+### Stage 5: Constrained and Targeted Experiments (Notebook 05)
+
+**Research question:** "Does expert knowledge improve clustering, and do theoretically motivated subsets behave as predicted?"
+
+**Methods:** Label-based evaluation of NB 04 results (Ho and GT overlays, per-cluster type distribution heatmaps); constrained agglomerative clustering with seed-word connectivity matrices (MC7 k=7 and CG34 k=34); subset experiments (homophone vs. reversal, hidden+container+insertion, anagram sub-clustering).
+
+**This is the first notebook where domain knowledge enters the clustering pipeline.**
+
+#### Key Findings
+
+**FINDING 1: The Ho type overlay is the most informative visualization in the project.**
+
+Spatial distribution of types in UMAP space reveals a clear hierarchy of separability:
+- **Homophone** is the most concentrated type — a tight cluster in the bottom-right of the UMAP projection, well-separated from everything else.
+- **Reversal** forms several tight sub-clusters in the left half, moderately concentrated.
+- **Container and insertion** have nearly identical spatial distributions — both spread across the center-right, thoroughly intermixed with each other. This visually confirms they share indicator vocabulary.
+- **Hidden** partially overlaps with container/insertion (shared placement metaphors) but also has a few distinct patches.
+- **Anagram** blankets the entire space (51% of indicators), with internal sub-structure corresponding to different conceptual metaphors.
+- **Deletion** concentrates in the upper-center, partially overlapping with anagram.
+- **Alternation** is sparse and scattered (only 216 indicators).
+
+**FINDING 2: Unconstrained clusters do NOT correspond to wordplay types.**
+
+Per-cluster Ho type distribution heatmaps confirm:
+- At k=8: average purity 0.563. Five of 8 clusters are anagram-dominated. No cluster cleanly captures homophone, hidden, or alternation.
+- At k=10: average purity 0.655. The two extra clusters help — one captures homophone (0.78 purity) and one captures reversal (0.90), but the remaining 8 are still mixed.
+- At k=34: average purity 0.652. Multiple clusters per type, but anagram still dominates many clusters. Some clean captures: reversal clusters at 0.96 and 0.90 purity, homophone at 0.78.
+- HDBSCAN eps=0.0: average purity 0.750 (20 largest clusters). Fine-grained clusters are purer, but 282 clusters is far more than the 8-type taxonomy.
+
+**FINDING 3: Constrained clustering provides marginal improvement at best.**
+
+| Run | k | Seeds | Silhouette | Davies-Bouldin | Avg Purity |
+|-----|---|-------|-----------|----------------|------------|
+| Unconstrained | 8 | None | 0.272 | 1.267 | 0.563 |
+| Constrained MC7 | 7 | minute_cryptic | 0.264 | 1.211 | 0.598 |
+| Unconstrained | 34 | None | 0.322 | 1.068 | 0.652 |
+| Constrained CG34 | 34 | conceptual_groups | 0.324 | 1.039 | 0.671 |
+
+MC7 (k=7): The constrained run is slightly better on purity (0.598 vs 0.563) but slightly worse on silhouette. Cluster 1 (n=2,929) became a catch-all absorbing homophone, hidden, and insertion indicators. Only cluster 5 achieved a non-anagram dominant type (container+insertion at 0.46/0.34). The seeds were too few (82 matched) to overcome anagram's 51% base rate. sklearn issued a warning about 13 disconnected components in the connectivity matrix — some seed groups were isolated from the main kNN graph.
+
+CG34 (k=34): Marginal improvement across all metrics. The conceptual metaphor groupings are compatible with the embedding geometry but do not dramatically improve upon what unconstrained Ward's already discovers. This is actually a positive finding: the BGE-M3 embeddings naturally organize indicators by conceptual metaphor without needing expert guidance.
+
+**FINDING 4: The 4A/4B ARI contrast is the strongest quantitative result.**
+
+| Experiment | Method | ARI vs Ho | Silhouette |
+|-----------|--------|----------|-----------|
+| 4A: Homophone vs Reversal | Agglomerative k=2 | **0.611** | 0.394 |
+| 4B: Hidden+Container+Insertion | Agglomerative k=3 | **0.045** | 0.213 |
+
+The 13.5x ratio between 4A and 4B ARI confirms the conceptual metaphor prediction: types with distinct metaphorical bases (hearing vs. direction) separate cleanly, while types sharing placement/containment metaphors are inseparable. This is the single most citable finding for the report.
+
+The 4B scatter plot visually confirms total intermixing — the k=3 clusters carve spatial regions, but those regions do not correspond to the three Ho types. The clusters instead organize by sub-metaphor (likely surrounding vs. consuming vs. segment/piece vocabulary).
+
+**FINDING 5: Anagram has rich conceptual sub-structure.**
+
+HDBSCAN found 149 sub-clusters within the 6,610 anagram indicators (36.8% noise). Qualitative inspection of the largest sub-clusters reveals clear conceptual metaphor themes:
+- Cluster 21 (n=256): "reinvented", "redesign", "rebuilt" → **repair**
+- Cluster 114 (n=91): "strangely", "bizarrely", "peculiar" → **incorrectness**
+- Cluster 123 (n=85): "waltzing", "rippling", "swashbuckling" → **movement**
+- Cluster 143 (n=83): "dreadfully", "awful", "abominable" → **disorder/badness**
+- Cluster 78 (n=50): "cooks", "toast", "cooked" → **tamper**
+- Cluster 23 (n=64): "changes", "change of", "to alter" → **transformation**
+- Cluster 43 (n=50): "hybrid", "blend of", "mixture" → **mixing**
+
+Agglomerative k=8 on the anagram subset produced interpretable sub-clusters with silhouette 0.316 — comparable to the full-data k=34 silhouette (0.322).
+
+This confirms that the conceptual metaphor hierarchy from DOMAIN_KNOWLEDGE.md is not just a theoretical framework but an empirically observable organizing principle in the embedding space.
+
+#### Settled Decisions from Stage 5
+
+**SETTLED: The 8-type wordplay taxonomy cannot be fully recovered by clustering on indicator semantics alone.** Container, insertion, and hidden are inseparable (ARI=0.045). The best achievable taxonomy has at most 6 distinguishable groups (merging these three).
+
+**SETTLED: Constrained clustering with seed words provides marginal benefit.** Seeds are compatible with the natural structure but mostly redundant. The BGE-M3 embeddings already capture the relevant semantic organization.
+
+**SETTLED: Homophone and reversal are the most separable types.** ARI=0.611 for the binary homophone/reversal experiment.
+
+**SETTLED: Anagram indicators organize by conceptual metaphor internally.** Sub-clustering reveals repair, incorrectness, movement, disorder, tamper, transformation, and mixing themes — validating the conceptual_groups taxonomy.
+
+**SETTLED: k=10 is interpretable.** The two extra clusters (vs k=8) capture homophone and reversal, which are the two most spatially concentrated types. This explains the local silhouette spike at k=10 observed in NB 04.
+
 ---
 
 ## February 8, 2026 — Current State of Findings

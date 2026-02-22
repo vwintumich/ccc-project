@@ -2,7 +2,7 @@
 
 This document tracks questions that have not yet been settled. Before making implementation choices in any of these areas, check this document and consult the team and/or faculty advisor if needed. When a question is resolved, move the resolution to FINDINGS_AND_DECISIONS.md and remove it here.
 
-Last updated: February 21, 2026
+Last updated: February 22, 2026
 
 ---
 
@@ -79,35 +79,15 @@ Last updated: February 21, 2026
 
 ---
 
-### Q6: Which seed set should be used for constrained clustering?
+### ~~Q6: Which seed set should be used for constrained clustering?~~
 
-**The question:** We have five seed sets in Wordplay_Seeds.xlsx (cc_for_dummies_ho_6, cc_for_dummies_ALL, minute_cryptic_ho_7, minute_cryptic_ALL, conceptual_groups). Each corresponds to a different clustering philosophy.
-
-**Options:**
-- cc_for_dummies_ho_6: Simple, covers only 6 of 8 Ho types, from a single source
-- minute_cryptic_ho_7: Covers 7 Ho types including alternation, more granular subcategories
-- conceptual_groups: Most theoretically motivated; seeds organized by conceptual metaphor rather than wordplay type; explicitly acknowledges multi-type membership
-- Try multiple seed sets and compare results
-- Derive seeds from the data using logistic regression (KCT suggestion) and compare to expert-sourced seeds
-
-**Advisor guidance (KCT, Feb 8):** "Expert knowledge is helpful. Shouldn't matter whether seed words come from the data or outside sources. Could do both approaches: one from experts, one from data. See where they agree."
-
-Seeds do not need to be unique across wordplay types.
-
-**Current direction:** Start with cc_for_dummies_ho_6 for simplicity. Try minute_cryptic_ho_7 for comparison. Use conceptual_groups if targeting a conceptual-metaphor level of clustering.
+**RESOLVED (Feb 22, 2026).** Both seed sets were used in Notebook 05. MC7 (minute_cryptic_ho_7, 7 wordplay-type groups) produced marginal improvement over unconstrained k=8. CG34 (conceptual_groups, 34 conceptual metaphor groups) was slightly better than unconstrained k=34 across all metrics. The conceptual metaphor framing is more compatible with the embedding geometry, but neither seed set dramatically outperforms unconstrained clustering. See FINDINGS_AND_DECISIONS.md Stage 5 section for full results.
 
 ---
 
-### Q11: What does the k=10 local silhouette optimum represent?
+### ~~Q11: What does the k=10 local silhouette optimum represent?~~
 
-**The question:** Agglomerative clustering at k=10 shows a local silhouette optimum (0.299) — silhouette jumps from 0.272 at k=8, peaks at k=10, then drops to 0.281 at k=11 before resuming the monotonic upward trend. This is the only evidence for any coarse-level structure in the data. Is this an interpretable grouping or an artifact of embedding geometry?
-
-**Steps needed:**
-1. When labels are applied in Notebook 05/06, inspect the 10 agglomerative clusters to see if they correspond to any interpretable taxonomy
-2. Check whether the 10 clusters map to a meaningful grouping (e.g., the k=4 operation-type level plus some splits, or a partial separation of the 8 wordplay types)
-3. Compare the k=10 cluster boundaries to the centroid dendrogram to understand which merges are being avoided at k=10 that k=8 forces
-
-**Current direction:** Open. Low priority until label-based evaluation in Notebook 05/06. If k=10 maps to a meaningful taxonomy, it becomes a candidate for the "best coarse clustering" in the report.
+**RESOLVED (Feb 22, 2026).** The k=10 local silhouette optimum exists because the two extra clusters (vs k=8) capture homophone and reversal — the two most spatially concentrated types. Homophone achieves 0.78 purity and reversal 0.90 in k=10 clusters. These types need their own clusters to avoid contaminating broader mixed clusters, and k=10 is the coarsest granularity that accommodates this. See FINDINGS_AND_DECISIONS.md Stage 5 section.
 
 ---
 
@@ -167,3 +147,34 @@ Seeds do not need to be unique across wordplay types.
 **Advisor guidance (KCT, Feb 1):** Discussed WordNet as a high-precision tool for understanding word relationships. For clustering, the most relevant application is seed word expansion — using WordNet to grow a small expert seed list into a richer set of related indicators.
 
 **Current direction:** Low priority. Start with BGE-M3 embeddings and expert seed lists. Consider WordNet expansion of seeds only if constrained clustering results are poor.
+
+---
+
+### Q12: Should we run definitions-as-control through the same pipeline?
+
+**The question:** If we cluster definition words (extracted from the clue text) through the same BGE-M3 → UMAP → clustering pipeline and definitions cluster as well as indicators, the clustering isn't detecting wordplay-specific structure — it's just detecting general semantic similarity. This would be a critical control experiment.
+
+**What's needed:**
+- Extract definitions from `verified_clues_labeled.csv` (definitions sit at the beginning or end of each clue)
+- Embed definitions using BGE-M3 (requires a Great Lakes or GPU Colab run)
+- Run UMAP and clustering on definition embeddings
+- Compare clustering metrics (silhouette, purity) to indicator clustering results
+
+**Current direction:** Still planned. Requires its own embedding pipeline. Deferred to a separate notebook or a section of NB 06. Lower priority than completing the report with existing results.
+
+---
+
+### Q13: Which visualizations from NB 04 and NB 05 go into the final report?
+
+**The question:** We have many figures across two notebooks. The report needs a curated selection that tells a coherent story. Which figures are most important?
+
+**Candidates:**
+- **Ho type overlay** (NB 05 Section 2) — the most informative single figure; shows the spatial distribution of all 8 types
+- **4A/4B side-by-side comparison** (NB 05 Section 4) — the strongest quantitative result (ARI contrast)
+- **Metrics-vs-k plot** (NB 04) — demonstrates the "no elbow" finding
+- **Anagram sub-cluster centroids** (NB 05 Section 4C) — validates the conceptual metaphor hierarchy
+- **Constrained vs unconstrained metrics table** (NB 05 Section 3) — shows marginal improvement from seeds
+- **HDBSCAN epsilon sensitivity plot** (NB 04) — shows the abrupt transition, no stable intermediate
+- **Dendrogram** (NB 04) — shows no natural cut point
+
+**Current direction:** Unresolved. To be decided when preparing NB 06 and the final report. Aim for 5-7 figures total.
