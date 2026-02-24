@@ -68,7 +68,7 @@ notebook==7.5.3
 notebook_shim==0.2.4
 numba==0.63.1
 numpy==2.3.5
-packaging @ file:///opt/miniconda3/conda-bld/packaging_1761049079150/work
+packaging==24.2
 pandas==3.0.0
 pandocfilters==1.5.1
 parso==0.8.6
