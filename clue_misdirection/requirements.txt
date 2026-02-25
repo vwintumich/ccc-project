@@ -1,0 +1,28 @@
+# clue_misdirection — Python dependencies
+# Install: pip install -r requirements.txt
+
+# Data handling
+pandas>=2.0
+numpy>=1.24
+pyarrow>=14.0          # for .parquet read/write
+
+# NLP / Embeddings
+sentence-transformers>=3.0
+torch>=2.0
+nltk>=3.8              # WordNet, synsets
+
+# Machine Learning
+scikit-learn>=1.3
+
+# Visualization
+matplotlib>=3.7
+seaborn>=0.12
+
+# Notes:
+# - The embedding model (oskar-h/cale-modernbert-base) is downloaded
+#   automatically by sentence-transformers on first use.
+# - NLTK data (wordnet, omw-1.4) is downloaded in-notebook.
+# - GPU steps (Step 2) require a CUDA-capable torch installation.
+#   On Great Lakes or Colab, torch+CUDA is pre-installed.
+# - TODO: Consolidate with indicator_clustering dependencies into
+#   a single project-root requirements.txt.
