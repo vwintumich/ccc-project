@@ -38,7 +38,7 @@ All intermediate files are written to `clue_misdirection/data/`.
 | `data/clues_filtered.csv` | Rows passing all Section 3.2 filters |
 | `data/cleaning_log.md` | Record of row counts at each filter step |
 
-**Expected schema for `clues_filtered.csv`:**
+**Schema for `clues_filtered.csv`:**
 
 | Column | Type | Description |
 |--------|------|-------------|
@@ -49,14 +49,14 @@ All intermediate files are written to `clue_misdirection/data/`.
 | `definition` | str | The definition substring (single definition for this row) |
 | `answer` | str | The answer word or phrase (uppercase) |
 | `answer_format` | str | Format string extracted from clue, e.g., "7" or "3,4" |
-| `wordplay_type` | str/null | Wordplay type label (if available; not used as feature) |
 | `num_definitions` | int | Number of valid definitions found for this clue (1 for most rows; >1 if the clue had multiple valid definitions and was expanded into multiple rows) |
 | `def_answer_pair_id` | int | Unique ID for each (definition, answer) pair — used for GroupKFold |
 
-**Expected counts:** Broader than the ~10,000 rows estimated in plan v3
-(which assumed single-word only). Actual counts will depend on how many
-multi-word and double-definition rows pass the WordNet filter. Track and
-report in the notebook summary cell and in `cleaning_log.md`.
+**Actual counts:** 241,397 rows, 129,429 unique (definition, answer) pairs.
+`wordplay_type` was not available in `clues_raw.csv` and is excluded from the
+output (consistent with Decision 4). Article stripping ("a ") was applied
+during WordNet lookup to recover additional matches; further lemmatization is
+a potential future improvement.
 
 ### Step 2 Output
 

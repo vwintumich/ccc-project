@@ -32,7 +32,28 @@ See `CONTEXT.md` for Hans's full writeup.
 ## Pipeline Progress
 
 ### Step 1: Data Cleaning
-*Not yet started.*
+*Completed.* Notebook: `notebooks/01_data_cleaning.ipynb`
+
+- **Final dataset:** 241,397 rows covering 129,429 unique (definition, answer)
+  pairs (average 1.9 clues per pair). This is significantly broader than the
+  ~10,000 rows estimated in the design doc, which assumed single-word only.
+- **Filtering pipeline:** 660,613 raw → 241,397 filtered through 7 filter
+  steps: null removal, bracketed-clue removal, answer format validation,
+  double-definition parsing, definition-in-surface verification (with `\b`
+  word boundaries), definition-at-edge check, and WordNet coverage for both
+  definition and answer.
+- **Article stripping:** During WordNet lookup, definitions and answers with a
+  leading "a " (e.g., "a shade") are retried with the article stripped. This
+  simple heuristic recovered additional matches. More aggressive lemmatization
+  or stemming could improve WordNet coverage further and is a potential future
+  improvement.
+- **`wordplay_type` not available:** The column is not present in
+  `clues_raw.csv` and was dropped from the output schema (consistent with
+  Decision 4 — wordplay type is excluded from the model).
+- **Multi-definition expansion:** ~5% of clues had `/`-separated definitions.
+  After splitting and validating, each valid definition produces its own row,
+  contributing to the total of 241,397 rows.
+```
 
 ### Step 2: Embedding Generation
 *Not yet started.*
