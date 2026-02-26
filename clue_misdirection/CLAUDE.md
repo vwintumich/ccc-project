@@ -140,6 +140,26 @@ new to NLP and may not know why a particular step matters. For example:
   Same fold assignments across all experiments.
 - **Figures:** Save all figures to `outputs/figures/` as PNG (300 dpi).
 
+### Notebook Version Control
+
+- **`nbstripout` is installed as a git filter.** All committed notebooks have outputs
+  and execution counts stripped automatically. Do not manually clear outputs before
+  committing — the filter handles it.
+- **`nbdime` is configured for diffs and merges.** Notebook diffs are rendered in a
+  human-readable format rather than raw JSON.
+- **Rendered HTML snapshots live in `docs/`.** After a clean `Restart & Run All`,
+  render to HTML and commit. Naming convention: `NN_name_YYYY-MM-DD_HHMM.html`.
+  See `docs/README.md` for the notebook index.
+- **Coordinate edits in Slack.** Post before editing a notebook you don't own.
+
+**Setup (one-time, every team member):**
+```bash
+pip install nbstripout nbdime
+nbstripout --install
+nbdime config-git --enable
+```
+
+
 ## Source Data
 
 George Ho's cryptic crossword clue dataset (660,613 clues).
