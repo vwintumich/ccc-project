@@ -64,21 +64,25 @@ Embeddings are deduplicated: definition and answer embeddings are computed
 once per unique string; only clue-context embeddings are computed per row.
 See PLAN.md Step 2 for the full rationale.
 
+All embeddings are generated using `gabrielloiseau/CALE-MBERT-en` with
+`<t></t>` delimiters around the target word in a context sentence.
+
 | File | Shape | Description |
 |------|-------|-------------|
-| `data/embeddings/definition_embeddings.npy` | (N_def, 3, D) | Per unique definition: [average, common, obscure] |
+| `data/embeddings/definition_embeddings.npy` | (N_def, 3, 1024) | Per unique definition: [allsense_avg, common, obscure] |
 | `data/embeddings/definition_index.csv` | (N_def, 2) | Maps row position → definition string |
-| `data/embeddings/answer_embeddings.npy` | (N_ans, 3, D) | Per unique answer: [average, common, obscure] |
+| `data/embeddings/answer_embeddings.npy` | (N_ans, 3, 1024) | Per unique answer: [allsense_avg, common, obscure] |
 | `data/embeddings/answer_index.csv` | (N_ans, 2) | Maps row position → answer string |
-| `data/embeddings/clue_context_embeddings.npy` | (N_rows, 2, D) | Per clue row: [word1_clue_context, sentence1] |
+| `data/embeddings/clue_context_embeddings.npy` | (N_rows, 1024) | Per clue row: word1_clue_context |
 | `data/embeddings/clue_context_index.csv` | (N_rows, 2) | Maps row position → clue_id |
 
 - **N_def** = number of unique definition strings in `clues_filtered.csv`
 - **N_ans** = number of unique answer strings in `clues_filtered.csv`
 - **N_rows** = number of rows in `clues_filtered.csv`
-- **D** = embedding dimension (768 for CALE/ModernBERT-base)
+- **D** = 1024 (CALE-MBERT-en embedding dimension)
 - The three slots in definition/answer embeddings correspond to:
-  `[0]` = average (no context), `[1]` = common synset, `[2]` = obscure synset
+  `[0]` = allsense_avg (averaged across all WordNet synset contexts),
+  `[1]` = common synset, `[2]` = obscure synset
 
 **Mapping embeddings to clue rows:** For a given row in `clues_filtered.csv`,
 look up its definition string in `definition_index.csv` to get the row
@@ -92,23 +96,20 @@ order.
 |------|-------------|
 | `data/features_all.parquet` | All 53 features + metadata for every clue row |
 
-**Feature columns (53 total):**
+**Feature columns (46 total):**
 
 **Context-Free Meaning (15):** Cosine similarities among embeddings that don't
 involve clue context. Named as `cos_{emb_a}_{emb_b}`, e.g.:
-- `cos_w1avg_w2avg`, `cos_w1avg_w2common`, `cos_w1avg_w2obscure`
-- `cos_w1common_w2avg`, `cos_w1common_w2common`, `cos_w1common_w2obscure`
-- `cos_w1obscure_w2avg`, `cos_w1obscure_w2common`, `cos_w1obscure_w2obscure`
-- `cos_w1avg_w1common`, `cos_w1avg_w1obscure`, `cos_w1common_w1obscure`
-- `cos_w2avg_w2common`, `cos_w2avg_w2obscure`, `cos_w2common_w2obscure`
+- `cos_w1all_w2all`, `cos_w1all_w2common`, `cos_w1all_w2obscure`
+- `cos_w1common_w2all`, `cos_w1common_w2common`, `cos_w1common_w2obscure`
+- `cos_w1obscure_w2all`, `cos_w1obscure_w2common`, `cos_w1obscure_w2obscure`
+- `cos_w1all_w1common`, `cos_w1all_w1obscure`, `cos_w1common_w1obscure`
+- `cos_w2all_w2common`, `cos_w2all_w2obscure`, `cos_w2common_w2obscure`
 
-**Context-Informed Meaning (13):** Any cosine similarity involving
-`word1_clue_context` or `sentence1`:
-- `cos_w1clue_w1avg`, `cos_w1clue_w1common`, `cos_w1clue_w1obscure`
-- `cos_w1clue_w2avg`, `cos_w1clue_w2common`, `cos_w1clue_w2obscure`
-- `cos_w1clue_sent1`
-- `cos_sent1_w1avg`, `cos_sent1_w1common`, `cos_sent1_w1obscure`
-- `cos_sent1_w2avg`, `cos_sent1_w2common`, `cos_sent1_w2obscure`
+**Context-Informed Meaning (6):** Cosine similarities involving
+`word1_clue_context`:
+- `cos_w1clue_w1all`, `cos_w1clue_w1common`, `cos_w1clue_w1obscure`
+- `cos_w1clue_w2all`, `cos_w1clue_w2common`, `cos_w1clue_w2obscure`
 
 **Relationship (21):**
 - 19 boolean columns for two-hop WordNet relationship types (e.g.,

@@ -61,8 +61,9 @@ directory layout.
 ## Tech Stack
 
 - **Python 3.10+** (Conda base environment)
-- **Embedding model:** `oskar-h/cale-modernbert-base` via `sentence-transformers`
-  (backup: `BAAI/bge-base-en-v1.5`)
+- **Embedding model:** `gabrielloiseau/CALE-MBERT-en` (CALE, 1024-dim) via
+  `sentence-transformers`. Uses `<t></t>` delimiters around target words.
+  (backup: `BAAI/bge-base-en-v1.5`, 768-dim)
 - **Key libraries:** scikit-learn, pandas, numpy, nltk (WordNet), matplotlib,
   seaborn, sentence-transformers, torch
 - **Compute:** GPU steps run on UM Great Lakes cluster or Google Colab (T4 GPU).

@@ -9,19 +9,25 @@ the original decision log. Decisions 7–12 were made during pipeline planning.
 
 ## Decision 1: Embedding Model
 
-**Choice:** `oskar-h/cale-modernbert-base` (CALE = Concept-Aligned Embeddings)
+**Choice:** `gabrielloiseau/CALE-MBERT-en` (CALE = Concept-Aligned Embeddings,
+ModernBERT-based, English, 1024-dim)
 
-**Backup:** `BAAI/bge-base-en-v1.5`
+**Backup:** `BAAI/bge-base-en-v1.5` (768-dim)
 
 **Rationale:** CALE is specifically designed to handle multiple senses of a
 word, which is at the heart of our research question about semantic
 misdirection. Cryptic crossword clues exploit polysemy — the model should be
-sensitive to sense distinctions.
+sensitive to sense distinctions. CALE's `<t></t>` delimiter mechanism produces
+genuinely distinct embeddings for a target word in context vs. the full
+sentence, while standard sentence-transformer models do not achieve meaningful
+differentiation. See `notebooks/00_model_comparison.ipynb` for evidence.
 
-**Note:** Hans's earlier work used `all-mpnet-base-v2` (768-dim). The CALE
-model also produces 768-dim embeddings (ModernBERT-base). All embedding
-generation code must be updated to use the CALE model. The indicator_clustering
-component uses `BAAI/bge-m3` (1024-dim) for a different purpose.
+**Note:** The design doc originally specified `oskar-h/cale-modernbert-base`,
+which does not exist on HuggingFace. The correct identifier is
+`gabrielloiseau/CALE-MBERT-en`. The embedding dimension is 1024, not 768 as
+originally assumed. Hans's earlier work used `all-mpnet-base-v2` (768-dim).
+The indicator_clustering component uses `BAAI/bge-m3` (1024-dim) for a
+different purpose.
 
 ---
 
@@ -196,3 +202,37 @@ is well within computational and storage constraints. Embedding everything
 preserves the option for any downstream analysis without re-running the GPU
 step, avoids the need to justify a sampling decision, and eliminates the
 risk that a subsample misses important patterns.
+
+---
+
+## Decision 13: Drop Sentence1 Embedding
+
+**Choice:** Remove the Sentence1 embedding (full clue sentence without
+target-word focus) from the pipeline. Retain only Word1_clue_context as the
+context-informed embedding.
+
+**Rationale:** With CALE's delimiter mechanism, Word1_clue_context
+(definition word embedded within the clue using `<t></t>`) directly captures
+the contextual shift caused by the clue's surface reading. The full sentence
+embedding without delimiters behaves like an ungrounded representation and
+does not add distinct information. Removing it simplifies the pipeline from
+8 to 7 embedding types and from 28 to 21 pairwise cosine similarities
+(15 context-free + 6 context-informed), reducing the total feature count
+from 53 to 46 (21 meaning + 21 relationship + 4 surface).
+
+---
+
+## Decision 14: Allsense-Average Replaces Bare-Word Average
+
+**Choice:** Replace Word1_average and Word2_average (bare-word embeddings
+with no context) with allsense-average embeddings: for each word, embed it
+in each of its WordNet synset contexts using `<t></t>` delimiters, then
+average the resulting embeddings.
+
+**Rationale:** CALE's bare-word embeddings (no context, no delimiters) do
+not discriminate well between related and unrelated words. The allsense-
+average approach keeps every input within CALE's training distribution
+(short context sentence with one `<t></t>` pair) while producing a rich,
+sense-grounded "average" representation. Falls back to a single delimited
+word `<t>word</t>` if no WordNet synsets exist (this should not occur given
+the Step 1 WordNet filter).

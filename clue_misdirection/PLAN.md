@@ -74,44 +74,42 @@ the intellectual lineage header and the summary cell at the end.
 
 **Output:**
 - `data/embeddings/` directory containing:
-  - `definition_embeddings.npy` — shape (N_unique_defs, 3, 768): for each
-    unique definition string, three embeddings (average, common, obscure)
+  - `definition_embeddings.npy` — shape (N_unique_defs, 3, 1024): for each
+    unique definition string, three embeddings (allsense_avg, common, obscure)
   - `definition_index.csv` — maps row position in the .npy to the definition
     string
-  - `answer_embeddings.npy` — shape (N_unique_answers, 3, 768): for each
-    unique answer string, three embeddings (average, common, obscure)
+  - `answer_embeddings.npy` — shape (N_unique_answers, 3, 1024): for each
+    unique answer string, three embeddings (allsense_avg, common, obscure)
   - `answer_index.csv` — maps row position in the .npy to the answer string
-  - `clue_context_embeddings.npy` — shape (N_rows, 2, 768): per-row
-    embeddings for word1_clue_context and sentence1
+  - `clue_context_embeddings.npy` — shape (N_rows, 1024): per-row embedding
+    for word1_clue_context
   - `clue_context_index.csv` — maps row position to clue_id (aligned with
     `clues_filtered.csv` row order)
 
-**Embedding types (8 per clue row):**
+**Embedding types (7 per clue row):**
 
 | # | Name | Source | Deduplication | How constructed |
 |---|------|--------|---------------|-----------------|
-| 1 | word1_average | Definition | Per unique definition | Single-word/phrase embedding, no context |
-| 2 | word1_clue_context | Definition in clue | Per row (unique clue text) | Definition embedded within the `surface` sentence |
-| 3 | word1_common | Definition | Per unique definition | Definition in most-common WordNet synset context |
-| 4 | word1_obscure | Definition | Per unique definition | Definition in least-common WordNet synset context |
-| 5 | sentence1 | Full clue | Per row (unique clue text) | Embedding of the entire `surface` sentence |
-| 6 | word2_average | Answer | Per unique answer | Single-word/phrase embedding, no context |
-| 7 | word2_common | Answer | Per unique answer | Answer in most-common WordNet synset context |
-| 8 | word2_obscure | Answer | Per unique answer | Answer in least-common WordNet synset context |
+| 1 | word1_allsense | Definition | Per unique definition | Embed definition in each WordNet synset context with `<t></t>`, average all |
+| 2 | word1_clue_context | Definition in clue | Per row (unique clue text) | Definition embedded within the `surface` sentence using `<t></t>` delimiters |
+| 3 | word1_common | Definition | Per unique definition | Definition in most-common WordNet synset context with `<t></t>` |
+| 4 | word1_obscure | Definition | Per unique definition | Definition in least-common WordNet synset context with `<t></t>` |
+| 5 | word2_allsense | Answer | Per unique answer | Embed answer in each WordNet synset context with `<t></t>`, average all |
+| 6 | word2_common | Answer | Per unique answer | Answer in most-common WordNet synset context with `<t></t>` |
+| 7 | word2_obscure | Answer | Per unique answer | Answer in least-common WordNet synset context with `<t></t>` |
 
-**Efficiency:** Puzzle creators reuse (definition, answer) pairs with
-different clue sentences. Embeddings 1, 3, 4, 6, 7, 8 depend only on the
-definition or answer string, not the clue, so they are computed once per
-unique string and looked up via the index files. Only embeddings 2 and 5
-(which depend on the specific clue sentence) must be computed per row.
-This follows the same deduplication pattern used in the indicator_clustering
-`02_embedding_generation.ipynb`.
+**Efficiency:** Embeddings 1, 3, 4, 5, 6, 7 depend only on the definition
+or answer string, not the clue, so they are computed once per unique string
+and looked up via the index files. Only embedding 2 (which depends on the
+specific clue sentence) must be computed per row.
 
 **Requirements:**
-- Model: `oskar-h/cale-modernbert-base` (backup: `BAAI/bge-base-en-v1.5`)
-- For sense-specific embeddings (common/obscure): construct a context sentence
-  from the synset's definition text + usage example. Fall back to the
-  single-word/phrase embedding if the synset lacks a definition or example.
+- Model: `gabrielloiseau/CALE-MBERT-en` (CALE, 1024-dim)
+  (backup: `BAAI/bge-base-en-v1.5`, 768-dim)
+- All embeddings use CALE's `<t></t>` delimiter mechanism. For synset-based
+  embeddings, construct a context sentence from the synset's definition text
+  and usage example, with `<t></t>` around the target word. Fall back to
+  `<t>word</t>` if the word does not appear in the context text.
 - **Runs on GPU** (Great Lakes or Colab T4). Full dataset embedding takes
   under 20 minutes on T4 and produces files under 1 GB total.
 - Embed the entire filtered dataset — no sampling. Subsets can be taken
@@ -135,7 +133,7 @@ Great Lakes batch submission)
 
 ---
 
-## Step 3: Compute All 53 Features
+## Step 3: Compute All 46 Features
 
 **Design doc ref:** Section 6
 
@@ -148,22 +146,23 @@ Great Lakes batch submission)
 
 **Output:**
 - `data/features_all.parquet` — one row per (clue, definition, answer) with
-  all 53 features plus metadata columns
+  all 46 features plus metadata columns
 
 **Requirements:**
 
 Use the index files to look up the correct definition and answer embeddings
 for each (clue, definition, answer) row before computing cosine similarities.
 
-- **Context-Free Meaning (15):** C(6,2) = 15 cosine similarities among
-  embeddings 1, 3, 4, 6, 7, 8 (those not involving clue context)
-- **Context-Informed Meaning (13):** the remaining 13 cosine similarities
-  involving word1_clue_context (embedding 2) or sentence1 (embedding 5)
+- **Context-Free Meaning (15):** C(6,2) = 15 cosine similarities among the
+  6 embeddings not involving clue context (word1_allsense, word1_common,
+  word1_obscure, word2_allsense, word2_common, word2_obscure)
+- **Context-Informed Meaning (6):** 6 cosine similarities between
+  word1_clue_context and each of the 6 context-free embeddings above
 - **Relationship (21):** 19 boolean two-hop WordNet relationship types +
   max path similarity + shared synset count
 - **Surface (4):** edit distance, length ratio, shared first letter (bool),
   character overlap ratio
-- Verify: 15 + 13 + 21 + 4 = 53 total
+- Verify: 15 + 6 + 21 + 4 = 46 total
 - `assert not df.isnull().any().any()` — every feature must be a valid number
 - For relationship features: pairs with no 2-hop connection get False for all
   19 booleans, 0.0 for path similarity, 0 for shared synset count
@@ -172,7 +171,7 @@ for each (clue, definition, answer) row before computing cosine similarities.
 - Hans's *Hans_Supervised_Learning.ipynb* and
   *Hans_Supervised_Learning_Models.ipynb* — contain feature computation for
   a smaller 10-feature set. The cosine similarity and WordNet relationship
-  code can be adapted but needs substantial expansion to the full 53-feature
+  code can be adapted but needs substantial expansion to the full 46-feature
   spec.
 
 **Notebook:** `03_feature_engineering.ipynb`
