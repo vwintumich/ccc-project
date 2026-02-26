@@ -236,3 +236,58 @@ average approach keeps every input within CALE's training distribution
 sense-grounded "average" representation. Falls back to a single delimited
 word `<t>word</t>` if no WordNet synsets exist (this should not occur given
 the Step 1 WordNet filter).
+
+---
+
+## Decision 15: Phrase Construction Priority Cascade
+
+**Choice:** When constructing CALE context phrases from WordNet synsets, use
+this priority order: (1) usage example if the target word appears exactly once,
+(2) synset definition text if the target word appears exactly once, (3) fallback
+`<t>word</t>: definition_text` if the word has zero occurrences in the
+definition, (4) mark as unresolvable and exclude if none of the above apply.
+
+**Rationale:** CALE's `<t></t>` delimiter mechanism requires exactly one
+delimiter pair, and works best when the target word appears only once in the
+input. Usage examples are preferred over definition text because they are
+natural sentences — closer to the kind of text CALE was trained on — while
+WordNet definitions are often sentence fragments. The fallback prepends the
+delimited word before the definition, keeping the input within CALE's expected
+format. Unresolvable cases (0.1% of phrases) are excluded rather than using
+bare `<t>word</t>` with no context, which would be outside CALE's training
+distribution.
+
+---
+
+## Decision 16: Drop Rows Where Definition Appears Multiple Times in Surface
+
+**Choice:** Drop clue rows where the definition string appears 2+ times in the
+`surface` text (1,079 rows, 0.45%). Combined with 108 rows lost to fully
+unresolvable words, total rows dropped: 1,186 (0.49%), leaving 240,211 rows.
+
+**Rationale:** The `insert_cale_delimiters` function wraps only the first
+occurrence of the definition in the surface with `<t></t>`. If the definition
+appears a second time, CALE sees the target word both inside and outside
+delimiters, which is ambiguous — it may not focus on the correct instance.
+Dropping these rows is preferable to engineering a complex fix for 0.45% of
+the data.
+
+---
+
+## Decision 17: Separate WordNet-Ready Strings from Original Strings
+
+**Choice:** Create `definition_wn` and `answer_wn` columns for WordNet lookup,
+preserving the original `definition` and `answer` columns for surface text
+matching. The `_wn` versions apply: (1) lowercasing, (2) space-to-underscore
+conversion for multi-word WordNet entries (e.g., "ice cream" → "ice_cream",
+"a little" → "a_little"), and (3) leading article stripping only when the full
+phrase has no synsets (e.g., "a shade" → "shade").
+
+**Rationale:** Step 1 used article stripping during WordNet filtering but stored
+the original definition text. The original text is needed for clue-context
+embedding (matching the definition within the `surface` text). The `_wn`
+versions handle the mismatch while also improving multi-word lookup — Step 1
+did not use underscore conversion, so phrases like "a little" were
+article-stripped to "little" instead of correctly mapped to the WordNet entry
+"a_little". The priority order (try as-is, try underscores, then try article
+stripping) preserves the most information possible.

@@ -102,6 +102,75 @@ Embedding Generation *Not yet started.*
 
 See `notebooks/00_model_comparison.ipynb` for full evidence.
 
+### Step 2 (continued): Phrase Construction
+*Completed.* Notebook: `notebooks/02_embedding_generation.ipynb` (cells 0–21, CPU portion)
+
+**Phrase construction approach and path distribution:**
+CALE requires exactly one `<t></t>` pair per input and works best when the
+target word appears only once in the text. For each unique definition or answer,
+we looked up all WordNet synsets and constructed a context phrase for each synset
+using a priority cascade: (1) the synset's usage example, if the target word
+appears exactly once — preferred because natural sentences match CALE's training
+data, used for ~22% of phrases; (2) the synset's definition text, if the target
+word appears exactly once — used for ~3% of phrases; (3) a fallback format
+`<t>word</t>: definition_text`, used when the word has zero occurrences in the
+definition — ~75% of phrases. Each path requires the target word to appear
+exactly once in the chosen text before wrapping with `<t></t>`. The fallback is
+safe because the word only appears inside the delimiters.
+
+**Unresolvable phrases:**
+An "unresolvable phrase" is a specific (word, synset) combination where the
+target word appears 2+ times in *both* the usage example and the definition
+text, making it impossible to construct a phrase with exactly one occurrence of
+the target. For example, the definition of `admiral.n.01` is "the supreme
+commander of a fleet; ranks above a vice admiral and below a fleet admiral" —
+"admiral" appears 3 times, so we cannot safely place a single `<t></t>` pair
+around just one occurrence. In total, 234 phrases out of ~227K (0.1%) were
+unresolvable and removed from the phrase files.
+
+Most words that had unresolvable phrases still had other synsets that worked
+fine. For example, "admiral" has 2 synsets; only 1 was unresolvable, so the
+allsense average for "admiral" uses 1 synset instead of 2. Only 12 words had
+*all* synsets unresolvable (mostly proper nouns: america, armenia, germany,
+carolina, labrador, suez, sesame, betel, cain, tut). These words cannot be
+embedded at all, affecting 108 rows in the clue dataset.
+
+**Duplicate definitions in surface text:**
+1,079 rows (0.45%) had the definition string appearing 2+ times in the clue
+surface text (e.g., definition="letter", surface="Foreign letter coming in is
+the French letter"). Since `insert_cale_delimiters` wraps only the first
+occurrence, the second occurrence remains undelimited — CALE would see the
+target word both inside and outside `<t></t>`, which is ambiguous and may cause
+the model to attend to the wrong instance. These rows were dropped rather than
+engineering a complex fix for less than half a percent of the data.
+
+**Total cleanup:** 1,186 rows dropped (0.49%), leaving 240,211 rows for
+embedding.
+
+**Article stripping and multi-word WordNet entries:**
+Step 1's data cleaning used article stripping during WordNet lookup ("a shade"
+→ "shade") but stored the original definition in `clues_filtered.csv`. Step 2
+creates `definition_wn` and `answer_wn` columns that mirror this heuristic with
+an improvement: before stripping the article, we first try replacing spaces with
+underscores (e.g., "a little" → "a_little"), since WordNet uses underscores for
+multi-word entries. This recovered entries like "a_little", "a_priori",
+"a_cappella" that would have been incorrectly stripped to "little", "priori",
+"cappella" under the Step 1 approach. The original `definition` and `answer`
+columns are preserved for surface text matching (finding the definition within
+the `surface` string).
+
+**Sense variation tracking:**
+Approximately 35% of unique definitions and 46% of unique answers have only 1
+usable WordNet synset. For these words, the allsense, common, and obscure
+embeddings will be identical (all derived from the same single synset). The
+phrase files include a `num_usable_synsets` column, and `clue_context_phrases.csv`
+includes `def_num_usable_synsets` and `ans_num_usable_synsets` columns so
+downstream notebooks can identify and stratify by sense variation. This is
+especially relevant for the retrieval analysis (Step 4), where single-synset
+words have no sense-based variation to exploit, and may affect classifier
+feature importance (Steps 6–8) for features that compare common vs. obscure
+embeddings.
+
 ### Step 3: Feature Engineering
 *Not yet started.*
 
