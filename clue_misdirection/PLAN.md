@@ -195,7 +195,7 @@ pairs in Steps 5 and 7 (see Decision 18).
 
 **Output:**
 - `outputs/retrieval_results_unique_pairs.csv` — primary retrieval stats
-  over unique (definition, answer) pairs (5 def × 3 answer = 15 cells)
+  over unique (definition, answer) pairs (4 def × 3 answer = 12 cells)
 - `outputs/retrieval_results_all_rows.csv` — supplementary retrieval stats
   over all (clue, definition, answer) rows using Average condition only
 - `outputs/figures/retrieval_bar_chart.png` — grouped bar chart, median rank
@@ -208,7 +208,7 @@ pairs in Steps 5 and 7 (see Decision 18).
 - Report over **unique (definition, answer) pairs**, not all clue rows
 - For context-informed conditions with multiple clues per pair: take median
   rank across clues for that pair, then compute summary stats over unique pairs
-- Definition-side conditions: Average, Common, Obscure, Clue Context, Full Clue
+- Definition-side conditions: Average, Common, Obscure, Clue Context
 - Answer-side conditions: Average, Common, Obscure
 - Metrics per cell: Top-1, Top-5, Top-10, Top-50, Top-100 hit rates;
   mean rank; median rank; mean cosine similarity
@@ -228,7 +228,7 @@ pairs in Steps 5 and 7 (see Decision 18).
 **Existing work to draw from:**
 - Hans's *Hans_Supervised_Learning.ipynb* — contains preliminary retrieval
   results (Table 1 in design doc) using all-mpnet-base-v2 with 3 conditions.
-  Needs re-running with CALE embeddings, the full 5×3 matrix, and the
+  Needs re-running with CALE embeddings, the full 4×3 matrix, and the
   unique-pairs reporting unit.
 
 **Known pitfalls (from NB 03 experience):**

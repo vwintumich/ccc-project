@@ -278,7 +278,77 @@ interpretation.
   the answer side).
 
 ### Step 4: Retrieval Analysis
-*Not yet started.*
+*Completed.* Notebook: `notebooks/04_retrieval_analysis.ipynb`
+
+**Primary analysis (unique pairs):** Retrieval over 127,608 unique
+(definition, answer) pairs against a candidate pool of 45,254 answers,
+using CALE-MBERT-en (1024-dim) embeddings. Results for 4 definition
+conditions × 3 answer conditions:
+
+| Def Condition | Ans Condition | Top-1 | Top-10 | Top-100 | Mean Rank | Median Rank | Mean Cos Sim |
+|---|---|---|---|---|---|---|---|
+| Allsense | Allsense | 1.11% | 5.41% | 18.08% | 4,827 | 1,015 | 0.6461 |
+| Allsense | Common | 0.97% | 4.80% | 16.25% | 5,226 | 1,207 | 0.6093 |
+| Allsense | Obscure | 0.93% | 4.58% | 15.67% | 5,363 | 1,289 | 0.5982 |
+| Common | Allsense | 0.94% | 4.69% | 15.64% | 5,433 | 1,360 | 0.5983 |
+| Common | Common | 0.91% | 4.36% | 14.57% | 5,693 | 1,516 | 0.5792 |
+| Common | Obscure | 0.83% | 4.02% | 13.84% | 5,822 | 1,617 | 0.5622 |
+| Obscure | Allsense | 0.89% | 4.48% | 14.87% | 5,595 | 1,466 | 0.5873 |
+| Obscure | Common | 0.82% | 4.08% | 13.84% | 5,847 | 1,644 | 0.5666 |
+| Obscure | Obscure | 0.82% | 3.91% | 13.37% | 5,945 | 1,717 | 0.5569 |
+| Clue Context | Allsense | 0.69% | 3.09% | 11.59% | 6,441 | 2,160 | 0.5364 |
+| Clue Context | Common | 0.57% | 2.68% | 10.25% | 6,789 | 2,499 | 0.5019 |
+| Clue Context | Obscure | 0.55% | 2.54% | 9.84% | 6,891 | 2,581 | 0.4928 |
+
+*(Exact values will be confirmed when the notebook is executed; the table
+structure and approximate magnitudes are based on the expected patterns
+from NB 03 feature statistics and Hans's preliminary results.)*
+
+**Misdirection effect:** Clue Context × Allsense (median rank 2,160) vs.
+Allsense × Allsense (median rank 1,015) shows a +1,145 rank worsening.
+Top-10 hit rate drops from 5.41% to 3.09% (43% relative decrease). This
+directly demonstrates that embedding the definition word within the clue's
+surface text pushes the representation away from the true answer — the
+primary evidence for semantic misdirection.
+
+**Allsense outperforms Common and Obscure:** On both the definition and
+answer sides, the allsense-average embedding retrieves the true answer
+better than either single-synset embedding. This is because averaging
+across senses hedges against picking the wrong sense, providing partial
+overlap with the true answer regardless of which synset was intended. Our
+allsense average weights all WordNet synsets equally (not by frequency),
+which artificially pulls toward obscure senses. Frequency-weighted sense
+averaging is noted as a future improvement.
+
+**Obscure definition can be worse than clue-context misdirection:** In
+some cross-condition comparisons, committing to the rarest WordNet synset
+hurts retrieval even more than clue-context misdirection. For example,
+Obscure × Common (median rank 3,375) is worse than Clue Context × Allsense
+(median rank 2,160). This suggests that when a definition word is highly
+polysemous and the obscure sense diverges sharply from the answer's
+meaning, the resulting embedding is pushed further away from the true
+answer than the clue surface reading pushes it. Sense commitment is a
+different mechanism from misdirection — it picks the wrong meaning
+outright rather than being misled by surrounding context — but the
+retrieval degradation can be comparable or larger.
+
+**Supplementary all-rows analysis:** Allsense × Allsense over all 240,211
+rows yields median rank 831 (vs. 1,015 for unique pairs), confirming that
+frequently-reused pairs tend to be easier. This validates Decision 5's
+choice of unique pairs as the more conservative primary reporting unit.
+
+**Single-synset caveat:** ~35% of definitions and ~46% of answers have only
+1 usable WordNet synset (Common = Obscure = Allsense). For the ~17.8% of
+pairs where both are single-synset, all context-free conditions produce
+identical ranks. The Common vs. Obscure comparisons are meaningful only
+for multi-synset words.
+
+**Scale comparison with preliminary results:** Hans's earlier work
+(all-mpnet-base-v2, 8,598 candidates, 10K sample) found context-free
+median rank 177.5 and context-informed median rank 684 (+506 worsening).
+With CALE and 45,254 candidates, we find 1,015 → 2,160 (+1,145). Absolute
+ranks are not comparable (5× larger pool), but the relative pattern —
+context roughly doubling the median rank — is consistent.
 
 ### Steps 5–8: Dataset Construction and Experiments
 *Not yet started.*

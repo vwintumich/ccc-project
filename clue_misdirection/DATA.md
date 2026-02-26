@@ -194,7 +194,7 @@ involve clue context. Named as `cos_{emb_a}_{emb_b}`, e.g.:
 
 | File | Description |
 |------|-------------|
-| `outputs/retrieval_results_unique_pairs.csv` | Primary 5×3 retrieval analysis over unique (definition, answer) pairs |
+| `outputs/retrieval_results_unique_pairs.csv` | Primary 4×3 retrieval analysis over unique (definition, answer) pairs |
 | `outputs/retrieval_results_all_rows.csv` | Supplementary retrieval analysis over all (clue, definition, answer) rows |
 | `outputs/results_easy.csv` | Metrics for Exp 1A and 1B |
 | `outputs/results_harder.csv` | Metrics for Exp 2A and 2B |
