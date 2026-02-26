@@ -121,7 +121,7 @@ new to NLP and may not know why a particular step matters. For example:
 - Bad: `# Filter to WordNet entries`
 - Good: `# Filter to rows where both definition and answer have at least
   one WordNet synset. We need WordNet coverage to construct sense-specific
-  embeddings (common vs. obscure) in Step 2, and to compute the 21
+  embeddings (common vs. obscure) in Step 2, and to compute the 22
   relationship features in Step 3.`
 
 ### General Standards
@@ -139,6 +139,15 @@ new to NLP and may not know why a particular step matters. For example:
   definition–answer pair (or by definition word for stricter leakage prevention).
   Same fold assignments across all experiments.
 - **Figures:** Save all figures to `outputs/figures/` as PNG (300 dpi).
+- **`keep_default_na=False`:** Always use `keep_default_na=False` when
+  loading any CSV that contains `word`, `definition_wn`, or `answer_wn`
+  columns. The word "nan" (meaning grandmother) is a valid crossword
+  definition and answer; without this flag, pandas silently converts it
+  to `NaN`.
+- **Clue-context embedding lookups:** When looking up clue-context
+  embeddings, use `clue_context_phrases.csv` with a composite key
+  (`clue_id`, `definition_wn`) rather than `clue_context_index.csv`
+  alone, because `clue_id` is non-unique for double-definition clues.
 
 ### Notebook Version Control
 

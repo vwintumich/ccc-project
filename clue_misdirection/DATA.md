@@ -142,9 +142,9 @@ columns.
 
 | File | Description |
 |------|-------------|
-| `data/features_all.parquet` | All 46 features + metadata for every clue row |
+| `data/features_all.parquet` | All 47 features + metadata for every clue row |
 
-**Feature columns (46 total):**
+**Feature columns (47 total):**
 
 **Context-Free Meaning (15):** Cosine similarities among embeddings that don't
 involve clue context. Named as `cos_{emb_a}_{emb_b}`, e.g.:
@@ -159,21 +159,23 @@ involve clue context. Named as `cos_{emb_a}_{emb_b}`, e.g.:
 - `cos_w1clue_w1all`, `cos_w1clue_w1common`, `cos_w1clue_w1obscure`
 - `cos_w1clue_w2all`, `cos_w1clue_w2common`, `cos_w1clue_w2obscure`
 
-**Relationship (21):**
-- 19 boolean columns for two-hop WordNet relationship types (e.g.,
-  `rel_synonym`, `rel_hyponym`, `rel_hypernym`, `rel_hyponym_of_hypernym`, etc.)
-- `rel_max_path_similarity` (float, default 0.0)
-- `rel_shared_synset_count` (int, default 0)
+**Relationship (22):**
+- 20 boolean columns for two-hop WordNet relationship types (the originally
+  planned 19 plus `hypernym_of_hyponym`; e.g., `wn_rel_synonym`,
+  `wn_rel_hyponym`, `wn_rel_hypernym`, `wn_rel_hyponym_of_hypernym`, etc.)
+- `wn_max_path_sim` (float, default 0.0)
+- `wn_shared_synset_count` (int, default 0)
 
 **Surface (4):**
-- `surf_edit_distance` (int)
-- `surf_length_ratio` (float)
-- `surf_shared_first_letter` (bool/int)
-- `surf_char_overlap_ratio` (float)
+- `surface_edit_distance` (int)
+- `surface_length_ratio` (float)
+- `surface_shared_first_letter` (int, 0/1)
+- `surface_char_overlap_ratio` (float)
 
-**Metadata columns (not features):**
-- `clue_id`, `clue`, `surface`, `definition`, `answer`, `def_answer_pair_id`
-- `definition_wn`, `answer_wn` (WordNet-ready lookup keys from Step 2)
+**Metadata columns (13, not features):**
+- `clue_id`, `clue`, `surface`, `surface_normalized`, `definition`, `answer`,
+  `definition_wn`, `answer_wn`, `def_answer_pair_id`, `answer_format`,
+  `num_definitions`
 - `def_num_usable_synsets`, `ans_num_usable_synsets` (for downstream
   stratification by polysemy level — see Decision 19)
 
@@ -181,8 +183,8 @@ involve clue context. Named as `cos_{emb_a}_{emb_b}`, e.g.:
 
 | File | Description |
 |------|-------------|
-| `data/dataset_easy.parquet` | Balanced 1:1, all 46 features, label column |
-| `data/dataset_harder.parquet` | Balanced 1:1, 31 features (no context-free meaning), label column |
+| `data/dataset_easy.parquet` | Balanced 1:1, all 47 features, label column |
+| `data/dataset_harder.parquet` | Balanced 1:1, 32 features (no context-free meaning), label column |
 
 **Additional columns:**
 - `label` — 1 = real pair, 0 = distractor
@@ -224,7 +226,7 @@ involve clue context. Named as `cos_{emb_a}_{emb_b}`, e.g.:
     │
     ├────────────────────┐
     ▼                    ▼
-[Step 3: 46 Features]   [Step 4: Retrieval Analysis]
+[Step 3: 47 Features]   [Step 4: Retrieval Analysis]
     │                        │
     ▼                        ▼
 data/features_all.parquet    outputs/retrieval_results_*.csv

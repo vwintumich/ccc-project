@@ -133,7 +133,7 @@ Great Lakes batch submission)
 
 ---
 
-## Step 3: Compute All 46 Features
+## Step 3: Compute All 47 Features
 
 **Design doc ref:** Section 6
 
@@ -146,7 +146,7 @@ Great Lakes batch submission)
 
 **Output:**
 - `data/features_all.parquet` — one row per (clue, definition, answer) with
-  all 46 features plus metadata columns
+  all 47 features plus metadata columns
 
 **Requirements:**
 
@@ -158,20 +158,20 @@ for each (clue, definition, answer) row before computing cosine similarities.
   word1_obscure, word2_allsense, word2_common, word2_obscure)
 - **Context-Informed Meaning (6):** 6 cosine similarities between
   word1_clue_context and each of the 6 context-free embeddings above
-- **Relationship (21):** 19 boolean two-hop WordNet relationship types +
+- **Relationship (22):** 20 boolean two-hop WordNet relationship types +
   max path similarity + shared synset count
 - **Surface (4):** edit distance, length ratio, shared first letter (bool),
   character overlap ratio
-- Verify: 15 + 6 + 21 + 4 = 46 total
+- Verify: 15 + 6 + 22 + 4 = 47 total
 - `assert not df.isnull().any().any()` — every feature must be a valid number
 - For relationship features: pairs with no 2-hop connection get False for all
-  19 booleans, 0.0 for path similarity, 0 for shared synset count
+  20 booleans, 0.0 for path similarity, 0 for shared synset count
 
 **Existing work to draw from:**
 - Hans's *Hans_Supervised_Learning.ipynb* and
   *Hans_Supervised_Learning_Models.ipynb* — contain feature computation for
   a smaller 10-feature set. The cosine similarity and WordNet relationship
-  code can be adapted but needs substantial expansion to the full 46-feature
+  code can be adapted but needs substantial expansion to the full 47-feature
   spec.
 
 **Note:** The feature computation logic in this notebook is self-contained for
@@ -231,6 +231,17 @@ pairs in Steps 5 and 7 (see Decision 18).
   Needs re-running with CALE embeddings, the full 5×3 matrix, and the
   unique-pairs reporting unit.
 
+**Known pitfalls (from NB 03 experience):**
+- Use `keep_default_na=False` on ALL index CSV loads (the word "nan" is a
+  valid crossword entry).
+- Use `clue_context_phrases.csv` with a composite key (`clue_id`,
+  `definition_wn`) for clue-context embedding lookups — NOT
+  `clue_context_index.csv` alone, because `clue_id` is non-unique for
+  double-definition clues.
+- ~35% of definitions are single-synset. The Common vs Obscure retrieval
+  comparison is uninformative for these pairs. Consider reporting what
+  percentage of unique pairs this affects.
+
 **Notebook:** `04_retrieval_analysis.ipynb`
 
 ---
@@ -243,18 +254,18 @@ pairs in Steps 5 and 7 (see Decision 18).
 - `data/features_all.parquet`
 
 **Output:**
-- `data/dataset_easy.parquet` — balanced 1:1 (real + distractor), all 46 features
+- `data/dataset_easy.parquet` — balanced 1:1 (real + distractor), all 47 features
 
 **Requirements:**
 - For each real (clue, definition, answer) row, generate one distractor by
   keeping the same (clue, definition) and substituting a randomly sampled
   answer word (excluding the true answer)
-- Compute all 46 features for distractor rows (this requires generating or
+- Compute all 47 features for distractor rows (this requires generating or
   looking up embeddings for the new answer — use the existing answer embedding
   index from Step 2, since distractor answers are drawn from the pool of
   known answers). Import feature computation functions from
   `scripts/feature_utils.py` (extracted from NB 03 logic) to compute the
-  same 46 features for distractor pairs.
+  same 47 features for distractor pairs.
 - Label column: 1 = real, 0 = distractor
 - Random seed for reproducibility
 
@@ -275,9 +286,9 @@ pairs in Steps 5 and 7 (see Decision 18).
 - Saved best hyperparameters per model
 
 **Requirements:**
-- **Exp 1A:** All 46 features. Three models: KNN, Logistic Regression,
+- **Exp 1A:** All 47 features. Three models: KNN, Logistic Regression,
   Random Forest.
-- **Exp 1B:** Remove 6 context-informed features → 40 features.
+- **Exp 1B:** Remove 6 context-informed features → 41 features.
 - 5-fold GroupKFold CV (grouped by def–answer pair). Same folds across conditions.
 - StandardScaler on train folds only for KNN and LogReg.
 - GridSearchCV (or RandomizedSearchCV for RF) within each fold.
@@ -287,7 +298,7 @@ pairs in Steps 5 and 7 (see Decision 18).
 **Existing work to draw from:**
 - Hans's *Hans_Supervised_Learning_Models.ipynb* — contains KNN, LogReg, RF
   code with 5-fold stratified CV and a 10-feature set. Adapt the CV and
-  modeling scaffolding; expand to 46 features and GroupKFold.
+  modeling scaffolding; expand to 47 features and GroupKFold.
 
 **Notebook:** `06_experiments_easy.ipynb`
 
@@ -306,7 +317,7 @@ pairs in Steps 5 and 7 (see Decision 18).
 
 **Output:**
 - `data/dataset_harder.parquet` — balanced 1:1, **without** the 15 context-free
-  meaning features (31 features for Exp 2A, 25 for Exp 2B)
+  meaning features (32 features for Exp 2A, 26 for Exp 2B)
 
 **Requirements:**
 - For each real definition, rank all candidate answer words by cosine
@@ -321,7 +332,7 @@ pairs in Steps 5 and 7 (see Decision 18).
   pairs.
 - Remove the 15 context-free meaning features (they are artifacts of
   the cosine-similarity-based construction)
-- Remaining: 6 context-informed + 21 relationship + 4 surface = 31 features
+- Remaining: 6 context-informed + 22 relationship + 4 surface = 32 features
 
 **Notebook:** `05_dataset_construction.ipynb` (same notebook as Step 5)
 
@@ -339,8 +350,8 @@ pairs in Steps 5 and 7 (see Decision 18).
 - Saved best hyperparameters per model
 
 **Requirements:**
-- **Exp 2A:** 31 features (context-informed meaning + relationship + surface).
-- **Exp 2B:** 25 features (relationship + surface only — remove context-informed).
+- **Exp 2A:** 32 features (context-informed meaning + relationship + surface).
+- **Exp 2B:** 26 features (relationship + surface only — remove context-informed).
 - Same 3 models, same CV scheme, same scaling approach. ROC AUC for LogReg.
 - **This is where the misdirection hypothesis is tested via classification.**
   If 2A < 2B, context hurts → supports misdirection. If 2A > 2B, context helps.

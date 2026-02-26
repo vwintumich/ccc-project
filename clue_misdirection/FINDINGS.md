@@ -220,8 +220,8 @@ cos = 1.0 by construction. Single-synset words (where common = obscure)
 account for 9,700 definitions (35.4%) and 20,626 answers (45.6%). These are
 tracked via `num_usable_synsets` for downstream stratification.
 
-### Step 3: Feature Engineering (In Progress)
-*Partially complete.* Notebook: `notebooks/03_feature_engineering.ipynb`
+### Step 3: Feature Engineering
+*Completed.* Notebook: `notebooks/03_feature_engineering.ipynb`
 
 **Merge fix for double-definition clues:** The initial merge between
 `clues_filtered.csv` (241,397 rows) and `clue_context_phrases.csv` (240,211
@@ -231,22 +231,51 @@ set to 254,262 rows. Double-definition clues (e.g., "Ruined a sculpture"
 rows per `clue_id` in both files. Fixed by merging on the composite key
 (`clue_id`, `definition`) to produce the correct 240,211 rows.
 
-**Cosine similarity features (21 of 46 complete):**
-- 15 context-free meaning features: cross-word similarities (definition ×
-  answer sense combinations) average 0.50–0.65; within-word similarities
-  average 0.69–0.92, as expected (different senses of the same word are
-  more similar than definition–answer pairs).
-- 6 context-informed meaning features: `cos_w1clue_w2all` (0.54 mean) is
-  lower than `cos_w1all_w2all` (0.65 mean), consistent with the misdirection
+**Feature counts:** 47 total features (1 more than the 46 originally planned):
+- Context-free cosine (15): cross-word similarities mean 0.50–0.65;
+  within-word similarities mean 0.69–0.92.
+- Context-informed cosine (6): `cos_w1clue_w2all` (0.54 mean) is lower
+  than `cos_w1all_w2all` (0.65 mean), consistent with the misdirection
   hypothesis — clue context pulls the definition embedding away from the
   answer.
-- No NaN values. All 240,211 rows have valid features.
+- WordNet relationship (22, not the originally planned 21): 20 boolean
+  two-hop types (the originally planned 19 plus `hypernym_of_hyponym` from
+  Table 3) + `wn_max_path_sim` + `wn_shared_synset_count`. 50.3% of rows
+  (44.1% of 127,608 unique pairs) have at least one WordNet connection —
+  higher than the preliminary 31% estimate, likely because our broader
+  dataset includes multi-word entries with richer WordNet coverage.
+  Hyponym_of_hypernym (21.5%), hyponym (18.8%), and synonym (15.0%) are
+  the most common relationship types.
+- Surface (4): edit distance (mean 6.7), length ratio (mean 0.73),
+  shared first letter (7.4%), character overlap ratio (mean 0.23).
 
-**Single-synset words:** Words with only one usable WordNet synset have
-identical allsense/common/obscure embeddings. Within-word cosine features
-are exactly 1.0 for these rows. `def_num_usable_synsets` and
-`ans_num_usable_synsets` are carried as metadata for downstream
-stratification (see Decision 19).
+**Single-synset words:** Within-word cosine features are exactly 1.0 for
+words with only one usable WordNet synset (~35% of definitions, ~46% of
+answers). `def_num_usable_synsets` and `ans_num_usable_synsets` are carried
+as metadata for downstream stratification (Decision 19).
+
+**Multicollinearity:** Top correlated feature pairs are among cosine
+features involving the same sense types (e.g., `cos_w1obscure_w2all` ×
+`cos_w1obscure_w2obscure`, r = 0.87). Expected and acceptable for
+tree-based models; may affect logistic regression coefficient
+interpretation.
+
+**Output:** `data/features_all.parquet` — 240,211 rows × 60 columns
+(47 features + 13 metadata).
+
+**Pitfalls identified for Step 4 (Retrieval Analysis):**
+- `clue_context_index.csv` has non-unique `clue_id`s (double-definition
+  clues). NB 04 must use `clue_context_phrases.csv` or a composite key
+  for clue-context embedding lookups.
+- All CSV loads involving `definition_wn`, `answer_wn`, or `word` columns
+  MUST use `keep_default_na=False` to prevent the word "nan" from being
+  silently converted to NaN.
+- ~35% of definitions have only 1 usable synset, making the Common vs
+  Obscure retrieval comparison uninformative for those pairs. NB 04
+  should report what percentage of pairs this affects.
+- The 4×3 retrieval matrix requires 12 separate retrieval runs with
+  different candidate answer matrices (Allsense, Common, Obscure on
+  the answer side).
 
 ### Step 4: Retrieval Analysis
 *Not yet started.*
