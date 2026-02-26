@@ -226,3 +226,22 @@ Each notebook must begin with a cell that checks for required input files and pr
 - Final submission must include: all notebooks, report PDF, data (or URLs/sample if >25MB), README
 - README must describe how to run notebooks in order and what environment each requires
 - Do not edit or add files to the repository after the project deadline — this triggers a late penalty
+
+### Notebook Version Control
+
+- **`nbstripout` is installed as a git filter.** All committed notebooks have outputs
+  and execution counts stripped automatically. Do not manually clear outputs before
+  committing — the filter handles it.
+- **`nbdime` is configured for diffs and merges.** Notebook diffs are rendered in a
+  human-readable format rather than raw JSON.
+- **Rendered HTML snapshots live in `docs/`.** After a clean `Restart & Run All`,
+  render to HTML and commit. Naming convention: `NN_name_YYYY-MM-DD_HHMM.html`.
+  See `docs/README.md` for the notebook index.
+- **Coordinate edits in Slack.** Post before editing a notebook you don't own.
+
+**Setup (one-time, every team member):**
+```bash
+pip install nbstripout nbdime
+nbstripout --install
+nbdime config-git --enable
+```
