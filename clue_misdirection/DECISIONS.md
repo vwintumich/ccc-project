@@ -103,7 +103,7 @@ most similar answer words.
 
 **Consequence:** The 15 context-free meaning features are artifacts of dataset
 construction and **must be removed** from the harder dataset models. This
-leaves 38 features (Exp 2A) or 25 features (Exp 2B).
+leaves 31 features (Exp 2A) or 25 features (Exp 2B).
 
 **Rationale:** Random distractors make the task trivially easy (high accuracy
 but uninformative). Cosine-similarity-based distractors force the model to
@@ -291,3 +291,38 @@ did not use underscore conversion, so phrases like "a little" were
 article-stripped to "little" instead of correctly mapped to the WordNet entry
 "a_little". The priority order (try as-is, try underscores, then try article
 stripping) preserves the most information possible.
+
+---
+
+## Decision 18: Feature Computation Reuse Strategy
+
+**Choice:** NB 03 keeps all feature computation logic inline (visible to
+graders). For NB 05 (easy dataset) and NB 05/07 (harder dataset), extract
+the same logic into a shared utility module (`scripts/feature_utils.py`)
+to avoid duplication. NB 03 serves as the reference implementation.
+
+**Rationale:** This is a graded academic project. Having the full feature
+engineering logic visible in NB 03 is important for readability and grading.
+Later notebooks that need to compute the same features for distractor pairs
+will import from the utility module to avoid duplicating code across NB 05
+and NB 07. If a bug is found, update both NB 03 and the utility module.
+
+---
+
+## Decision 19: Single-Synset Word Handling
+
+**Choice:** No special handling in feature engineering. For words with only
+one usable WordNet synset, allsense = common = obscure embeddings are
+identical, so within-word cosine features (e.g., `cos_w1common_w1obscure`)
+will be exactly 1.0 and cross-word features involving different sense types
+will be identical. Compute all 46 features uniformly for all rows. Carry
+`def_num_usable_synsets` and `ans_num_usable_synsets` as metadata columns in
+`features_all.parquet` so downstream notebooks (retrieval analysis, classifier
+interpretation) can stratify or filter as needed.
+
+**Rationale:** Treating single-synset words differently would add complexity
+to feature engineering for no modeling benefit — the models will simply learn
+that these features are uninformative for those rows. The synset count metadata
+enables downstream analysis (e.g., stratifying retrieval results by polysemy
+level, noting which features only matter for multi-synset words) without
+burdening this notebook.

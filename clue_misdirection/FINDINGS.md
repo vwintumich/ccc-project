@@ -220,8 +220,33 @@ cos = 1.0 by construction. Single-synset words (where common = obscure)
 account for 9,700 definitions (35.4%) and 20,626 answers (45.6%). These are
 tracked via `num_usable_synsets` for downstream stratification.
 
-### Step 3: Feature Engineering
-*Not yet started.*
+### Step 3: Feature Engineering (In Progress)
+*Partially complete.* Notebook: `notebooks/03_feature_engineering.ipynb`
+
+**Merge fix for double-definition clues:** The initial merge between
+`clues_filtered.csv` (241,397 rows) and `clue_context_phrases.csv` (240,211
+rows) on `clue_id` alone caused a many-to-many join, inflating the working
+set to 254,262 rows. Double-definition clues (e.g., "Ruined a sculpture"
+→ clue_id 150 with definitions "Ruined" and "a sculpture") have multiple
+rows per `clue_id` in both files. Fixed by merging on the composite key
+(`clue_id`, `definition`) to produce the correct 240,211 rows.
+
+**Cosine similarity features (21 of 46 complete):**
+- 15 context-free meaning features: cross-word similarities (definition ×
+  answer sense combinations) average 0.50–0.65; within-word similarities
+  average 0.69–0.92, as expected (different senses of the same word are
+  more similar than definition–answer pairs).
+- 6 context-informed meaning features: `cos_w1clue_w2all` (0.54 mean) is
+  lower than `cos_w1all_w2all` (0.65 mean), consistent with the misdirection
+  hypothesis — clue context pulls the definition embedding away from the
+  answer.
+- No NaN values. All 240,211 rows have valid features.
+
+**Single-synset words:** Words with only one usable WordNet synset have
+identical allsense/common/obscure embeddings. Within-word cosine features
+are exactly 1.0 for these rows. `def_num_usable_synsets` and
+`ans_num_usable_synsets` are carried as metadata for downstream
+stratification (see Decision 19).
 
 ### Step 4: Retrieval Analysis
 *Not yet started.*

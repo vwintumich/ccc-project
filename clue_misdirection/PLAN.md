@@ -174,6 +174,11 @@ for each (clue, definition, answer) row before computing cosine similarities.
   code can be adapted but needs substantial expansion to the full 46-feature
   spec.
 
+**Note:** The feature computation logic in this notebook is self-contained for
+grading readability. The same logic is later extracted into
+`scripts/feature_utils.py` for reuse when computing features for distractor
+pairs in Steps 5 and 7 (see Decision 18).
+
 **Notebook:** `03_feature_engineering.ipynb`
 
 ---
@@ -238,16 +243,18 @@ for each (clue, definition, answer) row before computing cosine similarities.
 - `data/features_all.parquet`
 
 **Output:**
-- `data/dataset_easy.parquet` — balanced 1:1 (real + distractor), all 53 features
+- `data/dataset_easy.parquet` — balanced 1:1 (real + distractor), all 46 features
 
 **Requirements:**
 - For each real (clue, definition, answer) row, generate one distractor by
   keeping the same (clue, definition) and substituting a randomly sampled
   answer word (excluding the true answer)
-- Compute all 53 features for distractor rows (this requires generating or
+- Compute all 46 features for distractor rows (this requires generating or
   looking up embeddings for the new answer — use the existing answer embedding
   index from Step 2, since distractor answers are drawn from the pool of
-  known answers)
+  known answers). Import feature computation functions from
+  `scripts/feature_utils.py` (extracted from NB 03 logic) to compute the
+  same 46 features for distractor pairs.
 - Label column: 1 = real, 0 = distractor
 - Random seed for reproducibility
 
@@ -268,9 +275,9 @@ for each (clue, definition, answer) row before computing cosine similarities.
 - Saved best hyperparameters per model
 
 **Requirements:**
-- **Exp 1A:** All 53 features. Three models: KNN, Logistic Regression,
+- **Exp 1A:** All 46 features. Three models: KNN, Logistic Regression,
   Random Forest.
-- **Exp 1B:** Remove 13 context-informed features → 40 features.
+- **Exp 1B:** Remove 6 context-informed features → 40 features.
 - 5-fold GroupKFold CV (grouped by def–answer pair). Same folds across conditions.
 - StandardScaler on train folds only for KNN and LogReg.
 - GridSearchCV (or RandomizedSearchCV for RF) within each fold.
@@ -280,7 +287,7 @@ for each (clue, definition, answer) row before computing cosine similarities.
 **Existing work to draw from:**
 - Hans's *Hans_Supervised_Learning_Models.ipynb* — contains KNN, LogReg, RF
   code with 5-fold stratified CV and a 10-feature set. Adapt the CV and
-  modeling scaffolding; expand to 53 features and GroupKFold.
+  modeling scaffolding; expand to 46 features and GroupKFold.
 
 **Notebook:** `06_experiments_easy.ipynb`
 
@@ -299,7 +306,7 @@ for each (clue, definition, answer) row before computing cosine similarities.
 
 **Output:**
 - `data/dataset_harder.parquet` — balanced 1:1, **without** the 15 context-free
-  meaning features (38 features for Exp 2A, 25 for Exp 2B)
+  meaning features (31 features for Exp 2A, 25 for Exp 2B)
 
 **Requirements:**
 - For each real definition, rank all candidate answer words by cosine
@@ -309,9 +316,12 @@ for each (clue, definition, answer) row before computing cosine similarities.
   true answer)
 - Real pairs average ~0.4 cosine similarity; distractors should be in a
   similar range
+- Import feature computation functions from `scripts/feature_utils.py`
+  (extracted from NB 03 logic) to compute the same features for distractor
+  pairs.
 - Remove the 15 context-free meaning features (they are artifacts of
   the cosine-similarity-based construction)
-- Remaining: 13 context-informed + 21 relationship + 4 surface = 38 features
+- Remaining: 6 context-informed + 21 relationship + 4 surface = 31 features
 
 **Notebook:** `05_dataset_construction.ipynb` (same notebook as Step 5)
 
@@ -329,7 +339,7 @@ for each (clue, definition, answer) row before computing cosine similarities.
 - Saved best hyperparameters per model
 
 **Requirements:**
-- **Exp 2A:** 38 features (context-informed meaning + relationship + surface).
+- **Exp 2A:** 31 features (context-informed meaning + relationship + surface).
 - **Exp 2B:** 25 features (relationship + surface only — remove context-informed).
 - Same 3 models, same CV scheme, same scaling approach. ROC AUC for LogReg.
 - **This is where the misdirection hypothesis is tested via classification.**

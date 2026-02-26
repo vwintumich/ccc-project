@@ -142,7 +142,7 @@ columns.
 
 | File | Description |
 |------|-------------|
-| `data/features_all.parquet` | All 53 features + metadata for every clue row |
+| `data/features_all.parquet` | All 46 features + metadata for every clue row |
 
 **Feature columns (46 total):**
 
@@ -173,13 +173,16 @@ involve clue context. Named as `cos_{emb_a}_{emb_b}`, e.g.:
 
 **Metadata columns (not features):**
 - `clue_id`, `clue`, `surface`, `definition`, `answer`, `def_answer_pair_id`
+- `definition_wn`, `answer_wn` (WordNet-ready lookup keys from Step 2)
+- `def_num_usable_synsets`, `ans_num_usable_synsets` (for downstream
+  stratification by polysemy level — see Decision 19)
 
 ### Steps 5 & 7 Output
 
 | File | Description |
 |------|-------------|
-| `data/dataset_easy.parquet` | Balanced 1:1, all 53 features, label column |
-| `data/dataset_harder.parquet` | Balanced 1:1, 38 features (no context-free meaning), label column |
+| `data/dataset_easy.parquet` | Balanced 1:1, all 46 features, label column |
+| `data/dataset_harder.parquet` | Balanced 1:1, 31 features (no context-free meaning), label column |
 
 **Additional columns:**
 - `label` — 1 = real pair, 0 = distractor
@@ -221,7 +224,7 @@ involve clue context. Named as `cos_{emb_a}_{emb_b}`, e.g.:
     │
     ├────────────────────┐
     ▼                    ▼
-[Step 3: 53 Features]   [Step 4: Retrieval Analysis]
+[Step 3: 46 Features]   [Step 4: Retrieval Analysis]
     │                        │
     ▼                        ▼
 data/features_all.parquet    outputs/retrieval_results_*.csv

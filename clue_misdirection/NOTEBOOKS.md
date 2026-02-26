@@ -86,12 +86,12 @@ for NLP newcomers, summary cell at the end).
 |----------|------------|--------|----------------------|
 | `01_data_cleaning.ipynb` | 1 | ❌ Not yet created | Victoria's *Pairs in WordNet* notebook (primary base: surface extraction, double-definition parsing, answer format validation) + Victoria/Sahana's *Data Cleaning for Clues* (secondary check for additional filters) + Hans's *EDA* notebook (whole-word verification, data quality checks) + indicator_clustering *01_data_cleaning* (notebook structure reference) |
 | `02_embedding_generation.ipynb` | 2 | ✅ Complete | Step 2 embedding generation. 27 cells. CPU portion: loads clues_filtered.csv, derives WordNet-ready strings, constructs CALE context phrases with `<t></t>` delimiters for all 7 embedding types, saves phrase CSVs. GPU portion: `scripts/embed_phrases.py` encodes all phrases with CALE-MBERT-en on Great Lakes V100, produces 6 output files (~1.8 GB). Verification cells validate shapes, consistency, and semantic sense of embeddings. |
-| `03_feature_engineering.ipynb` | 3 | ❌ Not yet created | Hans's *Supervised Learning* and *Models* notebooks (cosine similarity computation, WordNet relationship features, surface features — expand from 10 to 53 features) |
+| `03_feature_engineering.ipynb` | 3 | 🔧 In progress | Partially complete — cosine similarity features (21) computed and verified. Remaining: 21 WordNet relationship features, 4 surface features, final assembly and save. Merge bug with double-definition clues fixed (uses `clue_id` + `definition` composite key). 240,211 rows confirmed. Sources: Hans's *Supervised Learning* and *Models* notebooks (cosine similarity computation, WordNet relationship features, surface features — expanding from 10 to 46 features). |
 | `04_retrieval_analysis.ipynb` | 4 | ❌ Not yet created | Hans's *Supervised Learning* notebook (retrieval evaluation logic — extend to 5×3 matrix, add unique-pairs reporting, add all-rows supplementary analysis) |
 | `05_dataset_construction.ipynb` | 5, 7 | ❌ Not yet created | Hans's *Models* notebook (random distractor generation for easy dataset) + Hans's *Negative Strategies* notebook (reference for distractor strategies — our harder dataset uses cosine-similarity-based selection per Decision 6) |
-| `06_experiments_easy.ipynb` | 6 | ❌ Not yet created | Hans's *Models* notebook (KNN/LogReg/RF training, CV setup, evaluation reporting — adapt to GroupKFold and 53 features) |
+| `06_experiments_easy.ipynb` | 6 | ❌ Not yet created | Hans's *Models* notebook (KNN/LogReg/RF training, CV setup, evaluation reporting — adapt to GroupKFold and 46 features) |
 | `07_experiments_harder.ipynb` | 8 | ❌ Not yet created | Hans's *Models* notebook (same modeling scaffolding as Step 6) |
-| `08_results_and_evaluation.ipynb` | 9, 10, 11, 12 | ❌ Not yet created | Hans's *Models* notebook (feature importance, ablation, sensitivity, failure analysis — expand to 53-feature groups and harder dataset) |
+| `08_results_and_evaluation.ipynb` | 9, 10, 11, 12 | ❌ Not yet created | Hans's *Models* notebook (feature importance, ablation, sensitivity, failure analysis — expand to 46-feature groups and harder dataset) |
 
 ---
 
@@ -105,6 +105,7 @@ environment-specific for notebook cells.
 | `scripts/embed_phrases.py` | GPU embedding script for Step 2. Loads phrase CSVs, encodes with CALE, saves `.npy` + index CSVs. Supports `--sample N` for testing and `--batch-size`. |
 | `scripts/embed_phrases.sh` | SLURM submission script for Great Lakes (1 V100, 32 GB, 1 hr). |
 | `scripts/embed_phrases_test.sh` | SLURM test script (`--sample 100`, 10 min). |
+| `scripts/feature_utils.py` | ❌ Not yet created. Shared feature computation functions for NB 05 and NB 07 (Decision 18). Extracted from NB 03 logic. Computes cosine similarity, WordNet relationship, and surface features for arbitrary (definition, answer) pairs. Created when NB 05 is built. |
 
 ---
 
