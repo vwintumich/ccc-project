@@ -107,28 +107,36 @@ See PLAN.md Step 2 for the full rationale.
 All embeddings are generated using `gabrielloiseau/CALE-MBERT-en` with
 `<t></t>` delimiters around the target word in a context sentence.
 
-| File | Shape | Description |
-|------|-------|-------------|
-| `data/embeddings/definition_embeddings.npy` | (N_def, 3, 1024) | Per unique definition: [allsense_avg, common, obscure] |
-| `data/embeddings/definition_index.csv` | (N_def, 2) | Maps row position → definition string |
-| `data/embeddings/answer_embeddings.npy` | (N_ans, 3, 1024) | Per unique answer: [allsense_avg, common, obscure] |
-| `data/embeddings/answer_index.csv` | (N_ans, 2) | Maps row position → answer string |
-| `data/embeddings/clue_context_embeddings.npy` | (N_rows, 1024) | Per clue row: word1_clue_context |
-| `data/embeddings/clue_context_index.csv` | (N_rows, 2) | Maps row position → clue_id |
+| File | Shape | Size | Description |
+|------|-------|------|-------------|
+| `data/embeddings/definition_embeddings.npy` | (27,385, 3, 1024) | 321 MB | Per unique definition: [allsense_avg, common, obscure] |
+| `data/embeddings/definition_index.csv` | (27,385, 2) | <1 MB | Maps row position → definition string |
+| `data/embeddings/answer_embeddings.npy` | (45,254, 3, 1024) | 530 MB | Per unique answer: [allsense_avg, common, obscure] |
+| `data/embeddings/answer_index.csv` | (45,254, 2) | <1 MB | Maps row position → answer string |
+| `data/embeddings/clue_context_embeddings.npy` | (240,211, 1024) | 938 MB | Per clue row: word1_clue_context |
+| `data/embeddings/clue_context_index.csv` | (240,211, 2) | ~5 MB | Maps row position → clue_id |
 
-- **N_def** = number of unique definition strings in `clues_filtered.csv`
-- **N_ans** = number of unique answer strings in `clues_filtered.csv`
+- **N_def** = 27,385 unique definition strings (after Step 2 cleanup)
+- **N_ans** = 45,254 unique answer strings (after Step 2 cleanup)
 - **N_rows** = 240,211 (rows from `clues_filtered.csv` after Step 2 cleanup — see `clue_context_phrases.csv`)
 - **D** = 1024 (CALE-MBERT-en embedding dimension)
+- **Total storage:** ~1.8 GB for all embedding files
 - The three slots in definition/answer embeddings correspond to:
   `[0]` = allsense_avg (averaged across all WordNet synset contexts),
   `[1]` = common synset, `[2]` = obscure synset
 
 **Mapping embeddings to clue rows:** For a given row in `clues_filtered.csv`,
-look up its definition string in `definition_index.csv` to get the row
-position in `definition_embeddings.npy`, and similarly for the answer. The
-clue-context embeddings are aligned directly with `clues_filtered.csv` row
-order.
+look up its `definition_wn` string in `definition_index.csv` to get the row
+position in `definition_embeddings.npy`, and similarly for `answer_wn`. The
+clue-context embeddings are aligned directly with `clue_context_index.csv`
+row order.
+
+**Important: `keep_default_na=False` when loading index CSVs.** The word "nan"
+(meaning grandmother) is a valid crossword definition and answer. Without this
+flag, pandas interprets the string "nan" as `NaN`, silently corrupting the
+index lookup. Always use `pd.read_csv(..., keep_default_na=False)` when
+reading any CSV that contains the `word`, `definition_wn`, or `answer_wn`
+columns.
 
 ### Step 3 Output
 

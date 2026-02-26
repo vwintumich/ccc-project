@@ -55,9 +55,9 @@ See `CONTEXT.md` for Hans's full writeup.
   contributing to the total of 241,397 rows.
 ```
 
-### Step 2: Embedding Generation — 
+### Step 2: Embedding Generation —
 Model Investigation Phase *Completed.* Notebook: `notebooks/00_model_comparison.ipynb`
-Embedding Generation *Not yet started.*
+Embedding Generation *Completed.*
 
 - **Model identifier corrected:** The design doc specified
   `oskar-h/cale-modernbert-base`, which does not exist on HuggingFace. The
@@ -170,6 +170,55 @@ especially relevant for the retrieval analysis (Step 4), where single-synset
 words have no sense-based variation to exploit, and may affect classifier
 feature importance (Steps 6–8) for features that compare common vs. obscure
 embeddings.
+
+### Step 2 (continued): Embedding Generation
+*Completed.* Script: `scripts/embed_phrases.py`, submitted via `scripts/embed_phrases.sh`
+
+The GPU embedding step loaded the three phrase CSV files produced by the CPU
+portion of `02_embedding_generation.ipynb` and encoded all phrases using
+`gabrielloiseau/CALE-MBERT-en` (1024-dim) via sentence-transformers. The job
+ran on a Tesla V100-PCIE-16GB on the UM Great Lakes cluster in 18.5 minutes
+(PyTorch 2.5.1+cu121, sentence-transformers 5.2.2).
+
+**Output files and sizes:**
+
+- `definition_embeddings.npy`: shape (27,385, 3, 1024) — 321 MB. Each row
+  contains three 1024-dim embeddings for a unique definition: allsense average
+  (mean across all WordNet synset contexts), most-common synset, and
+  least-common synset.
+- `answer_embeddings.npy`: shape (45,254, 3, 1024) — 530 MB. Same three-slot
+  structure for unique answers.
+- `clue_context_embeddings.npy`: shape (240,211, 1024) — 938 MB. One embedding
+  per clue row: the definition word embedded within the clue surface using
+  CALE's `<t></t>` delimiters.
+- Total storage: ~1.8 GB for all embedding files.
+- Three corresponding index CSVs (`definition_index.csv`, `answer_index.csv`,
+  `clue_context_index.csv`) map row positions to `definition_wn` strings,
+  `answer_wn` strings, and `clue_id` values respectively.
+
+**Verification results:**
+
+All shapes match their index files and the embedding dimension is 1024
+throughout. No NaN values or all-zero rows were found in any array. Every
+`definition_wn` and `answer_wn` referenced by rows in `clue_context_phrases.csv`
+has a corresponding entry in the index files, confirming no embeddings are
+missing for downstream feature computation. Spot-checks using cosine similarity
+confirm CALE produces semantically meaningful embeddings: related words (e.g.,
+plant/flower) have higher similarity than unrelated words (e.g., plant/letter),
+and polysemous words like "plant" show distinct common vs. obscure embeddings.
+
+**Embedding space statistics:**
+
+Allsense embeddings have slightly lower mean L2 norms (~27.3–27.7) than
+single-synset embeddings (~29.4), which is expected since averaging across
+multiple sense vectors tends to reduce the norm. Mean cosine similarity between
+common and obscure senses across definitions is 0.81 (std 0.20), and across
+answers is 0.84 (std 0.19). This confirms CALE differentiates between sense
+extremes, with substantial variation across words — some highly polysemous words
+have cos(common, obscure) as low as 0.1, while single-synset words have
+cos = 1.0 by construction. Single-synset words (where common = obscure)
+account for 9,700 definitions (35.4%) and 20,626 answers (45.6%). These are
+tracked via `num_usable_synsets` for downstream stratification.
 
 ### Step 3: Feature Engineering
 *Not yet started.*
