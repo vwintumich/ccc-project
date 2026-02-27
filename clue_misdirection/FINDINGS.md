@@ -354,17 +354,8 @@ context roughly doubling the median rank — is consistent.
 *Completed.* Notebook: `notebooks/05_dataset_construction.ipynb`
 
 **Easy dataset (Step 5):** 480,422 rows (240,211 real + 240,211 random
-distractors), all 47 features. Random distractors produce large feature
-gaps, validating the pipeline baseline:
-
-| Feature | Real (mean) | Distractor (mean) | Gap |
-|---|---|---|---|
-| `cos_w1all_w2all` | 0.648 | 0.430 | +0.218 |
-| `wn_max_path_sim` | 0.435 | 0.148 | +0.288 |
-| `wn_shared_synset_count` | 0.208 | 0.001 | +0.207 (near zero for distractors) |
-
-Classifiers should achieve high accuracy on this baseline — random
-distractors are trivially distinguishable on almost every feature.
+distractors), all 47 features. Random distractors are trivially separable:
+`cos_w1all_w2all` gap +0.218 (real 0.648 vs distractor 0.430).
 
 **Harder dataset (Step 7):** 480,422 rows (240,211 real + 240,211 top-100
 cosine-similarity distractors per Decision 6), 32 features (15 context-free
@@ -393,7 +384,60 @@ Cosine features are computed per row because the clue-context embedding
 varies across clues.
 
 ### Steps 6 & 8: Classification Experiments
-*Not yet started.*
+*In progress.* Notebooks: `notebooks/06_experiments_easy.ipynb`,
+`notebooks/07_experiments_harder.ipynb`. Full-data run executing on Great
+Lakes (`scripts/run_experiments.py`).
+
+**Sample results (20K-row subsample, SAMPLE_MODE=True):**
+
+Easy dataset (Step 6):
+
+| Experiment | Model | Accuracy | F1 | ROC AUC |
+|---|---|---|---|---|
+| Exp 1A (47 features) | KNN | 0.857 ± 0.004 | 0.846 ± 0.006 | 0.926 ± 0.001 |
+| Exp 1A | Logistic Regression | 0.868 ± 0.004 | 0.864 ± 0.006 | 0.939 ± 0.003 |
+| Exp 1A | Random Forest | 0.872 ± 0.004 | 0.869 ± 0.006 | 0.940 ± 0.001 |
+| Exp 1B (41 features) | KNN | 0.855 ± 0.002 | 0.846 ± 0.005 | 0.923 ± 0.001 |
+| Exp 1B | Logistic Regression | 0.866 ± 0.003 | 0.862 ± 0.005 | 0.937 ± 0.003 |
+| Exp 1B | Random Forest | 0.868 ± 0.004 | 0.865 ± 0.005 | 0.937 ± 0.003 |
+
+**Δ Easy:** +0.2 to +0.4pp across all models. Small as expected — random
+distractors are easily separable regardless of context features. Sanity check
+passes.
+
+Harder dataset (Step 8):
+
+| Experiment | Model | Accuracy | F1 | ROC AUC |
+|---|---|---|---|---|
+| Exp 2A (32 features) | KNN | 0.727 ± 0.004 | 0.711 ± 0.006 | 0.786 ± 0.007 |
+| Exp 2A | Logistic Regression | 0.720 ± 0.008 | 0.705 ± 0.007 | 0.777 ± 0.006 |
+| Exp 2A | Random Forest | 0.745 ± 0.009 | 0.728 ± 0.011 | 0.815 ± 0.008 |
+| Exp 2B (26 features) | KNN | 0.645 ± 0.004 | 0.623 ± 0.005 | 0.699 ± 0.004 |
+| Exp 2B | Logistic Regression | 0.665 ± 0.006 | 0.608 ± 0.007 | 0.711 ± 0.006 |
+| Exp 2B | Random Forest | 0.670 ± 0.005 | 0.598 ± 0.021 | 0.727 ± 0.010 |
+
+**Δ Hard:** +5.5 to +8.2pp across all models. Context features *help*
+classification substantially — the opposite of the retrieval finding (where
+context *hurts*). This is the "either outcome is interesting" scenario from
+design doc Section 8.4. In the multivariate classifier setting, context-
+informed features interact with relationship and surface features to provide
+useful signal, even though they degrade the univariate cosine retrieval.
+
+**Key observations:**
+- Task is genuinely harder: accuracy drops from ~87% (easy) to ~72–74% (2A).
+- Exp 2B recall near chance for RF (49%) — without context features, the
+  model essentially guesses on the positive class.
+- Random Forest is the best-performing model on both datasets.
+- Results are consistent with the Great Lakes test run (20K sample).
+
+**Runtime note:** Full-data runs (480K rows, 5-fold GroupKFold with nested
+GridSearchCV/RandomizedSearchCV) take several hours per experiment. Run on
+Great Lakes standard partition with 16–36 CPU cores. Sample runs (20K rows)
+complete in ~5–8 minutes locally.
+
+*Full-data results will replace the sample results above once the Great
+Lakes run completes.*
 
 ### Steps 9–12: Results, Ablation, Sensitivity, Failure Analysis
-*Not yet started.*
+*Not yet started.* Will be implemented in `notebooks/08_results_and_evaluation.ipynb`
+after full-data results are available.
