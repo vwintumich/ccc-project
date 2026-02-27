@@ -13,6 +13,6 @@ These HTML files are rendered versions of the project notebooks with full output
 | 05_dataset_construction | `05_dataset_construction_2026-02-26_1813.html` | Easy (random) and harder (cosine-similarity) dataset construction |
 | 06_experiments_easy | `06_experiments_easy_sample20K_2026-02-27_0130.html` | Exp 1A/1B on easy dataset (sample 20K — full-data version pending Great Lakes run) |
 | 07_experiments_harder | `07_experiments_harder_sample20K_2026-02-27_0130.html` | Exp 2A/2B on harder dataset (sample 20K — full-data version pending Great Lakes run) |
-| 08_results_and_evaluation | `08_results_and_evaluation_sample20K_2026-02-27.html` | Steps 9–12: summary table, feature importance, ablation, sensitivity, failure analysis (sample 20K — full-data version pending Great Lakes run) |
+| 08_results_and_evaluation | `08_results_and_evaluation_2026-02-27.html` | Steps 9–12: summary table, feature importance, ablation, sensitivity, failure analysis |
 
 See `PLAN.md` for the full 12-step pipeline plan.
