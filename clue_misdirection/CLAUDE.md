@@ -20,7 +20,12 @@ The project has two analyses:
 
 ## Team
 
-Victoria Winters, Hans Li, Nathan Cantwell, Sahana Sundar
+- **Victoria Winters** (CCC Domain Expert): Research questions, project management, embeddings, AI-assisted notebook refactoring and repo management
+- **Hans Li** (Supervised Learning): Clue misdirection, AI prompting support
+- **Nathan Cantwell** (Unsupervised Learning): Indicator clustering, definition clustering comparison
+- **Sahana Sundar** (Evaluation): Evaluation and visualization, supervised/unsupervised support as needed
+- **All:** Data cleaning, report writing, intermittent reporting to faculty advisor
+
 Faculty Advisor: Dr. Kevyn Collins-Thompson (University of Michigan)
 
 ## Repo Structure
