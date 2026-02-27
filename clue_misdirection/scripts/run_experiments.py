@@ -457,13 +457,17 @@ def main():
         description='Run classification experiments 1A/1B/2A/2B.')
     parser.add_argument('--sample', action='store_true',
                         help='Use 20K-row subsample and reduced grids')
+    parser.add_argument('--harder-only', action='store_true',
+                        help='Skip easy dataset (1A/1B), run only harder (2A/2B)')
     args = parser.parse_args()
 
     sample_mode = args.sample
+    harder_only = args.harder_only
     model_configs = build_model_configs(sample_mode)
 
     print(f'[{timestamp()}] === Classification Experiments ===')
     print(f'[{timestamp()}] Sample mode: {sample_mode}')
+    print(f'[{timestamp()}] Harder only: {harder_only}')
     print(f'[{timestamp()}] Random seed: {RANDOM_SEED}')
     print(f'[{timestamp()}] CV folds: {N_FOLDS}')
     print(f'[{timestamp()}] Project root: {PROJECT_ROOT}')
@@ -486,39 +490,42 @@ def main():
     # ==============================================================
     # EASY DATASET — Experiments 1A and 1B (PLAN.md Step 6)
     # ==============================================================
-    print(f'\n\n[{timestamp()}] {"#"*65}')
-    print(f'[{timestamp()}] EASY DATASET (Exp 1A: {len(ALL_FEATURE_COLS)} features, '
-          f'Exp 1B: {len(EXP_1B_COLS)} features)')
-    print(f'[{timestamp()}] {"#"*65}')
+    if not harder_only:
+        print(f'\n\n[{timestamp()}] {"#"*65}')
+        print(f'[{timestamp()}] EASY DATASET (Exp 1A: {len(ALL_FEATURE_COLS)} features, '
+              f'Exp 1B: {len(EXP_1B_COLS)} features)')
+        print(f'[{timestamp()}] {"#"*65}')
 
-    df_easy = load_and_prepare(
-        DATA_DIR / 'dataset_easy.parquet',
-        ALL_FEATURE_COLS,
-        sample_mode,
-    )
+        df_easy = load_and_prepare(
+            DATA_DIR / 'dataset_easy.parquet',
+            ALL_FEATURE_COLS,
+            sample_mode,
+        )
 
-    results_1a, params_1a = run_experiment(
-        df_easy, ALL_FEATURE_COLS, 'Exp_1A', model_configs)
-    results_1b, params_1b = run_experiment(
-        df_easy, EXP_1B_COLS, 'Exp_1B', model_configs)
+        results_1a, params_1a = run_experiment(
+            df_easy, ALL_FEATURE_COLS, 'Exp_1A', model_configs)
+        results_1b, params_1b = run_experiment(
+            df_easy, EXP_1B_COLS, 'Exp_1B', model_configs)
 
-    # Best hyperparameters (fold 0 as representative)
-    print(f'\n[{timestamp()}] Best hyperparameters (fold 0):')
-    for model_name in model_configs:
-        print(f'  {model_name}:')
-        print(f'    Exp 1A: {params_1a[model_name][0]}')
-        print(f'    Exp 1B: {params_1b[model_name][0]}')
+        # Best hyperparameters (fold 0 as representative)
+        print(f'\n[{timestamp()}] Best hyperparameters (fold 0):')
+        for model_name in model_configs:
+            print(f'  {model_name}:')
+            print(f'    Exp 1A: {params_1a[model_name][0]}')
+            print(f'    Exp 1B: {params_1b[model_name][0]}')
 
-    summarize_and_save(
-        [results_1a, results_1b],
-        ['Exp_1A', 'Exp_1B'],
-        model_configs,
-        OUTPUT_DIR / 'results_easy.csv',
-        OUTPUT_DIR / 'results_easy_per_fold.csv',
-    )
+        summarize_and_save(
+            [results_1a, results_1b],
+            ['Exp_1A', 'Exp_1B'],
+            model_configs,
+            OUTPUT_DIR / 'results_easy.csv',
+            OUTPUT_DIR / 'results_easy_per_fold.csv',
+        )
 
-    # Free memory before harder dataset
-    del df_easy
+        # Free memory before harder dataset
+        del df_easy
+    else:
+        print(f'\n[{timestamp()}] Skipping easy dataset (--harder-only)')
 
     # ==============================================================
     # HARDER DATASET — Experiments 2A and 2B (PLAN.md Step 8)
@@ -564,8 +571,9 @@ def main():
           f'({elapsed_total / 60:.1f} min)')
     print(f'[{timestamp()}] {"="*65}')
     print(f'\nOutputs:')
-    print(f'  {OUTPUT_DIR / "results_easy.csv"}')
-    print(f'  {OUTPUT_DIR / "results_easy_per_fold.csv"}')
+    if not harder_only:
+        print(f'  {OUTPUT_DIR / "results_easy.csv"}')
+        print(f'  {OUTPUT_DIR / "results_easy_per_fold.csv"}')
     print(f'  {OUTPUT_DIR / "results_harder.csv"}')
     print(f'  {OUTPUT_DIR / "results_harder_per_fold.csv"}')
 
