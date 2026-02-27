@@ -1,2 +1,3 @@
 data/embeddings/*.csv
 data/embeddings/*.npy
+__pycache__/

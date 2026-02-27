@@ -181,14 +181,14 @@ involve clue context. Named as `cos_{emb_a}_{emb_b}`, e.g.:
 
 ### Steps 5 & 7 Output
 
-| File | Description |
-|------|-------------|
-| `data/dataset_easy.parquet` | Balanced 1:1, all 47 features, label column |
-| `data/dataset_harder.parquet` | Balanced 1:1, 32 features (no context-free meaning), label column |
+| File | Rows | Total Columns | Feature Columns | Description |
+|------|------|---------------|-----------------|-------------|
+| `data/dataset_easy.parquet` | 480,422 | 62 | 47 | Balanced 1:1 (240,211 real + 240,211 random distractors), all 47 features + metadata + label + distractor_source |
+| `data/dataset_harder.parquet` | 480,422 | 47 | 32 | Balanced 1:1 (240,211 real + 240,211 top-100 cosine-similarity distractors), 15 context-free features removed + metadata + label + distractor_source |
 
-**Additional columns:**
+**Additional columns (both datasets):**
 - `label` — 1 = real pair, 0 = distractor
-- `distractor_source` — for distractors: which answer word was substituted
+- `distractor_source` — for distractors: which answer word was substituted; NaN for real pairs
 
 ### Results Output
 

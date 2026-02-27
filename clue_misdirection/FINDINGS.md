@@ -350,7 +350,49 @@ With CALE and 45,254 candidates, we find 1,015 → 2,160 (+1,145). Absolute
 ranks are not comparable (5× larger pool), but the relative pattern —
 context roughly doubling the median rank — is consistent.
 
-### Steps 5–8: Dataset Construction and Experiments
+### Steps 5 & 7: Dataset Construction
+*Completed.* Notebook: `notebooks/05_dataset_construction.ipynb`
+
+**Easy dataset (Step 5):** 480,422 rows (240,211 real + 240,211 random
+distractors), all 47 features. Random distractors produce large feature
+gaps, validating the pipeline baseline:
+
+| Feature | Real (mean) | Distractor (mean) | Gap |
+|---|---|---|---|
+| `cos_w1all_w2all` | 0.648 | 0.430 | +0.218 |
+| `wn_max_path_sim` | 0.435 | 0.148 | +0.288 |
+| `wn_shared_synset_count` | 0.208 | 0.001 | +0.207 (near zero for distractors) |
+
+Classifiers should achieve high accuracy on this baseline — random
+distractors are trivially distinguishable on almost every feature.
+
+**Harder dataset (Step 7):** 480,422 rows (240,211 real + 240,211 top-100
+cosine-similarity distractors per Decision 6), 32 features (15 context-free
+meaning features removed). The harder distractor selection works as intended:
+
+- **Context-informed cosine gap flips negative:** `cos_w1clue_w2all` real
+  0.545 vs distractor 0.615 (gap −0.070). Distractors are now *more* similar
+  to definitions than real answers on this metric. Raw cosine similarity can
+  no longer distinguish real from distractor — classifiers must rely on
+  subtler signals.
+- **WordNet gap halved but persists:** `wn_max_path_sim` gap shrinks from
+  +0.288 (easy) to +0.155 (harder). Harder distractors have real WordNet
+  connections to definitions (they are cosine-similar words that tend to
+  share WordNet neighborhoods), but still fewer than true answer pairs. This
+  remaining gap is what classifiers can exploit.
+- **15 context-free meaning features correctly removed** per Decision 6 —
+  they are artifacts of the cosine-similarity-based distractor selection
+  method. Remaining 32 features: 6 context-informed + 22 relationship +
+  4 surface.
+
+**Feature computation:** Distractor feature computation uses
+`scripts/feature_utils.py` (Decision 18) with deduplication optimization —
+relationship and surface features are computed per unique (definition,
+distractor_answer) pair, then broadcast to all rows sharing that pair.
+Cosine features are computed per row because the clue-context embedding
+varies across clues.
+
+### Steps 6 & 8: Classification Experiments
 *Not yet started.*
 
 ### Steps 9–12: Results, Ablation, Sensitivity, Failure Analysis
