@@ -384,60 +384,83 @@ Cosine features are computed per row because the clue-context embedding
 varies across clues.
 
 ### Steps 6 & 8: Classification Experiments
-*In progress.* Notebooks: `notebooks/06_experiments_easy.ipynb`,
-`notebooks/07_experiments_harder.ipynb`. Full-data run executing on Great
-Lakes (`scripts/run_experiments.py`).
+*Completed.* Notebooks: `notebooks/06_experiments_easy.ipynb`,
+`notebooks/07_experiments_harder.ipynb`. Full-data results from Great
+Lakes (`scripts/run_experiments.py`, 480,422 rows per dataset).
 
-**Sample results (20K-row subsample, SAMPLE_MODE=True):**
-
-Easy dataset (Step 6):
+**Easy dataset (Step 6) — full data:**
 
 | Experiment | Model | Accuracy | F1 | ROC AUC |
 |---|---|---|---|---|
-| Exp 1A (47 features) | KNN | 0.857 ± 0.004 | 0.846 ± 0.006 | 0.926 ± 0.001 |
-| Exp 1A | Logistic Regression | 0.868 ± 0.004 | 0.864 ± 0.006 | 0.939 ± 0.003 |
-| Exp 1A | Random Forest | 0.872 ± 0.004 | 0.869 ± 0.006 | 0.940 ± 0.001 |
-| Exp 1B (41 features) | KNN | 0.855 ± 0.002 | 0.846 ± 0.005 | 0.923 ± 0.001 |
-| Exp 1B | Logistic Regression | 0.866 ± 0.003 | 0.862 ± 0.005 | 0.937 ± 0.003 |
-| Exp 1B | Random Forest | 0.868 ± 0.004 | 0.865 ± 0.005 | 0.937 ± 0.003 |
+| Exp 1A (47 features) | KNN | 0.863 ± 0.001 | 0.856 ± 0.002 | 0.928 ± 0.001 |
+| Exp 1A | Logistic Regression | 0.869 ± 0.002 | 0.865 ± 0.002 | 0.938 ± 0.002 |
+| Exp 1A | Random Forest | 0.877 ± 0.001 | 0.871 ± 0.002 | 0.945 ± 0.001 |
+| Exp 1B (41 features) | KNN | 0.862 ± 0.002 | 0.856 ± 0.003 | 0.932 ± 0.002 |
+| Exp 1B | Logistic Regression | 0.868 ± 0.002 | 0.863 ± 0.002 | 0.937 ± 0.002 |
+| Exp 1B | Random Forest | 0.873 ± 0.001 | 0.864 ± 0.001 | 0.944 ± 0.001 |
 
-**Δ Easy:** +0.2 to +0.4pp across all models. Small as expected — random
-distractors are easily separable regardless of context features. Sanity check
-passes.
+**Δ Easy:** +0.1 to +0.4pp. Tiny as expected — sanity check passes.
 
-Harder dataset (Step 8):
+**Harder dataset (Step 8) — full data:**
 
 | Experiment | Model | Accuracy | F1 | ROC AUC |
 |---|---|---|---|---|
-| Exp 2A (32 features) | KNN | 0.727 ± 0.004 | 0.711 ± 0.006 | 0.786 ± 0.007 |
-| Exp 2A | Logistic Regression | 0.720 ± 0.008 | 0.705 ± 0.007 | 0.777 ± 0.006 |
-| Exp 2A | Random Forest | 0.745 ± 0.009 | 0.728 ± 0.011 | 0.815 ± 0.008 |
-| Exp 2B (26 features) | KNN | 0.645 ± 0.004 | 0.623 ± 0.005 | 0.699 ± 0.004 |
-| Exp 2B | Logistic Regression | 0.665 ± 0.006 | 0.608 ± 0.007 | 0.711 ± 0.006 |
-| Exp 2B | Random Forest | 0.670 ± 0.005 | 0.598 ± 0.021 | 0.727 ± 0.010 |
+| Exp 2A (32 features) | KNN | 0.739 ± 0.001 | 0.724 ± 0.002 | 0.805 ± 0.002 |
+| Exp 2A | Logistic Regression | 0.721 ± 0.002 | 0.704 ± 0.003 | 0.775 ± 0.002 |
+| Exp 2A | Random Forest | 0.757 ± 0.001 | 0.738 ± 0.002 | 0.827 ± 0.002 |
+| Exp 2B (26 features) | KNN | 0.645 ± 0.003 | 0.621 ± 0.003 | 0.689 ± 0.003 |
+| Exp 2B | Logistic Regression | 0.666 ± 0.003 | 0.608 ± 0.005 | 0.710 ± 0.002 |
+| Exp 2B | Random Forest | 0.673 ± 0.003 | 0.627 ± 0.004 | 0.733 ± 0.004 |
 
-**Δ Hard:** +5.5 to +8.2pp across all models. Context features *help*
-classification substantially — the opposite of the retrieval finding (where
-context *hurts*). This is the "either outcome is interesting" scenario from
-design doc Section 8.4. In the multivariate classifier setting, context-
-informed features interact with relationship and surface features to provide
-useful signal, even though they degrade the univariate cosine retrieval.
+**Δ Hard:** +5.5 to +9.4pp. Context features help classification
+substantially across all models. KNN shows the largest delta (+9.4pp),
+followed by RF (+8.4pp) and LogReg (+5.5pp). This is the opposite of
+the retrieval finding (where context hurts), confirming the "either
+outcome is interesting" scenario from design doc Section 8.4.
 
-**Key observations:**
-- Task is genuinely harder: accuracy drops from ~87% (easy) to ~72–74% (2A).
-- Exp 2B recall near chance for RF (49%) — without context features, the
-  model essentially guesses on the positive class.
-- Random Forest is the best-performing model on both datasets.
-- Results are consistent with the Great Lakes test run (20K sample).
+**Classifier vs. retrieval interpretation:** In the univariate retrieval
+setting, clue context degrades the definition embedding's proximity to
+the true answer (misdirection). But in the multivariate classifier,
+context-informed features interact with relationship and surface features
+to create learnable patterns — the way real pairs' embeddings shift in
+context differs from how distractor pairs shift, and the classifier
+exploits this.
 
-**Runtime note:** Full-data runs (480K rows, 5-fold GroupKFold with nested
-GridSearchCV/RandomizedSearchCV) take several hours per experiment. Run on
-Great Lakes standard partition with 16–36 CPU cores. Sample runs (20K rows)
-complete in ~5–8 minutes locally.
+**Group-level ablation (RF, fold 0):**
 
-*Full-data results will replace the sample results above once the Great
-Lakes run completes.*
+| Group Removed | Features Removed | Accuracy | Δ |
+|---|---|---|---|
+| None (baseline) | — | 0.758 | — |
+| Context-Informed | 6 | 0.649 | −10.9pp |
+| Relationship | 22 | 0.661 | −9.8pp |
+| Surface | 4 | 0.748 | −1.0pp |
+
+Context-informed features carry the most predictive weight per feature.
+Relationship features are nearly as important in aggregate. Surface
+features contribute minimally.
+
+**Failure analysis (RF, fold 0, 23,244 misclassified out of 96,085 test):**
+- Semantic near-miss: 57.3% of errors — distractors genuinely close to definition
+- Surface artifact: 50.7% — model misled by string-level coincidences
+- Polysemy confusion: 20.4% — highly polysemous definitions cause embedding noise
+- 84.3% categorized, 15.7% uncategorized, heavy overlap between categories
+
+**Runtime:** Easy experiments (Exp 1A + 1B) took ~6.5 hours on 16 CPU
+cores. Harder experiments (Exp 2A + 2B) took ~4 hours on 36 CPU cores.
+Both ran on Great Lakes standard partition.
 
 ### Steps 9–12: Results, Ablation, Sensitivity, Failure Analysis
-*Not yet started.* Will be implemented in `notebooks/08_results_and_evaluation.ipynb`
-after full-data results are available.
+*Completed.* Notebook: `notebooks/08_results_and_evaluation.ipynb`
+
+See Steps 6 & 8 above for results summary. Additional findings:
+
+**Sensitivity (learning curve):** Test accuracy is flat across training
+set sizes (10%–100% of fold 0 train data), indicating the performance
+ceiling is driven by feature limitations rather than data quantity.
+Train accuracy is ~99% throughout, indicating overfitting typical of
+unrestricted-depth Random Forest.
+
+**Best hyperparameters (RF, full data):** n_estimators=200,
+min_samples_split=2, min_samples_leaf=1, max_features='log2',
+max_depth=None. Changed from sample run (n_estimators=100), confirming
+the value of full-data hyperparameter tuning.
