@@ -4,10 +4,15 @@
 
 ```
 clue_misdirection/notebooks/
-├── 01_data_cleaning.ipynb          # Pipeline notebooks (run in order)
+├── 00_model_comparison.ipynb       # Pipeline notebooks (run in order)
+├── 01_data_cleaning.ipynb
 ├── 02_embedding_generation.ipynb
 ├── 03_feature_engineering.ipynb
-├── ...
+├── 04_retrieval_analysis.ipynb
+├── 05_dataset_construction.ipynb
+├── 06_experiments_easy.ipynb
+├── 07_experiments_harder.ipynb
+├── 08_results_and_evaluation.ipynb
 └── archive/                        # Prior exploratory notebooks (reference only)
     ├── Data_Cleaning_for_Clues_-_Pairs_in_WordNet.ipynb
     ├── Data_Cleaning_for_Clues__1_.ipynb
@@ -61,7 +66,7 @@ These contain the most relevant prior work for our Step 1 (data cleaning).
 Hans's exploratory work using `clues_single_word.csv` and `all-mpnet-base-v2`.
 These notebooks are complete and contain valuable code and findings, but the
 dataset (single-word only), embedding model, and feature set are all being
-replaced in our pipeline per plan v3. Use as reference for code patterns and
+replaced in our pipeline per plan v4. Use as reference for code patterns and
 to verify our new results against his preliminary findings.
 
 | Notebook | Size | Cells | Status | Description | Plan Steps |
@@ -70,8 +75,8 @@ to verify our new results against his preliminary findings.
 | `Hans_Supervised_Learning_EDA_WITH_OUTPUTS.ipynb` | 29 KB | 31 (22 code, 9 markdown) | 📋 Reference | Condensed version of the EDA notebook with different cell organization but same purpose. Has saved cell outputs. Can be ignored if reading the main EDA notebook. | 1 |
 | `Hans_Supervised_Learning.ipynb` | 465 KB | 34 (21 code, 13 markdown) | 🔄 Needs rework | **Main retrieval-based misdirection analysis.** Loads `clues_single_word.csv`, deduplicates to unique (definition, answer) pairs, samples 10,000 pairs, embeds definitions and answers with `all-mpnet-base-v2`, and runs retrieval evaluation (rank true answer among all 8,598 candidates by cosine similarity). Compares context-free vs. context-informed embeddings. Key finding: +512 mean rank degradation with context. Also contains a 3-model comparison (MiniLM, MPNet, BGE-M3) and misdirection-by-wordplay-type analysis. Has saved cell outputs. Code for embedding generation, retrieval evaluation, and cosine similarity computation is reusable with model updates. | 2, 4 |
 | `Hans_Supervised_Learning_Models.ipynb` | 255 KB | 27 (15 code, 12 markdown) | 🔄 Needs rework | **Classification-based misdirection analysis.** Builds a balanced binary dataset (5,000 real + 5,000 random distractor pairs), engineers 10 features (3 embedding, 3 WordNet, 4 surface), trains KNN/LogReg/RF with 5-fold stratified CV, runs ablation (remove one feature at a time), sensitivity analysis (training set size), and failure analysis (3 categories). Key finding: <0.5pp context gap; `wn_path_sim` is the dominant feature. Includes whole-word verification filter. Has saved cell outputs. The CV scaffolding, feature engineering functions, ablation approach, and evaluation reporting can all be adapted for our expanded 47-feature pipeline. | 3, 6, 8, 9, 10, 11, 12 |
-| `Hans_Control_Experiment_Normal_English.ipynb` | 158 KB | 22 (13 code, 9 markdown) | 📋 Reference | Control experiment comparing cryptic crossword misdirection against normal English. Builds (sentence, word, related_word) triples from WordNet hypernym/hyponym pairs found in Brown + Reuters corpora. Uses same 10 features and 3 models. Key finding: in normal English, removing context features *hurts* accuracy (context is useful), while in cryptic crosswords, removing context *helps* (the "sign flip"). Excludes `wn_path_sim` to prevent it from masking context effects. Has saved cell outputs. Not part of plan v3 pipeline, but the sign-flip finding is important background for interpreting our results. | — |
-| `Hans_Negative_Strategies_Experiment.ipynb` | 189 KB | 21 (10 code, 11 markdown) | 📋 Reference | Tests three distractor generation strategies (known answers, clue vocabulary, generic English vocabulary) across both cryptic and normal English datasets. Key finding: misdirection signal (<1pp context gap for cryptic) is robust across all strategies. Has saved cell outputs. Informed the harder dataset design in plan v3 (Decision 6) but uses a different approach — our pipeline uses cosine-similarity-based distractors instead. | 5, 7 |
+| `Hans_Control_Experiment_Normal_English.ipynb` | 158 KB | 22 (13 code, 9 markdown) | 📋 Reference | Control experiment comparing cryptic crossword misdirection against normal English. Builds (sentence, word, related_word) triples from WordNet hypernym/hyponym pairs found in Brown + Reuters corpora. Uses same 10 features and 3 models. Key finding: in normal English, removing context features *hurts* accuracy (context is useful), while in cryptic crosswords, removing context *helps* (the "sign flip"). Excludes `wn_path_sim` to prevent it from masking context effects. Has saved cell outputs. Not part of plan v4 pipeline, but the sign-flip finding is important background for interpreting our results. | — |
+| `Hans_Negative_Strategies_Experiment.ipynb` | 189 KB | 21 (10 code, 11 markdown) | 📋 Reference | Tests three distractor generation strategies (known answers, clue vocabulary, generic English vocabulary) across both cryptic and normal English datasets. Key finding: misdirection signal (<1pp context gap for cryptic) is robust across all strategies. Has saved cell outputs. Informed the harder dataset design in plan v4 (Decision 6) but uses a different approach — our pipeline uses cosine-similarity-based distractors instead. | 5, 7 |
 
 ---
 
@@ -84,7 +89,7 @@ for NLP newcomers, summary cell at the end).
 
 | Notebook | Plan Steps | Status | Sources to Draw From |
 |----------|------------|--------|----------------------|
-| `01_data_cleaning.ipynb` | 1 | ❌ Not yet created | Victoria's *Pairs in WordNet* notebook (primary base: surface extraction, double-definition parsing, answer format validation) + Victoria/Sahana's *Data Cleaning for Clues* (secondary check for additional filters) + Hans's *EDA* notebook (whole-word verification, data quality checks) + indicator_clustering *01_data_cleaning* (notebook structure reference) |
+| `01_data_cleaning.ipynb` | 1 | ✅ Complete | Step 1 data cleaning. Loads `clues_raw.csv` (660,613 rows), applies 7 filter steps (null removal, bracket removal, answer format validation, double-definition parsing, definition-in-surface verification with `\b` word boundaries, definition-at-edge check, WordNet coverage). Article stripping during WordNet lookup recovers additional matches. Multi-definition expansion (~5% of clues). Output: `data/clues_filtered.csv` (241,397 rows, 129,429 unique definition–answer pairs). |
 | `02_embedding_generation.ipynb` | 2 | ✅ Complete | Step 2 embedding generation. 27 cells. CPU portion: loads clues_filtered.csv, derives WordNet-ready strings, constructs CALE context phrases with `<t></t>` delimiters for all 7 embedding types, saves phrase CSVs. GPU portion: `scripts/embed_phrases.py` encodes all phrases with CALE-MBERT-en on Great Lakes V100, produces 6 output files (~1.8 GB). Verification cells validate shapes, consistency, and semantic sense of embeddings. |
 | `03_feature_engineering.ipynb` | 3 | ✅ Complete | 47 features (15 context-free cosine + 6 context-informed cosine + 22 WordNet relationship + 4 surface) computed for 240,211 rows. Output: `data/features_all.parquet`. Includes merge fix for double-definition clues (composite key on `clue_id` + `definition`) and standalone feature functions designed for later extraction to `scripts/feature_utils.py` (Decision 18). |
 | `04_retrieval_analysis.ipynb` | 4 | ✅ Complete | Step 4 retrieval analysis. 24 cells. Loads CALE embeddings (definition, answer, clue-context) + `clues_filtered.csv` + `clue_context_phrases.csv`. Runs 4×3 retrieval matrix (4 definition conditions × 3 answer conditions) over 127,608 unique pairs against 45,254 candidate answers. Clue Context uses median-rank aggregation across clue rows per pair (Decision 5). Outputs: `outputs/retrieval_results_unique_pairs.csv`, `outputs/retrieval_results_all_rows.csv`, `outputs/figures/retrieval_bar_chart.png`, `outputs/figures/retrieval_heatmap.png`. Key finding: misdirection confirmed — Clue Context roughly doubles median rank vs. Allsense context-free (2,160 vs. 1,015). |
@@ -117,23 +122,19 @@ environment-specific for notebook cells.
 
 | File | Description |
 |------|-------------|
-| `CONTEXT.md` | Hans's comprehensive writeup of his prior work (18 KB). Covers all four of his work streams (retrieval, classification, control experiment, negative strategies), feature reference, key findings, and open questions. **Read for background context**, but plan v3 supersedes his experimental design. |
-| `supervised_learning_plan_v3.docx` | The authoritative design document. All `.md` files and pipeline notebooks are derived from it. |
+| `CONTEXT.md` | Hans's comprehensive writeup of his prior work (18 KB). Covers all four of his work streams (retrieval, classification, control experiment, negative strategies), feature reference, key findings, and open questions. **Read for background context**, but plan v4 supersedes his experimental design. |
+| `supervised_learning_plan_v4.docx` | The authoritative design document (supersedes v3, which was the original plan before embedding model and feature engineering findings prompted revisions). All `.md` files and pipeline notebooks are derived from it. |
 
 ---
 
 ## Recommended Reading Order
 
-When starting work, read these in order to build context:
+When starting work or reviewing the project, read these in order:
 
-1. `PLAN.md` — understand the 12-step pipeline plan
+1. `PLAN.md` — the 12-step pipeline plan
 2. `CLAUDE.md` — coding standards, terminology, and project structure
-3. `CONTEXT.md` — Hans's framing and prior findings
-4. Victoria's *Data Cleaning for Clues - Pairs in WordNet.ipynb* — the primary
-   base for Step 1
-5. Indicator_clustering `02_embedding_generation.ipynb` — the deduplication
-   pattern for Step 2
-6. Hans's *Hans_Supervised_Learning.ipynb* — the main existing retrieval and
-   embedding codebase
-7. Hans's *Hans_Supervised_Learning_Models.ipynb* — the classification
-   scaffolding for Steps 6–8
+3. `FINDINGS.md` — running log of results and observations from each step
+4. `CONTEXT.md` — Hans's framing and prior findings (background context)
+5. Pipeline notebooks in order: `00_model_comparison` through
+   `08_results_and_evaluation` — the complete implemented pipeline
+6. `DECISIONS.md` — locked-in design choices and their rationale

@@ -39,7 +39,7 @@ ccc-project/
 │   └── ...
 ├── clue_misdirection/          # ← YOU ARE HERE (supervised learning, Part A)
 │   ├── CLAUDE.md               # This file
-│   ├── PLAN.md                 # 12-step pipeline plan (from design doc v3)
+│   ├── PLAN.md                 # 12-step pipeline plan (from design doc v4)
 │   ├── NOTEBOOKS.md            # Inventory of existing and planned notebooks
 │   ├── DATA.md                 # Data dictionary and schema
 │   ├── DECISIONS.md            # Locked-in team decisions
@@ -214,7 +214,9 @@ George Ho's cryptic crossword clue dataset (660,613 clues).
 - `DATA.md` — Schema and data flow.
 - `DECISIONS.md` — Locked-in choices; do not revisit these.
 - `FINDINGS.md` — Running log of findings as the pipeline is built.
-- `supervised_learning_plan_v3.docx` — The authoritative design document.
-  All `.md` files are derived from it.
+- `supervised_learning_plan_v4.docx` — The authoritative design document
+  (supersedes v3, which was the original plan before embedding model and
+  feature engineering findings prompted revisions). All `.md` files are
+  derived from it.
 - `CONTEXT.md` — Hans's writeup of his prior exploratory work. Useful
-  background, but plan v3 supersedes his experimental design.
+  background, but plan v4 supersedes his experimental design.
