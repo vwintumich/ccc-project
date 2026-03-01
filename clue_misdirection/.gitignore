@@ -1,3 +1,6 @@
 data/embeddings/*.csv
 data/embeddings/*.npy
 __pycache__/
+# Allow experiment result CSVs
+!outputs/results_*.csv
+!outputs/ablation_results.csv
