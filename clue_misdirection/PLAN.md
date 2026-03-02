@@ -1,6 +1,6 @@
 # Execution Plan — Clue Misdirection (Supervised Learning)
 
-Derived from `supervised_learning_plan_v3.docx` (February 2026).
+Derived from `supervised_learning_plan_v4.docx` (February 2026).
 Steps map to Section 11 of the design document.
 
 Every notebook should follow the coding standards in CLAUDE.md, including

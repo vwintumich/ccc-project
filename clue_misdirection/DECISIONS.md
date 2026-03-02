@@ -2,7 +2,7 @@
 
 These decisions are **locked in** and should not be revisited or second-guessed.
 Decisions 1–6 were made collaboratively by the team and/or in consultation with
-Dr. Collins-Thompson. See `supervised_learning_plan_v3.docx` Section 15 for
+Dr. Collins-Thompson. See `supervised_learning_plan_v4.docx` Section 15 for
 the original decision log. Decisions 7–12 were made during pipeline planning.
 
 ---
@@ -93,6 +93,11 @@ while not inflating context-informed results, making the misdirection gap
 look artificially large. The supplementary all-rows analysis is still
 valuable for understanding puzzle-level patterns.
 
+**Validated (NB 04):** The supplementary all-rows analysis (Allsense ×
+Allsense median rank 831) vs. unique-pairs (median rank 1,015) confirmed
+that frequently-reused pairs tend to be easier, validating unique pairs as
+the more conservative primary reporting unit.
+
 ---
 
 ## Decision 6: Harder Distractor Strategy
@@ -113,6 +118,13 @@ whether clue context helps or hurts classification.
 **Alternative not taken (future direction):** Construct distractors by matching
 the WordNet relationship distribution of real pairs, which would let us retain
 all 28 cosine features but remove the 22 relationship features instead.
+
+**Validated (NB 05):** Cosine-similarity distractors work as intended —
+`cos_w1clue_w2all` gap flips negative (real 0.545 vs distractor 0.615,
+gap −0.070), confirming that raw cosine similarity can no longer
+distinguish real from distractor pairs. The `wn_max_path_sim` gap halves
+from +0.288 (easy) to +0.155 (harder) but persists, providing signal
+for classifiers to exploit.
 
 ---
 
@@ -140,6 +152,14 @@ degrades the ability to find the true answer — this is the most interpretable
 signal. The classifier adds a controlled experiment with ablation, but its
 results depend on how much the relationship and surface features absorb the
 signal. We should not oversell the classifier as the primary evidence.
+
+**Validated (NBs 04, 06–08):** The "either outcome is interesting" scenario
+played out. Retrieval analysis (NB 04) confirms misdirection: clue context
+roughly doubles the median rank (1,015 → 2,160). But the classifier (NBs
+06–08) finds context *helps* classification (+5.5 to +9.4pp Δ Hard), because
+the multivariate model exploits the *pattern* of contextual shift (real pairs
+shift differently from distractor pairs). Both findings are informative and
+complement each other.
 
 ---
 

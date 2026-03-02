@@ -196,12 +196,15 @@ involve clue context. Named as `cos_{emb_a}_{emb_b}`, e.g.:
 |------|-------------|
 | `outputs/retrieval_results_unique_pairs.csv` | Primary 4×3 retrieval analysis over unique (definition, answer) pairs |
 | `outputs/retrieval_results_all_rows.csv` | Supplementary retrieval analysis over all (clue, definition, answer) rows |
-| `outputs/results_easy.csv` | Metrics for Exp 1A and 1B |
-| `outputs/results_harder.csv` | Metrics for Exp 2A and 2B |
-| `outputs/results_summary.csv` | Combined Table 8 |
-| `outputs/ablation_results.csv` | Group-level ablation results |
+| `outputs/results_easy.csv` | Metrics for Exp 1A and 1B (mean ± SD across 5 folds) |
+| `outputs/results_easy_per_fold.csv` | Per-fold metrics for Exp 1A and 1B |
+| `outputs/results_harder.csv` | Metrics for Exp 2A and 2B (mean ± SD across 5 folds) |
+| `outputs/results_harder_per_fold.csv` | Per-fold metrics for Exp 2A and 2B |
+| `outputs/results_summary.csv` | Combined Table 8 (full-data accuracy from Great Lakes run) |
+| `outputs/ablation_results.csv` | Group-level ablation results (RF, fold 0) |
 | `outputs/failure_analysis.md` | Misclassified examples and failure categories |
-| `outputs/figures/*.png` | All visualizations |
+| `outputs/misclassified_examples.csv` | Full DataFrame of misclassified test examples |
+| `outputs/figures/*.png` | All visualizations (11 figures) |
 
 ---
 

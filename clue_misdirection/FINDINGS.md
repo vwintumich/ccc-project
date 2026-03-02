@@ -53,11 +53,11 @@ See `CONTEXT.md` for Hans's full writeup.
 - **Multi-definition expansion:** ~5% of clues had `/`-separated definitions.
   After splitting and validating, each valid definition produces its own row,
   contributing to the total of 241,397 rows.
-```
 
-### Step 2: Embedding Generation —
-Model Investigation Phase *Completed.* Notebook: `notebooks/00_model_comparison.ipynb`
-Embedding Generation *Completed.*
+### Step 2: Embedding Generation
+**Model Investigation Phase** — *Completed.* Notebook: `notebooks/00_model_comparison.ipynb`
+
+**Embedding Generation** — *Completed.*
 
 - **Model identifier corrected:** The design doc specified
   `oskar-h/cale-modernbert-base`, which does not exist on HuggingFace. The
@@ -287,26 +287,22 @@ conditions × 3 answer conditions:
 
 | Def Condition | Ans Condition | Top-1 | Top-10 | Top-100 | Mean Rank | Median Rank | Mean Cos Sim |
 |---|---|---|---|---|---|---|---|
-| Allsense | Allsense | 1.11% | 5.41% | 18.08% | 4,827 | 1,015 | 0.6461 |
-| Allsense | Common | 0.97% | 4.80% | 16.25% | 5,226 | 1,207 | 0.6093 |
-| Allsense | Obscure | 0.93% | 4.58% | 15.67% | 5,363 | 1,289 | 0.5982 |
-| Common | Allsense | 0.94% | 4.69% | 15.64% | 5,433 | 1,360 | 0.5983 |
-| Common | Common | 0.91% | 4.36% | 14.57% | 5,693 | 1,516 | 0.5792 |
-| Common | Obscure | 0.83% | 4.02% | 13.84% | 5,822 | 1,617 | 0.5622 |
-| Obscure | Allsense | 0.89% | 4.48% | 14.87% | 5,595 | 1,466 | 0.5873 |
-| Obscure | Common | 0.82% | 4.08% | 13.84% | 5,847 | 1,644 | 0.5666 |
-| Obscure | Obscure | 0.82% | 3.91% | 13.37% | 5,945 | 1,717 | 0.5569 |
-| Clue Context | Allsense | 0.69% | 3.09% | 11.59% | 6,441 | 2,160 | 0.5364 |
-| Clue Context | Common | 0.57% | 2.68% | 10.25% | 6,789 | 2,499 | 0.5019 |
-| Clue Context | Obscure | 0.55% | 2.54% | 9.84% | 6,891 | 2,581 | 0.4928 |
-
-*(Exact values will be confirmed when the notebook is executed; the table
-structure and approximate magnitudes are based on the expected patterns
-from NB 03 feature statistics and Hans's preliminary results.)*
+| Allsense | Allsense | 0.30% | 7.69% | 23.77% | 5,173 | 1,015 | 0.643 |
+| Allsense | Common | 0.50% | 6.78% | 20.53% | 7,698 | 1,741 | 0.591 |
+| Allsense | Obscure | 0.53% | 6.45% | 19.71% | 7,687 | 1,872 | 0.590 |
+| Common | Allsense | 0.57% | 7.12% | 21.75% | 6,761 | 1,389 | 0.569 |
+| Common | Common | 0.32% | 6.63% | 19.48% | 8,838 | 2,208 | 0.530 |
+| Common | Obscure | 0.87% | 5.96% | 17.94% | 9,485 | 2,674 | 0.518 |
+| Obscure | Allsense | 0.41% | 6.03% | 18.80% | 7,267 | 1,964 | 0.564 |
+| Obscure | Common | 0.70% | 5.31% | 16.09% | 9,852 | 3,375 | 0.515 |
+| Obscure | Obscure | 0.27% | 5.20% | 16.11% | 9,410 | 3,194 | 0.522 |
+| Clue Context | Allsense | 0.41% | 4.40% | 16.25% | 7,401 | 2,160 | 0.542 |
+| Clue Context | Common | 0.42% | 3.86% | 14.28% | 9,672 | 3,350 | 0.499 |
+| Clue Context | Obscure | 0.42% | 3.66% | 13.69% | 9,811 | 3,564 | 0.497 |
 
 **Misdirection effect:** Clue Context × Allsense (median rank 2,160) vs.
 Allsense × Allsense (median rank 1,015) shows a +1,145 rank worsening.
-Top-10 hit rate drops from 5.41% to 3.09% (43% relative decrease). This
+Top-10 hit rate drops from 7.69% to 4.40% (43% relative decrease). This
 directly demonstrates that embedding the definition word within the clue's
 surface text pushes the representation away from the true answer — the
 primary evidence for semantic misdirection.
@@ -347,8 +343,10 @@ for multi-synset words.
 (all-mpnet-base-v2, 8,598 candidates, 10K sample) found context-free
 median rank 177.5 and context-informed median rank 684 (+506 worsening).
 With CALE and 45,254 candidates, we find 1,015 → 2,160 (+1,145). Absolute
-ranks are not comparable (5× larger pool), but the relative pattern —
-context roughly doubling the median rank — is consistent.
+ranks are not comparable (5× larger pool), but the directional pattern —
+context worsening retrieval rank — is consistent. In our analysis, clue
+context roughly doubles the median rank (2.1×); Hans's preliminary result
+showed a larger 3.9× increase with a smaller candidate pool.
 
 ### Steps 5 & 7: Dataset Construction
 *Completed.* Notebook: `notebooks/05_dataset_construction.ipynb`
@@ -396,7 +394,7 @@ Lakes (`scripts/run_experiments.py`, 480,422 rows per dataset).
 | Exp 1A | Logistic Regression | 0.869 ± 0.002 | 0.865 ± 0.002 | 0.938 ± 0.002 |
 | Exp 1A | Random Forest | 0.877 ± 0.001 | 0.871 ± 0.002 | 0.945 ± 0.001 |
 | Exp 1B (41 features) | KNN | 0.862 ± 0.002 | 0.856 ± 0.003 | 0.932 ± 0.002 |
-| Exp 1B | Logistic Regression | 0.868 ± 0.002 | 0.863 ± 0.002 | 0.937 ± 0.002 |
+| Exp 1B | Logistic Regression | 0.867 ± 0.002 | 0.863 ± 0.002 | 0.937 ± 0.002 |
 | Exp 1B | Random Forest | 0.873 ± 0.001 | 0.864 ± 0.001 | 0.944 ± 0.001 |
 
 **Δ Easy:** +0.1 to +0.4pp. Tiny as expected — sanity check passes.
@@ -408,7 +406,7 @@ Lakes (`scripts/run_experiments.py`, 480,422 rows per dataset).
 | Exp 2A (32 features) | KNN | 0.739 ± 0.001 | 0.724 ± 0.002 | 0.805 ± 0.002 |
 | Exp 2A | Logistic Regression | 0.721 ± 0.002 | 0.704 ± 0.003 | 0.775 ± 0.002 |
 | Exp 2A | Random Forest | 0.757 ± 0.001 | 0.738 ± 0.002 | 0.827 ± 0.002 |
-| Exp 2B (26 features) | KNN | 0.645 ± 0.003 | 0.621 ± 0.003 | 0.689 ± 0.003 |
+| Exp 2B (26 features) | KNN | 0.644 ± 0.003 | 0.621 ± 0.003 | 0.689 ± 0.003 |
 | Exp 2B | Logistic Regression | 0.666 ± 0.003 | 0.608 ± 0.005 | 0.710 ± 0.002 |
 | Exp 2B | Random Forest | 0.673 ± 0.003 | 0.627 ± 0.004 | 0.733 ± 0.004 |
 
@@ -430,20 +428,22 @@ exploits this.
 
 | Group Removed | Features Removed | Accuracy | Δ |
 |---|---|---|---|
-| None (baseline) | — | 0.758 | — |
-| Context-Informed | 6 | 0.649 | −10.9pp |
-| Relationship | 22 | 0.661 | −9.8pp |
-| Surface | 4 | 0.748 | −1.0pp |
+| None (baseline) | — | 0.740 | — |
+| Context-Informed | 6 | 0.632 | −10.8pp |
+| Relationship | 22 | 0.653 | −8.7pp |
+| Surface | 4 | 0.734 | −0.6pp |
 
 Context-informed features carry the most predictive weight per feature.
 Relationship features are nearly as important in aggregate. Surface
 features contribute minimally.
 
-**Failure analysis (RF, fold 0, 23,244 misclassified out of 96,085 test):**
-- Semantic near-miss: 57.3% of errors — distractors genuinely close to definition
-- Surface artifact: 50.7% — model misled by string-level coincidences
-- Polysemy confusion: 20.4% — highly polysemous definitions cause embedding noise
-- 84.3% categorized, 15.7% uncategorized, heavy overlap between categories
+**Failure analysis (RF, fold 0, 1,040 misclassified out of 4,000 test;
+sample mode):**
+- Semantic near-miss: 59.9% of errors — distractors genuinely close to definition
+- Surface artifact: 49.6% — model misled by string-level coincidences
+- Polysemy confusion: 23.8% — highly polysemous definitions cause embedding noise
+- 84.7% categorized, 15.3% uncategorized, heavy overlap between categories
+- False negatives (real predicted as distractor) outnumber false positives 662:378
 
 **Runtime:** Easy experiments (Exp 1A + 1B) took ~6.5 hours on 16 CPU
 cores. Harder experiments (Exp 2A + 2B) took ~4 hours on 36 CPU cores.
@@ -457,7 +457,7 @@ See Steps 6 & 8 above for results summary. Additional findings:
 **Sensitivity (learning curve):** Test accuracy is flat across training
 set sizes (10%–100% of fold 0 train data), indicating the performance
 ceiling is driven by feature limitations rather than data quantity.
-Train accuracy is ~99% throughout, indicating overfitting typical of
+Train accuracy is ~100% throughout, indicating overfitting typical of
 unrestricted-depth Random Forest.
 
 **Best hyperparameters (RF, full data):** n_estimators=200,

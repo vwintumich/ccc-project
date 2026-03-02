@@ -5,6 +5,59 @@ Older entries at the bottom reflect earlier states of understanding that may hav
 
 ---
 
+## March 2, 2026 — Stage 6: Evaluation and Report Figures (Notebook 06)
+
+**Primary author:** Sahana
+
+**PURPOSE: NB 06 produces no new clustering. It loads all results from Stages 4 and 5 and creates publication-quality figures and a master summary table for the final report.**
+
+**Figures produced:**
+- Figure 1: Unified cross-method metrics comparison (all HDBSCAN runs, all agglomerative k runs, both constrained runs — silhouette, Davies-Bouldin, average cluster purity)
+- Figure 2: Sensitivity analysis (HDBSCAN epsilon sweep; agglomerative metrics vs k)
+- Figure 3: Ho type overlay (8 panels, one per wordplay type, on UMAP 2D)
+- Figure 4: Easy vs hard separation — the ARI contrast (4A: ARI=0.611 vs 4B: ARI=0.045)
+- Figure 5: Constrained vs unconstrained cluster composition heatmaps
+- Figure 6: Anagram sub-clustering (appendix figure)
+
+**Data source for all metrics:** `clustering_metrics_summary.csv` (NB 04), `constrained_vs_unconstrained_metrics.csv` (NB 05), `subset_experiment_metrics.csv` (NB 05). No numbers are recomputed; all values are loaded from these CSVs.
+
+**Report figures on disk:** All 6 figures have been generated and saved to `outputs/figures/report/`:
+- `fig1_unified_metrics_comparison.png` (268 KB)
+- `fig2_sensitivity_analysis.png` (229 KB)
+- `fig3_ho_type_overlay.png` (1.6 MB)
+- `fig4_easy_vs_hard_separation.png` (763 KB)
+- `fig5_constrained_vs_unconstrained.png` (510 KB)
+- `fig6_anagram_subclustering.png` (1.4 MB)
+
+**Master summary table:** NB 06 Section 4.1 defines a unified table combining all metrics from NB 04 (`clustering_metrics_summary.csv`) and NB 05 (`constrained_vs_unconstrained_metrics.csv`, `subset_experiment_metrics.csv`). Average purity is computed on-the-fly from cluster label arrays and Ho type masks. The merged table is exported to `outputs/final_metrics_summary.csv`.
+
+**STATUS:** Notebook code is complete and has been run (report figures exist on disk). HTML render exists in `docs/` but **has no cell outputs** — it was exported from the `.ipynb` after nbstripout stripped outputs. To get a rendered HTML with figures and tables visible, re-export from a notebook session that has not been stripped (i.e., export before committing, or re-run and export without committing first).
+
+---
+
+## March 2, 2026 — Stage 7: Definitions as Control Condition (Notebook 07)
+
+**Primary author:** Nathan (NC)
+
+**Research question:** "Is the structure we found in indicator embeddings specific to wordplay, or would any set of words from the same clues cluster similarly?"
+
+**Method:** Replicate the exact pipeline from Stages 1–4 on definition words instead of indicator words. Definitions are drawn from the open vocabulary of English and are not constrained by wordplay conventions. If definitions cluster as well as indicators, the clustering is detecting general semantic similarity rather than wordplay-specific structure.
+
+**Pipeline (matches Stages 1–4):**
+1. Extract definitions from `clues_raw.csv`; verify each definition appears in its clue surface (same checksum logic as NB 01)
+2. Embed unique definitions with BGE-M3 (same model as NB 02)
+3. UMAP reduction to 10D and 2D (same parameters as NB 03)
+4. HDBSCAN at eps=0.0 and agglomerative at k=8, k=10, k=34 (matched to NB 04 key runs)
+5. Side-by-side metrics comparison with indicator results from `clustering_metrics_summary.csv`
+
+**Note on downsampling:** The full definition set is much larger than the 12,622 unique indicators. Ward's agglomerative clustering requires O(n^2) memory, so definitions are randomly downsampled to a comparable size before agglomerative runs.
+
+**STATUS:** The notebook pipeline (Sections 0–5) is complete and has been run (HTML render exists in `docs/`). **Section 6 (Interpretation) is still a template with placeholder brackets** — the actual comparison findings have not yet been written up. This section needs to be filled in after reviewing the Section 5 outputs.
+
+**FINDING (pending interpretation):** The metrics comparison table and UMAP scatter plot for definitions at k=10 have been generated but not yet analyzed. The centroid-nearest definitions inspection is also complete but not yet interpreted. Once Section 6 is filled in, this entry should be updated with the actual findings.
+
+---
+
 ## February 20, 2026 — Dimensionality Reduction (Notebook 03)
 
 **FINDING: PCA captures very little structure in BGE-M3 embeddings.**
@@ -95,7 +148,7 @@ Per-cluster Ho type distribution heatmaps confirm:
 | Run | k | Seeds | Silhouette | Davies-Bouldin | Avg Purity |
 |-----|---|-------|-----------|----------------|------------|
 | Unconstrained | 8 | None | 0.272 | 1.267 | 0.563 |
-| Constrained MC7 | 7 | minute_cryptic | 0.264 | 1.211 | 0.598 |
+| Constrained MC7 | 7 | minute_cryptic | 0.264 | 1.210 | 0.598 |
 | Unconstrained | 34 | None | 0.322 | 1.068 | 0.652 |
 | Constrained CG34 | 34 | conceptual_groups | 0.324 | 1.039 | 0.671 |
 

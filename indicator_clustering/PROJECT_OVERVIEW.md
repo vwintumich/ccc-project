@@ -1,6 +1,6 @@
 # PROJECT_OVERVIEW.md — CCC Indicator Clustering: Project Overview
 
-Last updated: February 19, 2026
+Last updated: March 2, 2026
 
 ---
 
@@ -80,14 +80,14 @@ See DOMAIN_KNOWLEDGE.md for detailed descriptions. Brief summary:
 
 **Primary question:** Can unsupervised clustering of CCC indicators produce groups interpretable as wordplay types?
 
-**Planned experiments (in approximate priority order):**
+**Experiments (status as of March 2, 2026):**
 
-1. **Full verified indicator set** — cluster all 14,196 indicators; compare to known wordplay types at multiple levels of granularity (k=3, k=4, k=8, k=14+)
-2. **Anagram indicators only** — anagram has the most diverse vocabulary; clustering within this type may reveal conceptual metaphor subgroups
-3. **Hidden / Insertion / Container together** — hypothesis: these share placement-oriented conceptual metaphors and will not separate cleanly
-4. **Easy separation test (e.g., Reversal + Homophone)** — if we cannot separate theoretically well-distinguished types, we cannot expect success on the harder full problem
-5. **Definitions as control** — cluster definitions using the same pipeline; if definitions cluster as well as indicators, the clustering is not detecting wordplay-specific structure
-6. **Seed clustering** — cluster only seed words first to validate that seeds fall into their intended groups before expanding
+1. **Full verified indicator set** — DONE (NB 04, NB 05, NB 06). Clustered all 12,622 unique indicators with HDBSCAN and agglomerative (Ward's). No natural k=8 grouping found; k=10 is a local silhouette optimum. Constrained clustering with seed words provides marginal improvement.
+2. **Anagram indicators only** — DONE (NB 05 Section 4C). HDBSCAN found 149 sub-clusters within the 6,610 anagram indicators. Agglomerative k=8 produced interpretable sub-clusters corresponding to conceptual metaphors (repair, incorrectness, movement, disorder, tamper, transformation, mixing).
+3. **Hidden / Insertion / Container together** — DONE (NB 05 Experiment 4B). ARI=0.045 confirms these three types are inseparable by clustering — they share placement/containment vocabulary.
+4. **Easy separation test (Reversal + Homophone)** — DONE (NB 05 Experiment 4A). ARI=0.611 confirms these types separate cleanly. The 13.6x ARI contrast between 4A and 4B is the strongest quantitative finding.
+5. **Definitions as control** — IN PROGRESS (NB 07). Pipeline is complete: definition extraction, BGE-M3 embedding, UMAP, HDBSCAN and agglomerative clustering at k=8/10/34. Section 6 (Interpretation) is still a template awaiting analysis.
+6. **Seed clustering** — DONE via constrained clustering (NB 05 Section 3). MC7 (k=7) and CG34 (k=34) seed-constrained runs tested. Seeds are compatible with embedding geometry but mostly redundant.
 
 **Primary hypothesis:** Indicators will not cluster cleanly into 8 wordplay types, but may cluster into higher-level conceptual groups. The degree to which clean clusters emerge is itself a meaningful research finding.
 
