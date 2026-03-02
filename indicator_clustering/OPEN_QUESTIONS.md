@@ -2,7 +2,7 @@
 
 This document tracks questions that have not yet been settled. Before making implementation choices in any of these areas, check this document and consult the team and/or faculty advisor if needed. When a question is resolved, move the resolution to FINDINGS_AND_DECISIONS.md and remove it here.
 
-Last updated: February 22, 2026
+Last updated: March 2, 2026
 
 ---
 
@@ -150,31 +150,29 @@ Last updated: February 22, 2026
 
 ---
 
-### Q12: Should we run definitions-as-control through the same pipeline?
+### Q12: Should we run definitions-as-control through the same pipeline? *(PARTIALLY RESOLVED)*
 
 **The question:** If we cluster definition words (extracted from the clue text) through the same BGE-M3 → UMAP → clustering pipeline and definitions cluster as well as indicators, the clustering isn't detecting wordplay-specific structure — it's just detecting general semantic similarity. This would be a critical control experiment.
 
-**What's needed:**
-- Extract definitions from `verified_clues_labeled.csv` (definitions sit at the beginning or end of each clue)
-- Embed definitions using BGE-M3 (requires a Great Lakes or GPU Colab run)
-- Run UMAP and clustering on definition embeddings
-- Compare clustering metrics (silhouette, purity) to indicator clustering results
+**Partially resolved (March 2, 2026):** Notebook 07 (`07_definitions_control.ipynb`, primary author Nathan) implements the full pipeline: definition extraction and verification from `clues_raw.csv`, BGE-M3 embedding, UMAP reduction (10D and 2D), HDBSCAN at eps=0.0, and agglomerative clustering at k=8/10/34. A side-by-side metrics comparison with indicator results and a centroid-nearest qualitative inspection are produced in Section 5.
 
-**Current direction:** Still planned. Requires its own embedding pipeline. Deferred to a separate notebook or a section of NB 06. Lower priority than completing the report with existing results.
+**Remaining work:** Section 6 (Interpretation) of NB 07 is still a template with placeholder brackets. The metrics comparison table and UMAP scatter plot exist but have not been analyzed or written up. Once the interpretation is completed, move the findings here and mark Q12 as fully resolved.
 
 ---
 
-### Q13: Which visualizations from NB 04 and NB 05 go into the final report?
+### Q13: Which visualizations from NB 04 and NB 05 go into the final report? *(PARTIALLY RESOLVED)*
 
 **The question:** We have many figures across two notebooks. The report needs a curated selection that tells a coherent story. Which figures are most important?
 
-**Candidates:**
-- **Ho type overlay** (NB 05 Section 2) — the most informative single figure; shows the spatial distribution of all 8 types
-- **4A/4B side-by-side comparison** (NB 05 Section 4) — the strongest quantitative result (ARI contrast)
-- **Metrics-vs-k plot** (NB 04) — demonstrates the "no elbow" finding
-- **Anagram sub-cluster centroids** (NB 05 Section 4C) — validates the conceptual metaphor hierarchy
-- **Constrained vs unconstrained metrics table** (NB 05 Section 3) — shows marginal improvement from seeds
-- **HDBSCAN epsilon sensitivity plot** (NB 04) — shows the abrupt transition, no stable intermediate
-- **Dendrogram** (NB 04) — shows no natural cut point
+**Partially resolved (March 2, 2026):** Notebook 06 (`06_evaluation_and_figures.ipynb`, primary author Sahana) defines a 6-figure inventory mapped to MADS Capstone rubric requirements:
 
-**Current direction:** Unresolved. To be decided when preparing NB 06 and the final report. Aim for 5-7 figures total.
+| Figure | Content | Rubric |
+|--------|---------|--------|
+| Figure 1 | Unified cross-method metrics comparison (all runs) | R3: overall summary |
+| Figure 2 | Sensitivity analysis (HDBSCAN epsilon + agglomerative k) | R2: sensitivity |
+| Figure 3 | Ho type overlay (8 panels on UMAP 2D) | R1: visualization, R5: research question |
+| Figure 4 | Easy vs hard separation ARI contrast (4A vs 4B) | R5: research question |
+| Figure 5 | Constrained vs unconstrained heatmaps | R1: visualization |
+| Figure 6 | Anagram sub-clustering | Appendix |
+
+**Remaining work:** NB 06 has not yet been rendered to HTML (no file in `docs/`). Needs a clean Restart & Run All, then export. The figure inventory above comes from NB 06's Section 4.2 markdown; verify the rendered output matches.

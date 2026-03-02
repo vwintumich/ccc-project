@@ -1,6 +1,6 @@
 # DOMAIN_KNOWLEDGE.md — CCC Wordplay Structure and Indicator Taxonomy
 
-Last updated: February 19, 2026
+Last updated: March 2, 2026
 Primary author: Victoria (with input from faculty meetings)
 
 This document contains everything Claude needs to understand about cryptic crossword clues (CCCs) and their indicators. Read this before making any decisions about clustering structure, seed words, or evaluation criteria.

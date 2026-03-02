@@ -20,7 +20,12 @@ The project has two analyses:
 
 ## Team
 
-Victoria Winters, Hans Li, Nathan Cantwell, Sahana Sundar
+- **Victoria Winters** (CCC Domain Expert): Research questions, project management, embeddings, AI-assisted notebook refactoring and repo management
+- **Hans Li** (Supervised Learning): Clue misdirection, AI prompting support
+- **Nathan Cantwell** (Unsupervised Learning): Indicator clustering, definition clustering comparison
+- **Sahana Sundar** (Evaluation): Evaluation and visualization, supervised/unsupervised support as needed
+- **All:** Data cleaning, report writing, intermittent reporting to faculty advisor
+
 Faculty Advisor: Dr. Kevyn Collins-Thompson (University of Michigan)
 
 ## Repo Structure
@@ -34,7 +39,7 @@ ccc-project/
 │   └── ...
 ├── clue_misdirection/          # ← YOU ARE HERE (supervised learning, Part A)
 │   ├── CLAUDE.md               # This file
-│   ├── PLAN.md                 # 12-step pipeline plan (from design doc v3)
+│   ├── PLAN.md                 # 12-step pipeline plan (from design doc v4)
 │   ├── NOTEBOOKS.md            # Inventory of existing and planned notebooks
 │   ├── DATA.md                 # Data dictionary and schema
 │   ├── DECISIONS.md            # Locked-in team decisions
@@ -121,7 +126,7 @@ new to NLP and may not know why a particular step matters. For example:
 - Bad: `# Filter to WordNet entries`
 - Good: `# Filter to rows where both definition and answer have at least
   one WordNet synset. We need WordNet coverage to construct sense-specific
-  embeddings (common vs. obscure) in Step 2, and to compute the 21
+  embeddings (common vs. obscure) in Step 2, and to compute the 22
   relationship features in Step 3.`
 
 ### General Standards
@@ -139,6 +144,15 @@ new to NLP and may not know why a particular step matters. For example:
   definition–answer pair (or by definition word for stricter leakage prevention).
   Same fold assignments across all experiments.
 - **Figures:** Save all figures to `outputs/figures/` as PNG (300 dpi).
+- **`keep_default_na=False`:** Always use `keep_default_na=False` when
+  loading any CSV that contains `word`, `definition_wn`, or `answer_wn`
+  columns. The word "nan" (meaning grandmother) is a valid crossword
+  definition and answer; without this flag, pandas silently converts it
+  to `NaN`.
+- **Clue-context embedding lookups:** When looking up clue-context
+  embeddings, use `clue_context_phrases.csv` with a composite key
+  (`clue_id`, `definition_wn`) rather than `clue_context_index.csv`
+  alone, because `clue_id` is non-unique for double-definition clues.
 
 ### Notebook Version Control
 
@@ -200,7 +214,9 @@ George Ho's cryptic crossword clue dataset (660,613 clues).
 - `DATA.md` — Schema and data flow.
 - `DECISIONS.md` — Locked-in choices; do not revisit these.
 - `FINDINGS.md` — Running log of findings as the pipeline is built.
-- `supervised_learning_plan_v3.docx` — The authoritative design document.
-  All `.md` files are derived from it.
+- `supervised_learning_plan_v4.docx` — The authoritative design document
+  (supersedes v3, which was the original plan before embedding model and
+  feature engineering findings prompted revisions). All `.md` files are
+  derived from it.
 - `CONTEXT.md` — Hans's writeup of his prior exploratory work. Useful
-  background, but plan v3 supersedes his experimental design.
+  background, but plan v4 supersedes his experimental design.

@@ -4,10 +4,15 @@
 
 ```
 clue_misdirection/notebooks/
-├── 01_data_cleaning.ipynb          # Pipeline notebooks (run in order)
+├── 00_model_comparison.ipynb       # Pipeline notebooks (run in order)
+├── 01_data_cleaning.ipynb
 ├── 02_embedding_generation.ipynb
 ├── 03_feature_engineering.ipynb
-├── ...
+├── 04_retrieval_analysis.ipynb
+├── 05_dataset_construction.ipynb
+├── 06_experiments_easy.ipynb
+├── 07_experiments_harder.ipynb
+├── 08_results_and_evaluation.ipynb
 └── archive/                        # Prior exploratory notebooks (reference only)
     ├── Data_Cleaning_for_Clues_-_Pairs_in_WordNet.ipynb
     ├── Data_Cleaning_for_Clues__1_.ipynb
@@ -61,7 +66,7 @@ These contain the most relevant prior work for our Step 1 (data cleaning).
 Hans's exploratory work using `clues_single_word.csv` and `all-mpnet-base-v2`.
 These notebooks are complete and contain valuable code and findings, but the
 dataset (single-word only), embedding model, and feature set are all being
-replaced in our pipeline per plan v3. Use as reference for code patterns and
+replaced in our pipeline per plan v4. Use as reference for code patterns and
 to verify our new results against his preliminary findings.
 
 | Notebook | Size | Cells | Status | Description | Plan Steps |
@@ -69,9 +74,9 @@ to verify our new results against his preliminary findings.
 | `Hans_Supervised_Learning_EDA.ipynb` | 21 KB | 42 (33 code, 9 markdown) | 📋 Reference | EDA for supervised learning data preparation. Filters to single-word definitions and answers, explores data quality, investigates WordNet synonym coverage (~10.5% of answers are direct synonyms), saves `clues_single_word.csv`. Includes whole-word boundary verification using `\b` regex (ported from Victoria's indicator cleaning). Has saved cell outputs. | 1 |
 | `Hans_Supervised_Learning_EDA_WITH_OUTPUTS.ipynb` | 29 KB | 31 (22 code, 9 markdown) | 📋 Reference | Condensed version of the EDA notebook with different cell organization but same purpose. Has saved cell outputs. Can be ignored if reading the main EDA notebook. | 1 |
 | `Hans_Supervised_Learning.ipynb` | 465 KB | 34 (21 code, 13 markdown) | 🔄 Needs rework | **Main retrieval-based misdirection analysis.** Loads `clues_single_word.csv`, deduplicates to unique (definition, answer) pairs, samples 10,000 pairs, embeds definitions and answers with `all-mpnet-base-v2`, and runs retrieval evaluation (rank true answer among all 8,598 candidates by cosine similarity). Compares context-free vs. context-informed embeddings. Key finding: +512 mean rank degradation with context. Also contains a 3-model comparison (MiniLM, MPNet, BGE-M3) and misdirection-by-wordplay-type analysis. Has saved cell outputs. Code for embedding generation, retrieval evaluation, and cosine similarity computation is reusable with model updates. | 2, 4 |
-| `Hans_Supervised_Learning_Models.ipynb` | 255 KB | 27 (15 code, 12 markdown) | 🔄 Needs rework | **Classification-based misdirection analysis.** Builds a balanced binary dataset (5,000 real + 5,000 random distractor pairs), engineers 10 features (3 embedding, 3 WordNet, 4 surface), trains KNN/LogReg/RF with 5-fold stratified CV, runs ablation (remove one feature at a time), sensitivity analysis (training set size), and failure analysis (3 categories). Key finding: <0.5pp context gap; `wn_path_sim` is the dominant feature. Includes whole-word verification filter. Has saved cell outputs. The CV scaffolding, feature engineering functions, ablation approach, and evaluation reporting can all be adapted for our expanded 53-feature pipeline. | 3, 6, 8, 9, 10, 11, 12 |
-| `Hans_Control_Experiment_Normal_English.ipynb` | 158 KB | 22 (13 code, 9 markdown) | 📋 Reference | Control experiment comparing cryptic crossword misdirection against normal English. Builds (sentence, word, related_word) triples from WordNet hypernym/hyponym pairs found in Brown + Reuters corpora. Uses same 10 features and 3 models. Key finding: in normal English, removing context features *hurts* accuracy (context is useful), while in cryptic crosswords, removing context *helps* (the "sign flip"). Excludes `wn_path_sim` to prevent it from masking context effects. Has saved cell outputs. Not part of plan v3 pipeline, but the sign-flip finding is important background for interpreting our results. | — |
-| `Hans_Negative_Strategies_Experiment.ipynb` | 189 KB | 21 (10 code, 11 markdown) | 📋 Reference | Tests three distractor generation strategies (known answers, clue vocabulary, generic English vocabulary) across both cryptic and normal English datasets. Key finding: misdirection signal (<1pp context gap for cryptic) is robust across all strategies. Has saved cell outputs. Informed the harder dataset design in plan v3 (Decision 6) but uses a different approach — our pipeline uses cosine-similarity-based distractors instead. | 5, 7 |
+| `Hans_Supervised_Learning_Models.ipynb` | 255 KB | 27 (15 code, 12 markdown) | 🔄 Needs rework | **Classification-based misdirection analysis.** Builds a balanced binary dataset (5,000 real + 5,000 random distractor pairs), engineers 10 features (3 embedding, 3 WordNet, 4 surface), trains KNN/LogReg/RF with 5-fold stratified CV, runs ablation (remove one feature at a time), sensitivity analysis (training set size), and failure analysis (3 categories). Key finding: <0.5pp context gap; `wn_path_sim` is the dominant feature. Includes whole-word verification filter. Has saved cell outputs. The CV scaffolding, feature engineering functions, ablation approach, and evaluation reporting can all be adapted for our expanded 47-feature pipeline. | 3, 6, 8, 9, 10, 11, 12 |
+| `Hans_Control_Experiment_Normal_English.ipynb` | 158 KB | 22 (13 code, 9 markdown) | 📋 Reference | Control experiment comparing cryptic crossword misdirection against normal English. Builds (sentence, word, related_word) triples from WordNet hypernym/hyponym pairs found in Brown + Reuters corpora. Uses same 10 features and 3 models. Key finding: in normal English, removing context features *hurts* accuracy (context is useful), while in cryptic crosswords, removing context *helps* (the "sign flip"). Excludes `wn_path_sim` to prevent it from masking context effects. Has saved cell outputs. Not part of plan v4 pipeline, but the sign-flip finding is important background for interpreting our results. | — |
+| `Hans_Negative_Strategies_Experiment.ipynb` | 189 KB | 21 (10 code, 11 markdown) | 📋 Reference | Tests three distractor generation strategies (known answers, clue vocabulary, generic English vocabulary) across both cryptic and normal English datasets. Key finding: misdirection signal (<1pp context gap for cryptic) is robust across all strategies. Has saved cell outputs. Informed the harder dataset design in plan v4 (Decision 6) but uses a different approach — our pipeline uses cosine-similarity-based distractors instead. | 5, 7 |
 
 ---
 
@@ -82,16 +87,17 @@ the `notebooks/` directory. Each should follow the coding standards in
 CLAUDE.md (intellectual lineage header, explanatory markdown cells written
 for NLP newcomers, summary cell at the end).
 
-| Notebook | Plan Steps | Status | Sources to Draw From |
-|----------|------------|--------|----------------------|
-| `01_data_cleaning.ipynb` | 1 | ❌ Not yet created | Victoria's *Pairs in WordNet* notebook (primary base: surface extraction, double-definition parsing, answer format validation) + Victoria/Sahana's *Data Cleaning for Clues* (secondary check for additional filters) + Hans's *EDA* notebook (whole-word verification, data quality checks) + indicator_clustering *01_data_cleaning* (notebook structure reference) |
+| Notebook | Plan Steps | Status | Description |
+|----------|------------|--------|-------------|
+| `00_model_comparison.ipynb` | — | ✅ Complete | Step 0 model investigation. 28 cells (14 code, 14 markdown). Compares three candidate embedding models: CALE-MBERT-en (1024-dim), bge-base-en-v1.5 (768-dim), and all-mpnet-base-v2 (768-dim). Validates CALE's `<t></t>` delimiter mechanism — mean cos(W1_clue_ctx, Sentence1) ≈ 0.52 for CALE vs ≈ 0.90–0.94 for others, confirming CALE produces genuinely distinct target-word vs. full-sentence embeddings. Demonstrates allsense-average approach and confirms bare-word embeddings are unreliable with CALE. Evidence notebook — no data files saved to disk. Key decisions documented: use CALE (Decision 1), drop Sentence1 (Decision 13), use allsense-average (Decision 14). |
+| `01_data_cleaning.ipynb` | 1 | ✅ Complete | Step 1 data cleaning. 43 cells (21 code, 22 markdown). Loads `clues_raw.csv` (660,613 rows), applies 7 filter steps (null removal, bracket removal, answer format validation, double-definition parsing, definition-in-surface verification with `\b` word boundaries, definition-at-edge check, WordNet coverage). Article stripping during WordNet lookup recovers additional matches (3,049 definitions, 33 answers). Multi-definition expansion (~5% of clues). Output: `data/clues_filtered.csv` (241,397 rows, 129,429 unique definition–answer pairs). |
 | `02_embedding_generation.ipynb` | 2 | ✅ Complete | Step 2 embedding generation. 27 cells. CPU portion: loads clues_filtered.csv, derives WordNet-ready strings, constructs CALE context phrases with `<t></t>` delimiters for all 7 embedding types, saves phrase CSVs. GPU portion: `scripts/embed_phrases.py` encodes all phrases with CALE-MBERT-en on Great Lakes V100, produces 6 output files (~1.8 GB). Verification cells validate shapes, consistency, and semantic sense of embeddings. |
-| `03_feature_engineering.ipynb` | 3 | 🔧 In progress | Partially complete — cosine similarity features (21) computed and verified. Remaining: 21 WordNet relationship features, 4 surface features, final assembly and save. Merge bug with double-definition clues fixed (uses `clue_id` + `definition` composite key). 240,211 rows confirmed. Sources: Hans's *Supervised Learning* and *Models* notebooks (cosine similarity computation, WordNet relationship features, surface features — expanding from 10 to 46 features). |
-| `04_retrieval_analysis.ipynb` | 4 | ❌ Not yet created | Hans's *Supervised Learning* notebook (retrieval evaluation logic — extend to 5×3 matrix, add unique-pairs reporting, add all-rows supplementary analysis) |
-| `05_dataset_construction.ipynb` | 5, 7 | ❌ Not yet created | Hans's *Models* notebook (random distractor generation for easy dataset) + Hans's *Negative Strategies* notebook (reference for distractor strategies — our harder dataset uses cosine-similarity-based selection per Decision 6) |
-| `06_experiments_easy.ipynb` | 6 | ❌ Not yet created | Hans's *Models* notebook (KNN/LogReg/RF training, CV setup, evaluation reporting — adapt to GroupKFold and 46 features) |
-| `07_experiments_harder.ipynb` | 8 | ❌ Not yet created | Hans's *Models* notebook (same modeling scaffolding as Step 6) |
-| `08_results_and_evaluation.ipynb` | 9, 10, 11, 12 | ❌ Not yet created | Hans's *Models* notebook (feature importance, ablation, sensitivity, failure analysis — expand to 46-feature groups and harder dataset) |
+| `03_feature_engineering.ipynb` | 3 | ✅ Complete | 47 features (15 context-free cosine + 6 context-informed cosine + 22 WordNet relationship + 4 surface) computed for 240,211 rows. Output: `data/features_all.parquet`. Includes merge fix for double-definition clues (composite key on `clue_id` + `definition`) and standalone feature functions designed for later extraction to `scripts/feature_utils.py` (Decision 18). |
+| `04_retrieval_analysis.ipynb` | 4 | ✅ Complete | Step 4 retrieval analysis. 45 cells (22 code, 23 markdown). Loads CALE embeddings (definition, answer, clue-context) + `clues_filtered.csv` + `clue_context_phrases.csv`. Runs 4×3 retrieval matrix (4 definition conditions × 3 answer conditions) over 127,608 unique pairs against 45,254 candidate answers. Clue Context uses median-rank aggregation across clue rows per pair (Decision 5). Includes WordNet reachability analysis (synonym/1-hop/2-hop/3-hop/unconnected tiers) and retrieval stratification by hop depth — synonyms retrieve at median rank 258 vs. unconnected pairs at 2,107. Outputs: `outputs/retrieval_results_unique_pairs.csv`, `outputs/retrieval_results_all_rows.csv`, 6 figures in `outputs/figures/` (retrieval_bar_chart, retrieval_heatmap, wordnet_reachability_bar, wordnet_hop_distribution, retrieval_by_wordnet_connectivity, retrieval_rank_by_hop_depth, misdirection_delta_by_connectivity). Key finding: misdirection confirmed — Clue Context roughly doubles median rank vs. Allsense context-free (2,160 vs. 1,015). |
+| `05_dataset_construction.ipynb` | 5, 7 | ✅ Complete | Steps 5 and 7 dataset construction. 26 cells (12 code, 14 markdown). Loads `features_all.parquet` (240,211 rows, 47 features) + Step 2 embedding arrays + index CSVs. Constructs two balanced binary classification datasets. Easy dataset: random distractors, all 47 features, 480,422 rows. Harder dataset: top-100 cosine-similarity distractors per Decision 6, 15 context-free features removed, 32 features retained, 480,422 rows. Feature computation for distractor pairs uses `scripts/feature_utils.py` (Decision 18) with dedup optimization for relationship/surface features. Key validation: easy dataset `cos_w1all_w2all` gap +0.218 (real 0.648 vs distractor 0.430); harder dataset `cos_w1clue_w2all` gap flipped to −0.070 (real 0.545 vs distractor 0.615), confirming Decision 6 works as intended. Outputs: `data/dataset_easy.parquet`, `data/dataset_harder.parquet`. |
+| `06_experiments_easy.ipynb` | 6 | ✅ Complete | Step 6 easy dataset classification experiments. 13 cells (7 code, 6 markdown). Loads `dataset_easy.parquet` (480,422 rows, 47 features). Implements Exp 1A (47 features) and Exp 1B (41 features, 6 context-informed removed). 3 model families: KNN, Logistic Regression, Random Forest. 5-fold GroupKFold CV grouped by definition–answer pair (Decision 7), StandardScaler on train only for KNN/LogReg, nested GridSearchCV (RandomizedSearchCV for RF) with 3-fold inner CV. SAMPLE_MODE flag for 20K-row testing; full-data accuracy in `outputs/results_summary.csv` (from `scripts/run_experiments.py` on Great Lakes). Outputs: `outputs/results_easy.csv`, `outputs/results_easy_per_fold.csv`. Full-data Δ Easy: +0.1 to +0.4pp (sanity check passes). |
+| `07_experiments_harder.ipynb` | 8 | ✅ Complete | Step 8 harder dataset classification experiments. 13 cells (7 code, 6 markdown). Same structure as NB 06. Loads `dataset_harder.parquet` (480,422 rows, 32 features). Implements Exp 2A (32 features) and Exp 2B (26 features, 6 context-informed removed). Same 3 models, same CV scheme. Full-data accuracy in `outputs/results_summary.csv`. Outputs: `outputs/results_harder.csv`, `outputs/results_harder_per_fold.csv`. Full-data Δ Hard: +5.5 to +9.4pp — context features help classification substantially (complementary to retrieval finding where context hurts). |
+| `08_results_and_evaluation.ipynb` | 9, 10, 11, 12 | ✅ Complete | Steps 9–12 results and evaluation. 31 cells (16 code, 15 markdown). Loads results CSVs from NB 06/07, compiles Table 8 summary (3 models × 4 experiments with Δ Easy and Δ Hard). Retrains best model (RF) on harder dataset fold 0 with best hyperparameters (n_estimators=200, max_features='log2'). Feature importance (Gini + permutation: top features are all 6 context-informed cosines and `wn_max_path_sim`), group-level ablation (context-informed −10.8pp, relationship −8.7pp, surface −0.6pp), learning curve sensitivity analysis (flat beyond 10% training data, ~100% train accuracy indicating RF overfitting), and failure analysis (1,040 misclassified out of 4,000 test examples in 3 overlapping categories: semantic near-miss 59.9%, surface artifact 49.6%, polysemy confusion 23.8%). SAMPLE_MODE flag for 20K-row testing. Outputs: `outputs/results_summary.csv`, `outputs/ablation_results.csv`, `outputs/failure_analysis.md`, `outputs/misclassified_examples.csv`, `outputs/figures/results_summary_table.png`, `outputs/figures/feature_importance_*.png`, `outputs/figures/sensitivity_learning_curve.png`. |
 
 ---
 
@@ -105,7 +111,11 @@ environment-specific for notebook cells.
 | `scripts/embed_phrases.py` | GPU embedding script for Step 2. Loads phrase CSVs, encodes with CALE, saves `.npy` + index CSVs. Supports `--sample N` for testing and `--batch-size`. |
 | `scripts/embed_phrases.sh` | SLURM submission script for Great Lakes (1 V100, 32 GB, 1 hr). |
 | `scripts/embed_phrases_test.sh` | SLURM test script (`--sample 100`, 10 min). |
-| `scripts/feature_utils.py` | ❌ Not yet created. Shared feature computation functions for NB 05 and NB 07 (Decision 18). Extracted from NB 03 logic. Computes cosine similarity, WordNet relationship, and surface features for arbitrary (definition, answer) pairs. Created when NB 05 is built. |
+| `scripts/feature_utils.py` | Shared feature computation functions extracted from NB 03 per Decision 18. Exports column-name constants (`CONTEXT_FREE_COLS`, `CONTEXT_INFORMED_COLS`, `RELATIONSHIP_COLS`, `SURFACE_COLS`, `ALL_FEATURE_COLS`, `METADATA_COLS`), `rowwise_cosine()`, `compute_surface_features()`, `get_wordnet_synsets()`, `compute_relationship_features()`, `compute_cosine_features_for_pair()`. Used by NB 05 (and later NB 07) for distractor feature computation. |
+| `scripts/run_experiments.py` | Standalone experiment runner for Great Lakes. Runs all 4 experiments (1A/1B/2A/2B) with full hyperparameter grids, timestamped progress logging, `n_jobs=-1`. Supports `--sample` (20K rows, reduced grids) and `--harder-only` (skip easy experiments) flags. Saves 4 CSVs to `outputs/`. |
+| `scripts/run_experiments.sh` | SLURM submission script for full experiment run. Standard partition, 36 CPUs, 32GB RAM, 16h wall time. |
+| `scripts/run_experiments_test.sh` | SLURM test script. Same resources, 1h wall time, passes `--sample` flag. |
+| `scripts/run_experiments_harder_only.sh` | SLURM script for harder-only run. 36 CPUs, 8h wall time, passes `--harder-only` flag. Used when easy experiments have already completed. |
 
 ---
 
@@ -113,23 +123,19 @@ environment-specific for notebook cells.
 
 | File | Description |
 |------|-------------|
-| `CONTEXT.md` | Hans's comprehensive writeup of his prior work (18 KB). Covers all four of his work streams (retrieval, classification, control experiment, negative strategies), feature reference, key findings, and open questions. **Read for background context**, but plan v3 supersedes his experimental design. |
-| `supervised_learning_plan_v3.docx` | The authoritative design document. All `.md` files and pipeline notebooks are derived from it. |
+| `CONTEXT.md` | Hans's comprehensive writeup of his prior work (18 KB). Covers all four of his work streams (retrieval, classification, control experiment, negative strategies), feature reference, key findings, and open questions. **Read for background context**, but plan v4 supersedes his experimental design. |
+| `supervised_learning_plan_v4.docx` | The authoritative design document (supersedes v3, which was the original plan before embedding model and feature engineering findings prompted revisions). All `.md` files and pipeline notebooks are derived from it. |
 
 ---
 
 ## Recommended Reading Order
 
-When starting work, read these in order to build context:
+When starting work or reviewing the project, read these in order:
 
-1. `PLAN.md` — understand the 12-step pipeline plan
+1. `PLAN.md` — the 12-step pipeline plan
 2. `CLAUDE.md` — coding standards, terminology, and project structure
-3. `CONTEXT.md` — Hans's framing and prior findings
-4. Victoria's *Data Cleaning for Clues - Pairs in WordNet.ipynb* — the primary
-   base for Step 1
-5. Indicator_clustering `02_embedding_generation.ipynb` — the deduplication
-   pattern for Step 2
-6. Hans's *Hans_Supervised_Learning.ipynb* — the main existing retrieval and
-   embedding codebase
-7. Hans's *Hans_Supervised_Learning_Models.ipynb* — the classification
-   scaffolding for Steps 6–8
+3. `FINDINGS.md` — running log of results and observations from each step
+4. `CONTEXT.md` — Hans's framing and prior findings (background context)
+5. Pipeline notebooks in order: `00_model_comparison` through
+   `08_results_and_evaluation` — the complete implemented pipeline
+6. `DECISIONS.md` — locked-in design choices and their rationale

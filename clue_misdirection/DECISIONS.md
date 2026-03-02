@@ -2,7 +2,7 @@
 
 These decisions are **locked in** and should not be revisited or second-guessed.
 Decisions 1–6 were made collaboratively by the team and/or in consultation with
-Dr. Collins-Thompson. See `supervised_learning_plan_v3.docx` Section 15 for
+Dr. Collins-Thompson. See `supervised_learning_plan_v4.docx` Section 15 for
 the original decision log. Decisions 7–12 were made during pipeline planning.
 
 ---
@@ -53,7 +53,7 @@ secondary analysis if time permits.
   (ensured by the WordNet synset filter in Step 1)
 - WordNet sense embeddings: fall back to single-word embedding if a synset
   lacks a definition, usage example, or representative synonym
-- Relationship features: pairs with no 2-hop WordNet connection → all 19
+- Relationship features: pairs with no 2-hop WordNet connection → all 20
   booleans False, max_path_similarity = 0.0, shared_synset_count = 0
 - **Validate before training:** `assert not df.isnull().any().any()`
 
@@ -85,13 +85,18 @@ direction in the report.
   frequently-reused pairs show different misdirection patterns. Note in the
   discussion that this view may inflate the misdirection measure.
 - **Classifier:** Use all clue rows (not deduplicated) because different
-  clues provide different context features (Word1_clue_context, Sentence1).
+  clues provide different context features (Word1_clue_context).
 
 **Rationale:** Using all rows for the primary retrieval analysis would inflate
 context-free results (identical embeddings → identical ranks for duplicates)
 while not inflating context-informed results, making the misdirection gap
 look artificially large. The supplementary all-rows analysis is still
 valuable for understanding puzzle-level patterns.
+
+**Validated (NB 04):** The supplementary all-rows analysis (Allsense ×
+Allsense median rank 831) vs. unique-pairs (median rank 1,015) confirmed
+that frequently-reused pairs tend to be easier, validating unique pairs as
+the more conservative primary reporting unit.
 
 ---
 
@@ -103,7 +108,7 @@ most similar answer words.
 
 **Consequence:** The 15 context-free meaning features are artifacts of dataset
 construction and **must be removed** from the harder dataset models. This
-leaves 31 features (Exp 2A) or 25 features (Exp 2B).
+leaves 32 features (Exp 2A) or 26 features (Exp 2B).
 
 **Rationale:** Random distractors make the task trivially easy (high accuracy
 but uninformative). Cosine-similarity-based distractors force the model to
@@ -112,7 +117,14 @@ whether clue context helps or hurts classification.
 
 **Alternative not taken (future direction):** Construct distractors by matching
 the WordNet relationship distribution of real pairs, which would let us retain
-all 28 cosine features but remove the 21 relationship features instead.
+all 28 cosine features but remove the 22 relationship features instead.
+
+**Validated (NB 05):** Cosine-similarity distractors work as intended —
+`cos_w1clue_w2all` gap flips negative (real 0.545 vs distractor 0.615,
+gap −0.070), confirming that raw cosine similarity can no longer
+distinguish real from distractor pairs. The `wn_max_path_sim` gap halves
+from +0.288 (easy) to +0.155 (harder) but persists, providing signal
+for classifiers to exploit.
 
 ---
 
@@ -140,6 +152,14 @@ degrades the ability to find the true answer — this is the most interpretable
 signal. The classifier adds a controlled experiment with ablation, but its
 results depend on how much the relationship and surface features absorb the
 signal. We should not oversell the classifier as the primary evidence.
+
+**Validated (NBs 04, 06–08):** The "either outcome is interesting" scenario
+played out. Retrieval analysis (NB 04) confirms misdirection: clue context
+roughly doubles the median rank (1,015 → 2,160). But the classifier (NBs
+06–08) finds context *helps* classification (+5.5 to +9.4pp Δ Hard), because
+the multivariate model exploits the *pattern* of contextual shift (real pairs
+shift differently from distractor pairs). Both findings are informative and
+complement each other.
 
 ---
 
@@ -218,7 +238,7 @@ embedding without delimiters behaves like an ungrounded representation and
 does not add distinct information. Removing it simplifies the pipeline from
 8 to 7 embedding types and from 28 to 21 pairwise cosine similarities
 (15 context-free + 6 context-informed), reducing the total feature count
-from 53 to 46 (21 meaning + 21 relationship + 4 surface).
+from 53 to 47 (21 meaning + 22 relationship + 4 surface).
 
 ---
 
@@ -315,7 +335,7 @@ and NB 07. If a bug is found, update both NB 03 and the utility module.
 one usable WordNet synset, allsense = common = obscure embeddings are
 identical, so within-word cosine features (e.g., `cos_w1common_w1obscure`)
 will be exactly 1.0 and cross-word features involving different sense types
-will be identical. Compute all 46 features uniformly for all rows. Carry
+will be identical. Compute all 47 features uniformly for all rows. Carry
 `def_num_usable_synsets` and `ans_num_usable_synsets` as metadata columns in
 `features_all.parquet` so downstream notebooks (retrieval analysis, classifier
 interpretation) can stratify or filter as needed.

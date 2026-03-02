@@ -119,7 +119,8 @@ print(f"Output directory: {OUTPUT_DIR}")
 The project is divided into sequential stages. Each stage saves its outputs as files. Downstream notebooks must load from those files — never recompute embeddings or earlier outputs inside a downstream notebook.
 
 The clustering analysis is split across two notebooks (04 and 05) with distinct
-research questions, and a third notebook (06) handles evaluation and report figures.
+research questions, a third notebook (06) handles evaluation and report figures,
+and a fourth notebook (07) runs a definitions-as-control experiment.
 
 ```
 Stage 0: Data Extraction
@@ -182,16 +183,40 @@ Stage 5: Constrained and Targeted Experiments
 
 Stage 6: Evaluation and Report Figures
   Notebook: 06_evaluation_and_figures.ipynb
+  Primary author: Sahana
   Purpose: Load all results from Stages 4 and 5, produce publication-quality
            figures and systematic comparisons for the final report.
   Inputs:  All cluster label CSVs from 04 and 05, verified_clues_labeled.csv,
-           embeddings_umap_2d.npy, indicator_index_all.csv
-  Methods: Per-type overlays (Ho and GT labels), cross-method metrics comparison,
-           noise point investigation, report-ready figures
+           embeddings_umap_2d.npy, indicator_index_all.csv,
+           clustering_metrics_summary.csv, constrained_vs_unconstrained_metrics.csv,
+           subset_experiment_metrics.csv
+  Methods: Unified cross-method metrics comparison (Figure 1), sensitivity
+           analysis (Figure 2), Ho type overlay (Figure 3), ARI contrast
+           (Figure 4), constrained vs unconstrained heatmaps (Figure 5),
+           anagram sub-clustering (Figure 6), master summary table
   NOTE:    No new clustering is performed here. This notebook only loads,
            visualizes, and evaluates.
   Outputs: figures/ directory (publication-quality), metrics tables for report
   Runs on: Local or Colab
+
+Stage 7: Definitions as Control Condition
+  Notebook: 07_definitions_control.ipynb
+  Primary author: Nathan (NC)
+  Purpose: Test whether indicator clustering detects wordplay-specific structure
+           or just general semantic similarity, by running the same pipeline
+           on definition words extracted from the same clues.
+  Inputs:  clues_raw.csv (Stage 0), embeddings and clustering pipeline
+           replicated from Stages 2-4
+  Methods: Definition extraction and verification (same checksum as NB 01),
+           BGE-M3 embedding, UMAP reduction, HDBSCAN and agglomerative
+           clustering at matched k values, side-by-side metrics comparison
+  NOTE:    Section 6 (Interpretation) is still a template with placeholder
+           text. Needs to be filled in after reviewing outputs.
+  Outputs: verified_definition_clues.csv, definitions_unique.csv,
+           embeddings_bge_m3_definitions.npy, definition_index.csv,
+           embeddings_umap_10d_definitions.npy, embeddings_umap_2d_definitions.npy,
+           definitions_clustering_metrics.csv
+  Runs on: Great Lakes or Colab GPU (Section 2); Local (all other sections)
 ```
 
 Each notebook must begin with a cell that checks for required input files and prints a clear error message if they are missing, rather than failing silently.
@@ -203,7 +228,7 @@ Each notebook must begin with a cell that checks for required input files and pr
 - **Language:** Python 3, Jupyter notebooks (.ipynb)
 - **Key libraries:** pandas, numpy, scikit-learn, sentence-transformers, umap-learn, hdbscan, matplotlib, seaborn
 - **Reproducibility:** Always set random_state=42 (or np.random.seed(42)) at the top of every notebook
-- **File naming:** NN_descriptive_name_Author.ipynb (e.g., 02_embeddings_NC.ipynb)
+- **File naming:** NN_descriptive_name.ipynb (e.g., 02_embedding_generation.ipynb). Authorship is captured in the header cell inside each notebook, not in the filename.
 - **Save outputs** with a version suffix or timestamp so reruns don't silently overwrite previous results
 - **Do not hardcode paths** — always use the ENV config block above
 
