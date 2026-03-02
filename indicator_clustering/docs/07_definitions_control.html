@@ -14675,18 +14675,18 @@ presence in clue surfaces (copied from <code>01b_data_cleaning.ipynb</code>)</li
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">unicodedata</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="c1">#from sentence_transformers import SentenceTransformer</span>
-<span class="c1">#import umap</span>
+<span class="kn">from</span> <span class="nn">sentence_transformers</span> <span class="kn">import</span> <span class="n">SentenceTransformer</span>
+<span class="kn">import</span> <span class="nn">umap</span>
 
 <span class="kn">import</span> <span class="nn">hdbscan</span>
 <span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">AgglomerativeClustering</span>
@@ -14727,10 +14727,10 @@ CUDA out-of-memory errors on Colab's T4 GPU.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="k">try</span><span class="p">:</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">IS_COLAB</span> <span class="o">=</span> <span class="s1">&#39;google.colab&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">get_ipython</span><span class="p">())</span>
 <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
     <span class="n">IS_COLAB</span> <span class="o">=</span> <span class="kc">False</span>
@@ -14783,10 +14783,11 @@ CUDA out-of-memory errors on Colab's T4 GPU.</p>
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Environment : Great Lakes
-Project root: /home/nycantwe/ccc_project
-Data dir    : /home/nycantwe/ccc_project/data
-Batch size  : 256
+<pre>Drive already mounted at /content/drive; to attempt to forcibly remount, call drive.mount(&#34;/content/drive&#34;, force_remount=True).
+Environment : Colab
+Project root: /content/drive/MyDrive/SIADS 692 Milestone II/Milestone II - NLP Cryptic Crossword Clues
+Data dir    : /content/drive/MyDrive/SIADS 692 Milestone II/Milestone II - NLP Cryptic Crossword Clues/data
+Batch size  : 32
 </pre>
 </div>
 </div>
@@ -14800,10 +14801,10 @@ Batch size  : 256
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Set the global random seed for reproducibility.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Set the global random seed for reproducibility.</span>
 <span class="c1"># Every stochastic step (UMAP, HDBSCAN soft assignments) must use this seed</span>
 <span class="c1"># so results match across runs — a hard requirement from CLAUDE.md.</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
@@ -14889,10 +14890,10 @@ deeper in the notebook — a convention required by CLAUDE.md.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="n">required</span> <span class="o">=</span> <span class="p">{</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">required</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;clues_raw.csv&#39;</span><span class="p">:</span> <span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;clues_raw.csv&#39;</span><span class="p">,</span>
 <span class="p">}</span>
 
@@ -14972,10 +14973,10 @@ pairs where we are confident the definition string genuinely appears in the clue
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="n">df_clues</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;clues_raw.csv&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_clues</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;clues_raw.csv&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_clues</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1"> rows from clues_raw.csv&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Columns: </span><span class="si">{</span><span class="n">df_clues</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -15046,10 +15047,10 @@ they will simply produce no verified matches and be filtered out later).</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Drop rows where clue, answer, or definition is missing; null definitions are kept (01b behavior)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Drop rows where clue, answer, or definition is missing; null definitions are kept (01b behavior)</span>
 <span class="n">df_clues</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;clue&#39;</span><span class="p">,</span> <span class="s1">&#39;answer&#39;</span><span class="p">,</span> <span class="s1">&#39;definition&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Strip trailing letter-count parentheses, e.g. &quot;(5,2,3)&quot; -&gt; preserve surface only</span>
@@ -15097,10 +15098,10 @@ they will simply produce no verified matches and be filtered out later).</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Extract the required answer format from the parenthetical at the end of the clue</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Extract the required answer format from the parenthetical at the end of the clue</span>
 <span class="n">df_clues</span><span class="p">[</span><span class="s1">&#39;req_ans_format&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_clues</span><span class="p">[</span><span class="s1">&#39;clue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span>
     <span class="sa">r</span><span class="s1">&#39;\((\d+(?:[,\s-]+\d+)*)\)$&#39;</span>
 <span class="p">)</span>
@@ -15173,10 +15174,10 @@ pair, and those rows are dropped before export.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Build a fast lookup dictionary: clue_id -&gt; normalized surface</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Build a fast lookup dictionary: clue_id -&gt; normalized surface</span>
 <span class="n">clue_lookup</span> <span class="o">=</span> <span class="n">df_clues</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;clue_id&#39;</span><span class="p">)[</span><span class="s1">&#39;surface_normalized&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
 <span class="k">def</span> <span class="nf">verify_clues</span><span class="p">(</span><span class="n">definition</span><span class="p">,</span> <span class="n">clue_ids</span><span class="p">):</span>
@@ -15204,10 +15205,10 @@ pair, and those rows are dropped before export.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># 1. Build definition -&gt; clue_ids mapping</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 1. Build definition -&gt; clue_ids mapping</span>
 <span class="n">definition_to_clues</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">df_clues</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;definition_normalized&#39;</span><span class="p">)[</span><span class="s1">&#39;clue_id&#39;</span><span class="p">]</span>
     <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -15264,10 +15265,10 @@ Unique definitions verified: 196,636
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Keep only rows where at least one clue verified the definition</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Keep only rows where at least one clue verified the definition</span>
 <span class="n">df_export</span> <span class="o">=</span> <span class="n">df_clues</span><span class="p">[</span><span class="n">df_clues</span><span class="p">[</span><span class="s1">&#39;num_clues_verified&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">df_export</span><span class="p">[</span><span class="s1">&#39;clue_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_export</span><span class="p">[</span><span class="s1">&#39;clue_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
@@ -15330,10 +15331,10 @@ Saved 464,054 rows to verified_definition_clues.csv
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Some definitions of exceptional length.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Some definitions of exceptional length.</span>
 <span class="n">df_export</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;definition&#39;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">col</span><span class="p">:</span> <span class="n">col</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">(),</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
@@ -15352,7 +15353,7 @@ Saved 464,054 rows to verified_definition_clues.csv
 <div class="jp-OutputArea-child">
 
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
 
 
 
@@ -15531,10 +15532,10 @@ Saved 464,054 rows to verified_definition_clues.csv
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Example long-form definition that is correctly represented.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Example long-form definition that is correctly represented.</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df_clues</span><span class="p">[</span><span class="n">df_clues</span><span class="p">[</span><span class="s1">&#39;clue_id&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">504161</span><span class="p">]</span><span class="o">.</span><span class="n">surface_normalized</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df_clues</span><span class="p">[</span><span class="n">df_clues</span><span class="p">[</span><span class="s1">&#39;clue_id&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">504161</span><span class="p">]</span><span class="o">.</span><span class="n">definition_normalized</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df_clues</span><span class="p">[</span><span class="n">df_clues</span><span class="p">[</span><span class="s1">&#39;clue_id&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">504161</span><span class="p">]</span><span class="o">.</span><span class="n">answer</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
@@ -15593,10 +15594,10 @@ this cell can also be run independently if the kernel is restarted after generat
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="n">df_verified_defs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;verified_definition_clues.csv&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_verified_defs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;verified_definition_clues.csv&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;verified_definition_clues.csv: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_verified_defs</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1"> rows&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unique clue_ids   : </span><span class="si">{</span><span class="n">df_verified_defs</span><span class="p">[</span><span class="s2">&quot;clue_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unique definitions: </span><span class="si">{</span><span class="n">df_verified_defs</span><span class="p">[</span><span class="s2">&quot;definition&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -15670,10 +15671,10 @@ Notebook 02.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="n">defs_csv_path</span> <span class="o">=</span> <span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;definitions_unique.csv&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">defs_csv_path</span> <span class="o">=</span> <span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;definitions_unique.csv&#39;</span>
 <span class="n">df_definitions</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">defs_csv_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Saved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_definitions</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1"> unique definitions to:&#39;</span><span class="p">)</span>
@@ -15760,15 +15761,15 @@ Subsequent runs load from cache and are much faster.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Load the same BGE-M3 model used in NB 02 for indicators.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load the same BGE-M3 model used in NB 02 for indicators.</span>
 <span class="c1"># First run: ~2.3 GB download. Subsequent runs: loads from local cache in seconds.</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">SentenceTransformer</span><span class="p">(</span><span class="s1">&#39;BAAI/bge-m3&#39;</span><span class="p">)</span>
 
@@ -15779,242 +15780,6 @@ Subsequent runs load from cache and are much faster.</p>
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_auth.py:94: UserWarning: 
-The secret `HF_TOKEN` does not exist in your Colab secrets.
-To authenticate with the Hugging Face Hub, create a token in your settings tab (https://huggingface.co/settings/tokens), set it as secret in your Google Colab and restart your session.
-You will be able to reuse this secret in all of your notebooks.
-Please note that authentication is recommended but still optional to access public models or datasets.
-  warnings.warn(
-</pre>
-</div>
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>modules.json:   0%|          | 0.00/349 [00:00&lt;?, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>config_sentence_transformers.json:   0%|          | 0.00/123 [00:00&lt;?, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-</pre>
-</div>
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>README.md: 0.00B [00:00, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>sentence_bert_config.json:   0%|          | 0.00/54.0 [00:00&lt;?, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>config.json:   0%|          | 0.00/687 [00:00&lt;?, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>pytorch_model.bin:   0%|          | 0.00/2.27G [00:00&lt;?, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>Loading weights:   0%|          | 0/391 [00:00&lt;?, ?it/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>model.safetensors:   0%|          | 0.00/2.27G [00:00&lt;?, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>tokenizer_config.json:   0%|          | 0.00/444 [00:00&lt;?, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>sentencepiece.bpe.model:   0%|          | 0.00/5.07M [00:00&lt;?, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>tokenizer.json:   0%|          | 0.00/17.1M [00:00&lt;?, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>special_tokens_map.json:   0%|          | 0.00/964 [00:00&lt;?, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>config.json:   0%|          | 0.00/191 [00:00&lt;?, ?B/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Model loaded : BAAI/bge-m3
-Embedding dim: 1024
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -16035,15 +15800,15 @@ V100 or A40, this should complete in 2–5 minutes.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Load definitions_unique.csv (works even if kernel was restarted after Section 1)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load definitions_unique.csv (works even if kernel was restarted after Section 1)</span>
 <span class="n">df_definitions</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;definitions_unique.csv&#39;</span><span class="p">)</span>
 <span class="n">definitions_list</span> <span class="o">=</span> <span class="n">df_definitions</span><span class="p">[</span><span class="s1">&#39;definition&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Encoding </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">definitions_list</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1"> definitions  (batch_size=</span><span class="si">{</span><span class="n">BATCH_SIZE</span><span class="si">}</span><span class="s1">)...&#39;</span><span class="p">)</span>
@@ -16062,58 +15827,6 @@ V100 or A40, this should complete in 2–5 minutes.</p>
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Encoding 185,061 definitions  (batch_size=32)...
-</pre>
-</div>
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
-<pre>Batches:   0%|          | 0/5784 [00:00&lt;?, ?it/s]</pre>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>
-Embeddings shape: (185061, 1024)
-Dtype           : float32
-Memory          : 722.9 MB
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -16142,10 +15855,10 @@ the embedding model. This is the same contract used by NB 02 for indicators.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="n">emb_path</span>   <span class="o">=</span> <span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;embeddings_bge_m3_definitions.npy&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">emb_path</span>   <span class="o">=</span> <span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;embeddings_bge_m3_definitions.npy&#39;</span>
 <span class="n">index_path</span> <span class="o">=</span> <span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;definition_index.csv&#39;</span>
 
 <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">emb_path</span><span class="p">,</span> <span class="n">embeddings_defs</span><span class="p">)</span>
@@ -16189,10 +15902,10 @@ Saved index      : definition_index.csv  (185,061 rows)
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Reload and verify: shapes must match, and embeddings must be non-zero</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Reload and verify: shapes must match, and embeddings must be non-zero</span>
 <span class="n">emb_check</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;embeddings_bge_m3_definitions.npy&#39;</span><span class="p">)</span>
 <span class="n">index_check</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;definition_index.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
@@ -16290,10 +16003,10 @@ Run this section on Great Lakes or Colab with GPU for best performance.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Load embeddings from file so this section can run independently</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load embeddings from file so this section can run independently</span>
 <span class="c1"># (e.g., if the kernel was restarted after completing Section 2)</span>
 <span class="n">emb_path</span> <span class="o">=</span> <span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;embeddings_bge_m3_definitions.npy&#39;</span>
 <span class="k">assert</span> <span class="n">emb_path</span><span class="o">.</span><span class="n">exists</span><span class="p">(),</span> <span class="p">(</span>
@@ -16352,10 +16065,10 @@ geometric structure while still greatly reducing noise and computation time.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># UMAP parameters are fixed to match NB 03 exactly</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># UMAP parameters are fixed to match NB 03 exactly</span>
 <span class="n">UMAP_PARAMS</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Fitting 10D UMAP (for clustering input)...&#39;</span><span class="p">)</span>
@@ -16446,10 +16159,10 @@ extracting 2D from the 10D) ensures each is optimised for its specific purpose.<
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Fitting 2D UMAP (for visualisation only)...&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Fitting 2D UMAP (for visualisation only)...&#39;</span><span class="p">)</span>
 
 <span class="n">reducer_2d</span> <span class="o">=</span> <span class="n">umap</span><span class="o">.</span><span class="n">UMAP</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="n">UMAP_PARAMS</span><span class="p">)</span>
 <span class="n">embeddings_umap_2d</span> <span class="o">=</span> <span class="n">reducer_2d</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">embeddings_defs</span><span class="p">)</span>
@@ -16515,10 +16228,10 @@ extracting 2D from the 10D) ensures each is optimised for its specific purpose.<
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Save both reductions. File names are prefixed with &quot;definitions_&quot; to distinguish</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Save both reductions. File names are prefixed with &quot;definitions_&quot; to distinguish</span>
 <span class="c1"># from the indicator UMAP files (embeddings_umap_10d.npy, embeddings_umap_2d.npy).</span>
 <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;embeddings_umap_10d_definitions.npy&#39;</span><span class="p">,</span> <span class="n">embeddings_umap_10d</span><span class="p">)</span>
 <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;embeddings_umap_2d_definitions.npy&#39;</span><span class="p">,</span>  <span class="n">embeddings_umap_2d</span><span class="p">)</span>
@@ -16593,10 +16306,10 @@ similar neighbour (lower is better)</li>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Load UMAP outputs and definition names from file.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load UMAP outputs and definition names from file.</span>
 <span class="c1"># This makes Section 4 independently runnable after Sections 2–3 have completed.</span>
 <span class="n">embeddings_umap_10d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;embeddings_umap_10d_definitions.npy&#39;</span><span class="p">)</span>
 <span class="n">embeddings_umap_2d</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;embeddings_umap_2d_definitions.npy&#39;</span><span class="p">)</span>
@@ -16665,10 +16378,10 @@ indicator baseline: 282 clusters, 33.4% noise, silhouette=0.631.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Running HDBSCAN  eps=0.0  min_cluster_size=10 ...&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Running HDBSCAN  eps=0.0  min_cluster_size=10 ...&#39;</span><span class="p">)</span>
 
 <span class="n">clusterer_hdbscan</span> <span class="o">=</span> <span class="n">hdbscan</span><span class="o">.</span><span class="n">HDBSCAN</span><span class="p">(</span>
     <span class="n">min_cluster_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
@@ -16719,10 +16432,10 @@ Noise points: 81,382  (44.0%)
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># Silhouette and Davies-Bouldin are computed on non-noise points only.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Silhouette and Davies-Bouldin are computed on non-noise points only.</span>
 <span class="c1"># Including noise points (label=-1) would unfairly penalise the score.</span>
 <span class="n">mask_h</span> <span class="o">=</span> <span class="n">labels_hdbscan</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
 <span class="n">sil_h</span><span class="p">,</span> <span class="n">db_h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
@@ -16807,10 +16520,10 @@ points.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="c1"># ============================================================</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ============================================================</span>
 <span class="c1"># Downsampling Definition Embeddings</span>
 <span class="c1"># ============================================================</span>
 <span class="c1">#</span>
@@ -16892,10 +16605,10 @@ Downsampling complete.
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="n">K_VALUES</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">34</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">K_VALUES</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">34</span><span class="p">]</span>
 <span class="n">agglo_metrics</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">K_VALUES</span><span class="p">:</span>
@@ -16967,10 +16680,10 @@ Section 5 straightforward.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="n">hdbscan_row</span> <span class="o">=</span> <span class="p">{</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hdbscan_row</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;HDBSCAN&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">),</span>
     <span class="s1">&#39;n_clusters&#39;</span><span class="p">:</span> <span class="n">n_clusters_h</span><span class="p">,</span> <span class="s1">&#39;n_noise&#39;</span><span class="p">:</span> <span class="n">n_noise_h</span><span class="p">,</span>
     <span class="s1">&#39;noise_pct&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">noise_pct_h</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
@@ -17070,10 +16783,10 @@ with definitions-only analysis and print a clear warning.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[27]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="n">ind_metrics_path</span> <span class="o">=</span> <span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;clustering_metrics_summary.csv&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ind_metrics_path</span> <span class="o">=</span> <span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;clustering_metrics_summary.csv&#39;</span>
 <span class="n">df_ind_metrics</span>   <span class="o">=</span> <span class="kc">None</span>
 
 <span class="k">if</span> <span class="n">ind_metrics_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
@@ -17177,10 +16890,10 @@ have worse (higher) DB than indicators</li>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[28]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="k">if</span> <span class="n">df_ind_metrics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="n">df_ind_metrics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
     <span class="c1"># Locate the agglomerative rows — handle varying column naming conventions</span>
     <span class="n">method_col</span> <span class="o">=</span> <span class="s1">&#39;method&#39;</span> <span class="k">if</span> <span class="s1">&#39;method&#39;</span> <span class="ow">in</span> <span class="n">df_ind_metrics</span><span class="o">.</span><span class="n">columns</span> <span class="k">else</span> <span class="kc">None</span>
     <span class="n">k_col</span>      <span class="o">=</span> <span class="s1">&#39;k&#39;</span> <span class="k">if</span> <span class="s1">&#39;k&#39;</span> <span class="ow">in</span> <span class="n">df_ind_metrics</span><span class="o">.</span><span class="n">columns</span> <span class="k">else</span> <span class="s1">&#39;n_clusters&#39;</span>
@@ -17266,10 +16979,10 @@ intermixed? The geometry often tells a different story than the metrics alone.</
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[29]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="n">labels_k10</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">labels_k10</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
     <span class="n">DATA_DIR</span> <span class="o">/</span> <span class="s1">&#39;definitions_cluster_labels_agglo_k10.csv&#39;</span>
 <span class="p">)[</span><span class="s1">&#39;cluster&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
@@ -17365,10 +17078,10 @@ that indicator clustering captures something specific to the wordplay domain.</p
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[30]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span><span class="n">K_INSPECT</span> <span class="o">=</span> <span class="mi">10</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">K_INSPECT</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">labels_inspect</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
     <span class="n">DATA_DIR</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;definitions_cluster_labels_agglo_k</span><span class="si">{</span><span class="n">K_INSPECT</span><span class="si">}</span><span class="s1">.csv&#39;</span>
 <span class="p">)[</span><span class="s1">&#39;cluster&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
@@ -17408,46 +17121,77 @@ that indicator clustering captures something specific to the wordplay domain.</p
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>=== Centroid-Nearest Definitions per Cluster (k=10) ===
 
+Cluster 0  (n=18,799):
+    · they ruminate
+    · they may be high
+    · rays
+    · this bloke
+    · get cracking with this
+
+Cluster 1  (n=9,570):
+    · with measles
+    · inyourface
+    · it could be critical
+    · what faces
+    · get bent
+
+Cluster 2  (n=16,473):
+    · aloof
+    · to pry
+    · ones highmaintenance
+    · the most bent
+    · faced
+
+Cluster 3  (n=13,133):
+    · entanglements
+    · confab
+    · commie
+    · ray
+    · ones peaked
+
+Cluster 4  (n=13,347):
+    · be
+    · comb
+    · hammer this
+    · giddyup
+    · potential share
+
+Cluster 5  (n=4,666):
+    · that might get trump high
+    · a ray
+    · they may be wearing rings
+    · as shown by face
+    · they are balmy
+
+Cluster 6  (n=9,299):
+    · compere
+    · on the dot
+    · entrenched peak
+    · enticed
+    · enfeebled
+
+Cluster 7  (n=5,121):
+    · have an inkling of
+    · facet
+    · one may generate
+    · one on top in something vulgar
+    · it could be dramatic
+
+Cluster 8  (n=5,785):
+    · tendency to pry
+    · compel
+    · encumbered
+    · they might be tall
+    · it may create space
+
+Cluster 9  (n=5,590):
+    · be in cahoots
+    · another bloke
+    · crowning point
+    · a tyrants thing
+    · he could give you a ring
+
 </pre>
-</div>
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">IndexError</span>                                Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[30], line 12</span>
-<span class="ansi-green-intense-fg ansi-bold">     10</span> dists     <span style="color: rgb(98,98,98)">=</span> np<span style="color: rgb(98,98,98)">.</span>linalg<span style="color: rgb(98,98,98)">.</span>norm(embeddings_umap_10d_sample[mask_c] <span style="color: rgb(98,98,98)">-</span> centroid, axis<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(98,98,98)">1</span>)
-<span class="ansi-green-intense-fg ansi-bold">     11</span> top5_idx  <span style="color: rgb(98,98,98)">=</span> np<span style="color: rgb(98,98,98)">.</span>argsort(dists)[:<span style="color: rgb(98,98,98)">5</span>]
-<span class="ansi-green-fg">---&gt; 12</span> top5_defs <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">definition_names</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg">mask_c</span><span class="ansi-yellow-bg">]</span>[top5_idx]
-<span class="ansi-green-intense-fg ansi-bold">     13</span> n_in_clust <span style="color: rgb(98,98,98)">=</span> mask_c<span style="color: rgb(98,98,98)">.</span>sum()
-<span class="ansi-green-intense-fg ansi-bold">     14</span> <span style="color: rgb(0,135,0)">print</span>(<span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">Cluster </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>cluster_id<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">  (n=</span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>n_in_clust<span class="ansi-bold" style="color: rgb(175,95,135)">:</span><span style="color: rgb(175,0,0)">,</span><span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">):</span><span style="color: rgb(175,0,0)">&#39;</span>)
-
-File <span class="ansi-green-fg">~/.local/lib/python3.12/site-packages/pandas/core/arrays/_mixins.py:304</span>, in <span class="ansi-cyan-fg">NDArrayBackedExtensionArray.__getitem__</span><span class="ansi-blue-fg">(self, key)</span>
-<span class="ansi-green-intense-fg ansi-bold">    301</span> <span style="color: rgb(95,135,135)"># error: Incompatible types in assignment (expression has type &#34;ExtensionArray&#34;,</span>
-<span class="ansi-green-intense-fg ansi-bold">    302</span> <span style="color: rgb(95,135,135)"># variable has type &#34;Union[int, slice, ndarray]&#34;)</span>
-<span class="ansi-green-intense-fg ansi-bold">    303</span> key <span style="color: rgb(98,98,98)">=</span> extract_array(key, extract_numpy<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>)  <span style="color: rgb(95,135,135)"># type: ignore[assignment]</span>
-<span class="ansi-green-fg">--&gt; 304</span> key <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">check_array_indexer</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">key</span><span class="ansi-yellow-bg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    305</span> result <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_ndarray[key]
-<span class="ansi-green-intense-fg ansi-bold">    306</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> lib<span style="color: rgb(98,98,98)">.</span>is_scalar(result):
-
-File <span class="ansi-green-fg">~/.local/lib/python3.12/site-packages/pandas/core/indexers/utils.py:570</span>, in <span class="ansi-cyan-fg">check_array_indexer</span><span class="ansi-blue-fg">(array, indexer)</span>
-<span class="ansi-green-intense-fg ansi-bold">    568</span>     <span style="color: rgb(95,135,135)"># GH26658</span>
-<span class="ansi-green-intense-fg ansi-bold">    569</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span style="color: rgb(0,135,0)">len</span>(indexer) <span style="color: rgb(98,98,98)">!=</span> <span style="color: rgb(0,135,0)">len</span>(array):
-<span class="ansi-green-fg">--&gt; 570</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">IndexError</span>(
-<span class="ansi-green-intense-fg ansi-bold">    571</span>             <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">Boolean index has wrong length: </span><span style="color: rgb(175,0,0)">&#34;</span>
-<span class="ansi-green-intense-fg ansi-bold">    572</span>             <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">&#34;</span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span><span style="color: rgb(0,135,0)">len</span>(indexer)<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)"> instead of </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span><span style="color: rgb(0,135,0)">len</span>(array)<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">&#34;</span>
-<span class="ansi-green-intense-fg ansi-bold">    573</span>         )
-<span class="ansi-green-intense-fg ansi-bold">    574</span> <span class="ansi-bold" style="color: rgb(0,135,0)">elif</span> is_integer_dtype(dtype):
-<span class="ansi-green-intense-fg ansi-bold">    575</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
-
-<span class="ansi-red-fg">IndexError</span>: Boolean index has wrong length: 101783 instead of 185061</pre>
 </div>
 </div>
 
@@ -17621,7 +17365,7 @@ unlikely to emerge from arbitrary text.</li>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-python"><pre><span></span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
      </div>
