@@ -191,7 +191,5 @@ matplotlib, seaborn. The indicator clustering component uses BGE-M3
 
 - Ho, G. (2022). A Dataset of Cryptic Crossword Clues.
   https://cryptics.georgeho.org/
-- Sutherland, D. (2012). Solving Cryptic Crosswords For Dummies.
-  John Wiley & Sons.
+- Liétard, B., & Loiseau, G. (2025). CALE: Concept-aligned embeddings for both within-lemma and inter-lemma sense differentiation (arXiv:2508.04494). arXiv. __https://doi.org/10.48550/arXiv.2508.04494__
 - Tiernan, A., & Runnalls, L. (2025). Minute Cryptic. St. Martin's Griffin.
-- Hallberg, O. (2025). CALE: Context-Aware Lexical Embeddings.
