@@ -1,7 +1,9 @@
 # Exploring Wordplay and Misdirection in Cryptic Crossword Clues
 
-University of Michigan MADS Capstone Project — SIADS 696, Winter 2026
+University of Michigan MADS Milestone II Project — SIADS 696, Winter 2026
+
 Team: Victoria Winters, Sahana Sundar, Nathan Cantwell, Hans Li
+
 Faculty Advisor: Dr. Kevyn Collins-Thompson
 
 ## Project Overview
@@ -64,8 +66,7 @@ the Open Database License (ODbL v1.0):
 
 - Download: https://cryptics.georgeho.org/data.db
 - The file will download as `data.sqlite3`
-- Place it in `indicator_clustering/data/` and/or `clue_misdirection/data/`
-  before running notebooks
+- Place it in `indicator_clustering/data/` before running notebooks
 
 See `DATA_LICENSE` for full attribution and license details.
 
