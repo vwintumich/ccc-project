@@ -17,7 +17,7 @@ previous one.
 | 3 | 03_dimensionality_reduction | [03_dimensionality_reduction_2026-02-26_1503.html](https://vwintumich.github.io/ccc-project/indicator_clustering/docs/03_dimensionality_reduction_2026-02-26_1503.html) | PCA and UMAP reduction to 10D (clustering) and 2D (visualization) |
 | 4 | 04_clustering | [04_clustering_2026-02-26_1516.html](https://vwintumich.github.io/ccc-project/indicator_clustering/docs/04_clustering_2026-02-26_1516.html) | Unconstrained HDBSCAN and agglomerative clustering exploration |
 | 5 | 05_constrained_and_targeted | [05_constrained_and_targeted_2026-02-26_1518.html](https://vwintumich.github.io/ccc-project/indicator_clustering/docs/05_constrained_and_targeted_2026-02-26_1518.html) | Seed-word constraints, subset experiments, anagram sub-clustering |
-| 6 | 06_evaluation_and_figures | [06_evaluation_and_figures.html](https://vwintumich.github.io/ccc-project/indicator_clustering/docs/06_evaluation_and_figures.html) | Publication-quality figures and systematic evaluation for the report (**Note:** Report figures saved to `outputs/figures/report/`.) |
+| 6 | 06_evaluation_and_figures | [06_evaluation_and_figures_2026_03_02.html](https://github.com/vwintumich/ccc-project/blob/main/indicator_clustering/docs/06_evaluation_and_figures_2026_03_02.html) | Publication-quality figures and systematic evaluation for the report (**Note:** Report figures saved to `outputs/figures/report/`.) |
 | 7 | 07_definitions_control | [07_definitions_control.html](https://vwintumich.github.io/ccc-project/indicator_clustering/docs/07_definitions_control.html) | Definitions-as-control experiment (Section 6 interpretation still template) |
 
 ### Older Renders (superseded)
