@@ -8,23 +8,32 @@ crossword clues. The research question: *How much does the surface reading of
 a cryptic clue mislead embedding-based models trying to connect the definition
 to the answer?*
 
-The project has two analyses:
+**Phase 1 (Milestone II — complete)** had two analyses:
 1. **Retrieval analysis** — rank all known answer words by cosine similarity
    to the definition under various embedding conditions; measure how clue
    context degrades retrieval of the true answer. This is the primary evidence
    for misdirection.
 2. **Binary classifier** — distinguish real definition–answer pairs from
    distractor pairs across easy and harder datasets, with and without
-   clue-context features. This satisfies the course requirement for supervised
+   clue-context features. This satisfied the course requirement for supervised
    learning (3 model families, CV, ablation, etc.).
+
+**Phase 2 (ongoing)** extends this work toward publication. The goal is to
+formalize misdirection as a measurable quantity using a unified logistic
+retrieval model and a per-pair misdirection score (log-odds ratio of
+probability with vs. without clue context). See `PLAN_PHASE2.md`.
 
 ## Team
 
+### Phase 2 (ongoing)
+- **Victoria Winters**
+- **Nathan Cantwell**
+
+### Phase 1 (Milestone II — complete)
 - **Victoria Winters** (CCC Domain Expert): Research questions, project management, embeddings, AI-assisted notebook refactoring and repo management
-- **Hans Li** (Supervised Learning): Clue misdirection, AI prompting support
 - **Nathan Cantwell** (Unsupervised Learning): Indicator clustering, definition clustering comparison
-- **Sahana Sundar** (Evaluation): Evaluation and visualization, supervised/unsupervised support as needed
-- **All:** Data cleaning, report writing, intermittent reporting to faculty advisor
+- **Hans Li** (Supervised Learning, Phase 1): Clue misdirection, AI prompting support
+- **Sahana Sundar** (Evaluation, Phase 1): Evaluation and visualization
 
 Faculty Advisor: Dr. Kevyn Collins-Thompson (University of Michigan)
 
@@ -39,7 +48,8 @@ ccc-project/
 │   └── ...
 ├── clue_misdirection/          # ← YOU ARE HERE (supervised learning, Part A)
 │   ├── CLAUDE.md               # This file
-│   ├── PLAN.md                 # 12-step pipeline plan (from design doc v4)
+│   ├── PLAN_PHASE1.md          # Initial 12-step pipeline plan (from design doc v4)
+|   ├── PLAN_PHASE2.md          # Phase 2 research plan (unified retrieval model, misdirection score — post-Milestone II)
 │   ├── NOTEBOOKS.md            # Inventory of existing and planned notebooks
 │   ├── DATA.md                 # Data dictionary and schema
 │   ├── DECISIONS.md            # Locked-in team decisions
@@ -97,13 +107,12 @@ Every notebook must start with a markdown cell containing:
 **AI assistance:** Claude / Claude Code (Anthropic)
 **Environment:** [Local / Great Lakes / Colab]
 
-[Brief purpose statement, inputs, outputs, and which PLAN.md step(s)
+[Brief purpose statement, inputs, outputs, and which PLAN_PHASE1.md step(s)
 this notebook implements.]
 ```
 
 This intellectual lineage block credits the authors of prior work that
-each notebook draws on. Most existing work comes from Hans, with data
-cleaning contributions from Victoria and Sahana.
+each notebook draws on. 
 
 ### Notebook Summary Cell
 
@@ -209,14 +218,13 @@ George Ho's cryptic crossword clue dataset (660,613 clues).
 
 ## Key Reference Files
 
-- `PLAN.md` — The 12-step pipeline plan. Start here to understand what to build.
+- `PLAN_PHASE1.md` — The original 12-step pipeline plan. This phase is complete. See `PLAN_PHASE2.md` for ongoing work.
+- `PLAN_PHASE2.md` — Start here to understand what to build. This is the authoritative source for Phase 2; there is no separate design document behind it.
 - `NOTEBOOKS.md` — What already exists and what's missing.
 - `DATA.md` — Schema and data flow.
 - `DECISIONS.md` — Locked-in choices; do not revisit these.
 - `FINDINGS.md` — Running log of findings as the pipeline is built.
-- `supervised_learning_plan_v4.docx` — The authoritative design document
-  (supersedes v3, which was the original plan before embedding model and
-  feature engineering findings prompted revisions). All `.md` files are
-  derived from it.
+- `supervised_learning_plan_v4.docx` — Design document for Phase 1 (Milestone II). 
+  Superseded for new work by `PLAN_PHASE2.md`
 - `CONTEXT.md` — Hans's writeup of his prior exploratory work. Useful
-  background, but plan v4 supersedes his experimental design.
+  background, but plan v4 supersedes his experimental design for Phase 1 and PLAN_PHASE2 supersedes his design for Phase 2.
