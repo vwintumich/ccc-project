@@ -273,8 +273,12 @@ Where `dataset_name` matches the DATASET config variable in
 
 | File | Description |
 |------|-------------|
-| `split_config.json` | Records dataset name, random seed, train/test sizes, and date of split. Ensures reproducibility. |
+| `split_config.json` | Records dataset name, random seed, train/val/test fractions, n_train_triplets, n_val_rows, n_test_rows, and date created. Ensures reproducibility across all three splits. |
 | `test_indices.npy` | Integer array of row indices into dataset_{name}.parquet identifying the held-out test set. |
+| `val_indices.npy` | Integer array of row indices into dataset_{name}.parquet identifying the validation set. Used to compare different g's before the test set is opened. |
+| `val_stock_def_emb.npy` | Stock CALE allsense embeddings for validation-set definition words. Shape: (N_val, 1024). Sliced from Phase 1 definition_embeddings.npy — no GPU needed. |
+| `val_stock_ans_emb.npy` | Stock CALE allsense embeddings for validation-set answer words. Shape: (N_val, 1024). Sliced from Phase 1 answer_embeddings.npy. |
+| `val_stock_clue_emb.npy` | Stock CALE clue-context embeddings for validation-set rows. Shape: (N_val, 1024). Sliced from Phase 1 clue_context_embeddings.npy. |
 | `train_triplets.npz` | Compressed numpy archive containing three arrays: `anchors` (def allsense embeddings), `positives` (true answer allsense embeddings), `negatives` (distractor allsense embeddings). Shape of each: (N_triplets, 1024). |
 | `test_stock_def_emb.npy` | Stock CALE allsense embeddings for test-set definition words. Shape: (N_test, 1024). Sliced from Phase 1 definition_embeddings.npy — no GPU needed. |
 | `test_stock_ans_emb.npy` | Stock CALE allsense embeddings for test-set answer words. Shape: (N_test, 1024). Sliced from Phase 1 answer_embeddings.npy. |
@@ -308,8 +312,10 @@ Where `dataset_name` matches the DATASET config variable in
               ▼
     data/learned_g/{name}/
         split_config.json
-        test_indices.npy
         train_triplets.npz
+        val_indices.npy
+        val_stock_*_emb.npy
+        test_indices.npy
         test_stock_*_emb.npy
               │
               ▼
