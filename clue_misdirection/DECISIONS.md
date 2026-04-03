@@ -36,6 +36,8 @@ different purpose.
 **Choice:** Use the single-word embedding from the model (no context sentence)
 for `Word1_average` and `Word2_average`.
 
+**Superseded by Decision 14.** The allsense-average approach replaced bare-word embeddings. See Decision 14 for the implemented choice.
+
 **Rationale:** This conflates senses in a way that depends on the model's
 training data, which is fine — it represents the "uncontrolled" baseline.
 The WordNet-based sense-specific embeddings (common/obscure) give us

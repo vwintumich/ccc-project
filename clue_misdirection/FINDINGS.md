@@ -470,4 +470,3 @@ the value of full-data hyperparameter tuning.
 
 ## Phase 2 — Research Extension (Post-Milestone II)
 
-*Ongoing. See `PLAN_PHASE2.md` for the current research plan.*

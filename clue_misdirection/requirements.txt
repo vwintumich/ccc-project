@@ -9,6 +9,8 @@ pyarrow>=14.0          # for .parquet read/write
 # NLP / Embeddings
 sentence-transformers>=3.0
 torch>=2.0
+transformers>=4.40       # AutoModel, AutoTokenizer, save_pretrained()
+safetensors>=0.4         # portable model weight format for save_pretrained()
 nltk>=3.8              # WordNet, synsets
 
 # Machine Learning
@@ -20,7 +22,7 @@ matplotlib>=3.7
 seaborn>=0.12
 
 # Notes:
-# - The embedding model (oskar-h/cale-modernbert-base) is downloaded
+# - The embedding model (gabrielloiseau/CALE-MBERT-en) is downloaded
 #   automatically by sentence-transformers on first use.
 # - NLTK data (wordnet, omw-1.4) is downloaded in-notebook.
 # - GPU steps (Step 2) require a CUDA-capable torch installation.
