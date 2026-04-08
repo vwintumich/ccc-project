@@ -162,7 +162,6 @@ research questions guiding this work.
 
 | Script | Status | Description |
 |--------|--------|-------------|
-| `scripts/train_g_triplet.py` | ✅ Complete | GPU training script. Loads triplets prepared by NB09, fine-tunes CALE using triplet loss, re-embeds validation set with learned g, estimates validation ATE, saves results with `test_evaluated: false`. Accepts command-line args for `--dataset`, `--epochs`, `--margin`, `--lr`. Saves fine-tuned model via `save_pretrained()`. |
-| `scripts/evaluate_final_g.py` | ✅ Complete | One-time final evaluation script. Loads a finalized model selected from validation results, re-embeds the test set with learned g, computes the final ATE, and updates ate_results.json. Run exactly once after all experimental decisions are made. Never run during the experimental cycle. |
+| `scripts/train_g_triplet.py` | ❌ Not yet created | GPU training script. Loads triplets prepared by NB09, fine-tunes CALE using triplet loss, re-embeds test set with both stock and learned g, estimates ATE, saves results. Accepts command-line args for `--dataset`, `--epochs`, `--margin`, `--lr`. Saves fine-tuned model via `save_pretrained()`. |
 | `scripts/train_g_triplet.sh` | ❌ Not yet created | SLURM submission script for train_g_triplet.py. GPU partition, 1 GPU, 32GB RAM, appropriate wall time. |
 | `scripts/train_g_triplet_test.sh` | ❌ Not yet created | SLURM test script. Passes `--sample` flag for a fast end-to-end check before full run. |

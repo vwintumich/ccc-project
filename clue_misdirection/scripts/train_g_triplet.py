@@ -9,21 +9,21 @@ that work to run cleanly on Great Lakes using the prepared inputs from
 
 Purpose:
     Loads pre-built triplets and stock embeddings, fine-tunes CALE using
-    triplet margin loss, re-embeds the validation set with the learned g,
-    estimates the misdirection ATE on the validation set, and saves all
-    results. The test set is NOT touched by this script — test set
-    evaluation is handled separately by evaluate_final_g.py, which is
-    run exactly once after a final g has been selected on validation.
+    triplet margin loss, re-embeds the validation and test sets with the
+    learned g, estimates the misdirection ATE on both sets, and saves all
+    results.
 
 Inputs (all from data/learned_g/{dataset}/):
     train_triplets.npz — anchors, positives, negatives (N_triplets, 1024)
     val_indices.npy, val_stock_*.npy — validation set stock embeddings
+    test_indices.npy, test_stock_*.npy — test set stock embeddings
     split_config.json — metadata from NB09
 
 Outputs (saved to data/learned_g/{dataset}/):
     model_{method}_{tag}/ — fine-tuned model via save_pretrained()
     val_learned_*.npy — learned g embeddings for validation set
-    ate_results.json — validation ATE estimates (stock vs learned)
+    test_learned_*.npy — learned g embeddings for test set
+    ate_results.json — ATE estimates (stock vs learned, val and test)
     training_log.csv — per-step loss and learning rate
 
 Key design decisions:
@@ -399,17 +399,18 @@ def main():
         print(f"  may still learn from the {frac_correct:.1%} of informative triplets.")
     print()
 
-    # Load stock embeddings for validation only.
-    # The test set is kept completely locked during the experimental cycle.
-    # Loading it here, even without looking at the results, creates
-    # unnecessary risk of data leakage influencing experimental decisions.
-    # Test set evaluation happens once only, in evaluate_final_g.py, after
-    # a final g has been selected on validation performance.
+    # Load stock embeddings for validation and test
     val_stock_def = np.load(output_dir / "val_stock_def_emb.npy")
     val_stock_ans = np.load(output_dir / "val_stock_ans_emb.npy")
     val_stock_clue = np.load(output_dir / "val_stock_clue_emb.npy")
     val_indices = np.load(output_dir / "val_indices.npy")
     print(f"Validation set: {len(val_indices):,} rows")
+
+    test_stock_def = np.load(output_dir / "test_stock_def_emb.npy")
+    test_stock_ans = np.load(output_dir / "test_stock_ans_emb.npy")
+    test_stock_clue = np.load(output_dir / "test_stock_clue_emb.npy")
+    test_indices = np.load(output_dir / "test_indices.npy")
+    print(f"Test set:       {len(test_indices):,} rows")
 
     with open(output_dir / "split_config.json") as f:
         split_config = json.load(f)
@@ -563,15 +564,12 @@ def main():
     # Load dataset to map indices back to words/clue_ids
     df_full = pd.read_parquet(data_dir / f"dataset_{args.dataset}.parquet")
 
-    # Build text-based triplet dataset from the training split.
+    # Build text-based triplet dataset from the training split
     # For each pre-computed triplet, we need to reconstruct the text phrases.
-    # Training rows are real rows whose indices are NOT in the validation set
-    # and NOT in the test set. We load test_indices only for this exclusion —
-    # no test embeddings or results are computed.
-    test_indices_for_exclusion = np.load(output_dir / "test_indices.npy")
-    excluded = set(val_indices) | set(test_indices_for_exclusion)
+    # We get the train real rows from the split and match to distractors.
     train_real = df_full[
-        (~df_full.index.isin(excluded)) & (df_full["label"] == 1)
+        (df_full.index.isin(set(df_full.index) - set(val_indices) - set(test_indices)))
+        & (df_full["label"] == 1)
     ]
 
     # Build anchor/positive/negative text arrays
@@ -755,18 +753,15 @@ def main():
     print()
 
     # =====================================================================
-    # Section 7 — Re-embed validation set with learned g
+    # Section 7 — Re-embed val and test sets with learned g
     # =====================================================================
-    # Only the validation set is re-embedded here. The test set is kept
-    # locked — it will be re-embedded in evaluate_final_g.py after a
-    # single g has been selected based on validation performance.
     print("=" * 65)
-    print("Section 7: Re-embedding validation set with learned g")
+    print("Section 7: Re-embedding val and test sets with learned g")
     print("=" * 65)
 
     # For re-embedding, we need the original CALE-format phrases for each
-    # val row. We look them up from the phrase CSVs using the word strings
-    # and clue_ids from the dataset.
+    # val/test row. We look them up from the phrase CSVs using the word
+    # strings and clue_ids from the dataset.
 
     def get_allsense_phrase(word, phrase_lookup):
         """Get the common-sense phrase for a word (first synset).
@@ -800,8 +795,9 @@ def main():
 
         return np.array(all_embeddings, dtype=np.float32)
 
-    # Get word lists and clue phrases for the validation set
+    # Get word lists and clue phrases for val and test sets
     val_df = df_full.loc[val_indices]
+    test_df = df_full.loc[test_indices]
 
     print(f"\nRe-embedding validation set ({len(val_df):,} rows)...")
     t0 = time.time()
@@ -825,15 +821,44 @@ def main():
     )
     print(f"  Validation re-embedding done in {time.time() - t0:.0f}s")
 
-    # Save learned validation embeddings
+    print(f"\nRe-embedding test set ({len(test_df):,} rows)...")
+    t0 = time.time()
+    test_learned_def = embed_allsense(
+        model, tokenizer, test_df["definition_wn"].tolist(),
+        def_phrase_lookup, device, batch_size=64
+    )
+    test_learned_ans = embed_allsense(
+        model, tokenizer, test_df["answer_wn"].tolist(),
+        ans_phrase_lookup, device, batch_size=64
+    )
+    test_clue_phrases = [
+        clue_phrase_lookup.get(
+            (row["clue_id"], row["definition_wn"]),
+            f"<t>{row['definition_wn']}</t>"
+        )
+        for _, row in test_df.iterrows()
+    ]
+    test_learned_clue = batch_embed(
+        model, tokenizer, test_clue_phrases, device, batch_size=64
+    )
+    print(f"  Test re-embedding done in {time.time() - t0:.0f}s")
+
+    # Save learned embeddings
     np.save(output_dir / "val_learned_def_emb.npy", val_learned_def)
     np.save(output_dir / "val_learned_ans_emb.npy", val_learned_ans)
     np.save(output_dir / "val_learned_clue_emb.npy", val_learned_clue)
+
+    np.save(output_dir / "test_learned_def_emb.npy", test_learned_def)
+    np.save(output_dir / "test_learned_ans_emb.npy", test_learned_ans)
+    np.save(output_dir / "test_learned_clue_emb.npy", test_learned_clue)
 
     print(f"\nLearned embeddings saved:")
     print(f"  val_learned_def_emb:  {val_learned_def.shape}")
     print(f"  val_learned_ans_emb:  {val_learned_ans.shape}")
     print(f"  val_learned_clue_emb: {val_learned_clue.shape}")
+    print(f"  test_learned_def_emb:  {test_learned_def.shape}")
+    print(f"  test_learned_ans_emb:  {test_learned_ans.shape}")
+    print(f"  test_learned_clue_emb: {test_learned_clue.shape}")
     print()
 
     # =====================================================================
@@ -843,28 +868,33 @@ def main():
     print("Section 8: ATE estimation")
     print("=" * 65)
 
-    # Compute ATE on validation set only. Test ATE will be computed in
-    # evaluate_final_g.py after a final g has been selected.
     val_stock_ate = compute_ate(val_stock_def, val_stock_ans, val_stock_clue)
     val_learned_ate = compute_ate(val_learned_def, val_learned_ans, val_learned_clue)
+    test_stock_ate = compute_ate(test_stock_def, test_stock_ans, test_stock_clue)
+    test_learned_ate = compute_ate(test_learned_def, test_learned_ans, test_learned_clue)
 
     # Print results table
     print(f"\n{'':20s} {'ATE':>10s} {'SE':>10s} {'95% CI':>24s}")
     print("-" * 66)
     for label, result in [
-        ("Val Stock CALE", val_stock_ate),
-        ("Val Learned g", val_learned_ate),
+        ("Val  Stock CALE", val_stock_ate),
+        ("Val  Learned g", val_learned_ate),
+        ("Test Stock CALE", test_stock_ate),
+        ("Test Learned g", test_learned_ate),
     ]:
         print(f"{label:20s} {result['ate']:>10.4f} {result['ate_se']:>10.4f} "
               f"[{result['ate_ci_lower']:>10.4f}, {result['ate_ci_upper']:>10.4f}]")
 
-    val_delta = val_learned_ate["ate"] - val_stock_ate["ate"]
-    print(f"\n{'Δ(learned-stock)':20s} {val_delta:>10.4f}")
+    print(f"\n{'Val  Δ(learned-stock)':20s} "
+          f"{val_learned_ate['ate'] - val_stock_ate['ate']:>10.4f}")
+    print(f"{'Test Δ(learned-stock)':20s} "
+          f"{test_learned_ate['ate'] - test_stock_ate['ate']:>10.4f}")
 
     # Interpretation
     print(f"\nInterpretation:")
     print(f"  Negative ATE = misdirection (clue context hurts retrieval)")
     print(f"  Less negative = model partially resists misdirection")
+    val_delta = val_learned_ate["ate"] - val_stock_ate["ate"]
     if val_delta > 0:
         print(f"  → Learned g shows LESS misdirection on validation "
               f"(Δ = {val_delta:+.4f})")
@@ -873,8 +903,6 @@ def main():
               f"(Δ = {val_delta:+.4f})")
         print(f"    This may indicate the triplet ordering problem limited learning,")
         print(f"    or that fine-tuning amplified contextual sensitivity.")
-    print(f"\n  Test ATE is NOT computed here — run evaluate_final_g.py after")
-    print(f"  selecting a final g based on validation results.")
     print()
 
     # =====================================================================
@@ -905,7 +933,14 @@ def main():
         "val_learned_ate_se": val_learned_ate["ate_se"],
         "val_learned_ate_ci": [val_learned_ate["ate_ci_lower"],
                                val_learned_ate["ate_ci_upper"]],
-        "test_evaluated": False,
+        "test_stock_ate": test_stock_ate["ate"],
+        "test_stock_ate_se": test_stock_ate["ate_se"],
+        "test_stock_ate_ci": [test_stock_ate["ate_ci_lower"],
+                              test_stock_ate["ate_ci_upper"]],
+        "test_learned_ate": test_learned_ate["ate"],
+        "test_learned_ate_se": test_learned_ate["ate_se"],
+        "test_learned_ate_ci": [test_learned_ate["ate_ci_lower"],
+                                test_learned_ate["ate_ci_upper"]],
         "date_run": str(datetime.date.today()),
     }
 

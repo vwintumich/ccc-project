@@ -289,22 +289,10 @@ Where `dataset_name` matches the DATASET config variable in
 | File | Description |
 |------|-------------|
 | `model_{method}_{hyperparam_tag}/` | Fine-tuned CALE model saved via `save_pretrained()`. Contains config.json, tokenizer files, and model weights. Reload with `AutoModel.from_pretrained()`. |
-| `val_learned_def_emb.npy` | Learned g embeddings for validation-set definition words. Shape: (N_val, 1024). |
-| `val_learned_ans_emb.npy` | Learned g embeddings for validation-set answer words. Shape: (N_val, 1024). |
-| `val_learned_clue_emb.npy` | Learned g clue-context embeddings for validation-set rows. Shape: (N_val, 1024). |
-| `ate_results.json` | Validation ATE estimates under stock and learned g (cosine-based ATE with SE and 95% CI), training hyperparameters, dataset metadata, and `test_evaluated: false`. Test ATEs are added later by `evaluate_final_g.py`. |
-| `training_log.csv` | Per-step training loss and learning rate. |
-
-### Final Evaluation Script Outputs (scripts/evaluate_final_g.py — run once only)
-
-| File | Description |
-|------|-------------|
-| `test_learned_def_emb.npy` | Learned g embeddings for test-set definition words. Shape: (N_test, 1024). Written by `evaluate_final_g.py` — do not produce during experimental cycle. |
+| `test_learned_def_emb.npy` | Learned g embeddings for test-set definition words (allsense, re-embedded with fine-tuned model). Shape: (N_test, 1024). |
 | `test_learned_ans_emb.npy` | Learned g embeddings for test-set answer words. Shape: (N_test, 1024). |
 | `test_learned_clue_emb.npy` | Learned g clue-context embeddings for test-set rows. Shape: (N_test, 1024). |
-
-`evaluate_final_g.py` also updates `ate_results.json` in place, adding test
-ATE fields and setting `test_evaluated` to `true`.
+| `ate_results.json` | ATE estimates under stock and learned g: cosine-based ATE with SE and 95% CI, retrieval rank ATE (median rank T=0 and T=1 for both models), training hyperparameters, and dataset metadata. |
 
 ### Results Notebook Outputs (CPU, 10_learned_g_results.ipynb)
 
@@ -336,16 +324,8 @@ ATE fields and setting `test_evaluated` to `true`.
               ▼
     data/learned_g/{name}/
         model_{method}_{tag}/
-        val_learned_*_emb.npy
-        ate_results.json (val only, test_evaluated: false)
-              │
-              ▼
-    [scripts/evaluate_final_g.py — GPU, run once]
-              │
-              ▼
-    data/learned_g/{name}/
         test_learned_*_emb.npy
-        ate_results.json (updated: test ATEs, test_evaluated: true)
+        ate_results.json
               │
               ▼
     [10_learned_g_results.ipynb — CPU]
