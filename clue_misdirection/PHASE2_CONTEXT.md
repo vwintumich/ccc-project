@@ -90,17 +90,6 @@ These are the questions Phase 2 is designed to investigate. They are open
   Future experiments will explore distractor sets constructed using WordNet
   structure instead, which is independent of any embedding model.
 
-- **Does the triplet ordering problem prevent learning from harder 
-  distractors?** The cosine sanity check in NB09 showed that only 18.1% 
-  of training triplets constructed from the harder dataset have the 
-  correct ordering (positive more similar to anchor than negative). 
-  Triplet loss only learns from violated triplets, so the effective 
-  training signal may be too weak to produce a meaningfully different g. 
-  The validation set ATE will test this. If learning fails, options 
-  include online hard negative mining (select informative negatives 
-  dynamically during training) or training on a different distractor set 
-  that does not have this circularity problem.
-
 - **What does the learned embedding space look like?** Neighborhood
   structure analysis (which words cluster together under learned g vs. stock
   CALE) may reveal whether fine-tuning produces cryptic-crossword-specific

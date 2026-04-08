@@ -348,38 +348,3 @@ that these features are uninformative for those rows. The synset count metadata
 enables downstream analysis (e.g., stratifying retrieval results by polysemy
 level, noting which features only matter for multi-synset words) without
 burdening this notebook.
-
----
-
-## Decision 20: Triplet Training Dataset for First Learned g Experiment
-
-**Choice:** Use the harder dataset (cosine-similarity-based distractors) 
-for the first triplet training run, despite the known triplet ordering 
-problem, and evaluate the result on the validation set before deciding 
-whether to change approach.
-
-**Context:** The cosine sanity check in NB09 revealed that only 18.1% 
-of training triplets have the correct ordering (positive more similar 
-to anchor than negative). This is because harder distractors were 
-selected by cosine similarity to definitions, making them on average 
-MORE similar to definitions than true answers are (mean gap −0.1213). 
-Triplet loss only produces a learning signal for violated triplets, so 
-the effective training set is ~13K of 71,969 triplets.
-
-**Rationale:** Running this experiment first establishes a baseline and 
-may still produce a meaningful learned g from the 18.1% of informative 
-triplets. The validation set ATE comparison (stock vs. learned g) will 
-determine whether the signal is sufficient. This is a research question, 
-not a foregone conclusion.
-
-**If validation ATE shows no improvement:** Revisit with one of:
-- Option 2: Online hard negative mining in the training loop — 
-  dynamically select the most informative negatives per batch rather 
-  than using pre-constructed triplets.
-- Option 3: Train on easy (random) distractors instead — these have 
-  the correct triplet ordering and provide a stronger training signal, 
-  at the cost of less realistic negatives.
-
-**Future direction:** Distractor sets constructed independently of stock 
-CALE (e.g., using WordNet graph structure) would break the circularity 
-and are worth exploring in subsequent experiments.
