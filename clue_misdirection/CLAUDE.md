@@ -19,10 +19,9 @@ to the answer?*
    learning (3 model families, CV, ablation, etc.).
 
 **Phase 2 (ongoing)** extends this work toward publication. The goal is to
-learn a custom codebook function g (in the sense of Egami et al. 2022)
-by fine-tuning CALE on cryptic crossword data, and estimate the Average
-Treatment Effect of clue context on answer retrieval. See
-`PHASE2_CONTEXT.md`.
+formalize misdirection as a measurable quantity using a unified logistic
+retrieval model and a per-pair misdirection score (log-odds ratio of
+probability with vs. without clue context). See `PLAN_PHASE2.md`.
 
 ## Team
 
@@ -50,7 +49,7 @@ ccc-project/
 ├── clue_misdirection/          # ← YOU ARE HERE (supervised learning, Part A)
 │   ├── CLAUDE.md               # This file
 │   ├── PLAN_PHASE1.md          # Initial 12-step pipeline plan (from design doc v4)
-|   ├── PHASE2_CONTEXT.md       # Research context and open questions for Phase 2
+|   ├── PLAN_PHASE2.md          # Phase 2 research plan (unified retrieval model, misdirection score — post-Milestone II)
 │   ├── NOTEBOOKS.md            # Inventory of existing and planned notebooks
 │   ├── DATA.md                 # Data dictionary and schema
 │   ├── DECISIONS.md            # Locked-in team decisions
@@ -108,10 +107,8 @@ Every notebook must start with a markdown cell containing:
 **AI assistance:** Claude / Claude Code (Anthropic)
 **Environment:** [Local / Great Lakes / Colab]
 
-[Brief purpose statement, inputs, outputs. For Phase 1 notebooks: which
-PLAN_PHASE1.md step(s) this implements. For Phase 2 notebooks (09+):
-which open question from PHASE2_CONTEXT.md this addresses, and what
-experiment it runs.]
+[Brief purpose statement, inputs, outputs, and which PLAN_PHASE1.md step(s)
+this notebook implements.]
 ```
 
 This intellectual lineage block credits the authors of prior work that
@@ -186,33 +183,6 @@ nbdime config-git --enable
 ```
 
 
-## Phase 2 Coding Conventions
-
-Phase 2 notebooks (numbered 09+) are experimental, not a linear pipeline.
-The following conventions apply in addition to the general standards above.
-
-**Notebook structure:** Each Phase 2 analysis is split into a CPU
-notebook and a GPU script. The CPU notebook prepares data and saves
-intermediate files; the GPU script does all model training and
-re-embedding. This mirrors the NB02 / embed_phrases.py pattern.
-
-**Output location:** Phase 2 outputs go into named subfolders under
-`data/learned_g/{dataset_name}/` (not directly into `data/`). This
-keeps results from different experiments from overwriting each other.
-See DATA.md for the full schema.
-
-**Saving fine-tuned models:** Always save fine-tuned HuggingFace models
-using `model.save_pretrained(output_dir)` and reload them using
-`AutoModel.from_pretrained(output_dir)`. Never use `torch.save()` /
-`torch.load()` for model weights — this causes PyTorch version
-compatibility errors across environments (e.g., between Colab and Great
-Lakes).
-
-**Experimental orientation:** Phase 2 notebooks should make their
-experimental question explicit in the opening markdown cell. Results may
-be unexpected — the notebook should be written to surface findings
-honestly, not to confirm a hypothesis.
-
 ## Source Data
 
 George Ho's cryptic crossword clue dataset (660,613 clues).
@@ -248,12 +218,13 @@ George Ho's cryptic crossword clue dataset (660,613 clues).
 
 ## Key Reference Files
 
-- `PHASE2_CONTEXT.md` — Research context, goals, and open questions for
-  Phase 2. Read this before working on any notebook numbered 09 or higher.
-- `NOTEBOOKS.md` — Inventory of all notebooks and scripts, including 
-  Phase 2 planned work.
-- `DATA.md` — Schema and data flow for both Phase 1 and Phase 2 outputs.
+- `PLAN_PHASE1.md` — The original 12-step pipeline plan. This phase is complete. See `PLAN_PHASE2.md` for ongoing work.
+- `PLAN_PHASE2.md` — Start here to understand what to build. This is the authoritative source for Phase 2; there is no separate design document behind it.
+- `NOTEBOOKS.md` — What already exists and what's missing.
+- `DATA.md` — Schema and data flow.
 - `DECISIONS.md` — Locked-in choices; do not revisit these.
 - `FINDINGS.md` — Running log of findings as the pipeline is built.
-- `PLAN_PHASE1.md` — The original 12-step pipeline plan. Phase 1 is 
-  complete; this is a historical record.
+- `supervised_learning_plan_v4.docx` — Design document for Phase 1 (Milestone II). 
+  Superseded for new work by `PLAN_PHASE2.md`
+- `CONTEXT.md` — Hans's writeup of his prior exploratory work. Useful
+  background, but plan v4 supersedes his experimental design for Phase 1 and PLAN_PHASE2 supersedes his design for Phase 2.

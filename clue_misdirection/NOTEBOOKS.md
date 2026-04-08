@@ -130,38 +130,12 @@ environment-specific for notebook cells.
 
 ## Recommended Reading Order
 
-**For Phase 2 work (notebooks 09+), read these before starting:**
-1. `CLAUDE.md` — coding standards, conventions, and project structure
-2. `PHASE2_CONTEXT.md` — research goals and open questions for Phase 2
-3. `DATA.md` — schema for both Phase 1 and Phase 2 outputs
-4. `DECISIONS.md` — locked-in choices; do not revisit these
-5. `FINDINGS.md` — running log of results and observations
-6. `NOTEBOOKS.md` — this file, for the Phase 2 planned work below
+When starting work or reviewing the project, read these in order:
 
-**For Phase 1 reference only:**
-The archive notebooks and PLAN_PHASE1.md are historical records.
-Do not run or modify them.
-
----
-
-## Phase 2 Notebooks and Scripts (Experimental)
-
-Phase 2 work is organized around cycles of experimentation rather than a
-linear pipeline. Notebooks 09+ are not sequential steps — the content of
-future notebooks depends on results. See PHASE2_CONTEXT.md for the
-research questions guiding this work.
-
-### Planned Notebooks
-
-| Notebook | Status | Description |
-|----------|--------|-------------|
-| `09_learned_g_prep.ipynb` | ❌ Not yet created | CPU prep notebook. Loads a labeled dataset (real pairs + distractors), performs train/test split, pulls stock CALE embeddings from Phase 1 .npy files, constructs triplets, saves all inputs needed by the GPU training script. Parameterized by DATASET config variable — change this to rerun for a different distractor set. Outputs go to `data/learned_g/{dataset_name}/`. |
-| `10_learned_g_results.ipynb` | ❌ Not yet created | CPU results notebook. Loads ATE results and embeddings from any completed experiment, renders comparison plots (stock vs. learned g), records findings. Generic — can be pointed at any `data/learned_g/{dataset_name}/` folder. |
-
-### Planned Scripts
-
-| Script | Status | Description |
-|--------|--------|-------------|
-| `scripts/train_g_triplet.py` | ❌ Not yet created | GPU training script. Loads triplets prepared by NB09, fine-tunes CALE using triplet loss, re-embeds test set with both stock and learned g, estimates ATE, saves results. Accepts command-line args for `--dataset`, `--epochs`, `--margin`, `--lr`. Saves fine-tuned model via `save_pretrained()`. |
-| `scripts/train_g_triplet.sh` | ❌ Not yet created | SLURM submission script for train_g_triplet.py. GPU partition, 1 GPU, 32GB RAM, appropriate wall time. |
-| `scripts/train_g_triplet_test.sh` | ❌ Not yet created | SLURM test script. Passes `--sample` flag for a fast end-to-end check before full run. |
+1. `PLAN.md` — the 12-step pipeline plan
+2. `CLAUDE.md` — coding standards, terminology, and project structure
+3. `FINDINGS.md` — running log of results and observations from each step
+4. `CONTEXT.md` — Hans's framing and prior findings (background context)
+5. Pipeline notebooks in order: `00_model_comparison` through
+   `08_results_and_evaluation` — the complete implemented pipeline
+6. `DECISIONS.md` — locked-in design choices and their rationale
