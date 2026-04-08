@@ -13,3 +13,4 @@ indicator_clustering/outputs/*
 # Notebook checkpoints
 **/.ipynb_checkpoints/
 data/
+prompt_materials/
