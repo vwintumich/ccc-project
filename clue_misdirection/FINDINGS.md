@@ -3,7 +3,6 @@
 Running log of findings, observations, and progress as the pipeline is built.
 For locked-in decisions, see DECISIONS.md. For the execution plan, see PLAN.md.
 
-## Phase 1 (Milestone II) — Complete
 ---
 
 ## Prior Work (Hans's Preliminary Results)
@@ -465,9 +464,3 @@ unrestricted-depth Random Forest.
 min_samples_split=2, min_samples_leaf=1, max_features='log2',
 max_depth=None. Changed from sample run (n_estimators=100), confirming
 the value of full-data hyperparameter tuning.
-
----
-
-## Phase 2 — Research Extension (Post-Milestone II)
-
-*Ongoing. See `PLAN_PHASE2.md` for the current research plan.*
