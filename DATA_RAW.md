@@ -1,9 +1,9 @@
 # DATA_RAW.md — Raw Data Schema and Puzzle Metadata Extraction
 
 This document describes the raw input data for the CCC project and the puzzle
-metadata extraction logic used across all pipeline components. It is intended
-as a reference for Claude Code when building or editing data cleaning and
-metadata extraction notebooks.
+metadata extraction logic used across all pipeline components. It is a
+reference for Claude Code when building or editing metadata extraction and
+structural filtering notebooks.
 
 **Shared resource:** This file lives at the `ccc-project/` root and applies
 to all components (`clue_misdirection/`, `custom_embedding_model/`, etc.).
@@ -16,7 +16,11 @@ to all components (`clue_misdirection/`, `custom_embedding_model/`, etc.).
 **Origin:** Extracted from George Ho's CCC dataset (`data.sqlite3`) by
 `indicator_clustering/NB00`. Do not go back to the sqlite directly.
 **Size:** 660,613 rows
-**Index:** `clue_id` (integer, unique per row)
+**Index:** `clue_id` (integer). `clue_id` originates in the George Ho sqlite
+database and is unique per row in `clues_raw.csv`. After multi-definition
+expansion in `structural_filtering.ipynb`, it is no longer unique in
+`clues_filtered.csv` — two rows can share a `clue_id` if the original clue
+had two valid definitions.
 
 ---
 
@@ -30,17 +34,15 @@ These are the actual column names as loaded. The index column is `clue_id`.
 | `clue` | str | Full clue text including answer format in parentheses, e.g. `"Plant in a garden party (5)"` |
 | `answer` | str | The crossword answer, uppercase, e.g. `"PARTY"` |
 | `definition` | str | The definition substring within the clue. For double-definition clues, contains `/`-separated alternatives. Frequently NaN (see §5). |
-| `clue_number` | str | Clue position in the grid, e.g. `"23a"`, `"18d"`. Should be parsed into `clue_no` (int) and `clue_direction` (`"across"` or `"down"`) and passed through to `clues_filtered.csv`. |
+| `clue_number` | str | Clue position in the grid, e.g. `"23a"`, `"18d"`. Parsed into `clue_no` (int) and `clue_direction` (`"across"` or `"down"`) in `puzzle_metadata.ipynb`. |
 | `puzzle_date` | str | Publication date of the puzzle. Present for most sources; NaN for `thebrowser`. |
-| `puzzle_name` | str | Blog entry title or puzzle name. Format varies significantly by source (see §4). |
+| `puzzle_name` | str | Blog entry title or puzzle name. Format varies by source (see §4). |
 | `source_url` | str | URL or file path of the source blog entry or puzzle file. Format varies by source (see §4). |
 | `source` | str | Source identifier. One of 10 values (see §3). |
 
 **Column loading by notebook:**
-- Structural filtering notebook (`01_structural_filtering.ipynb`) loads:
-  `clue_id`, `clue`, `answer`, `definition`, `clue_number`
-- Puzzle metadata notebook (`02_puzzle_metadata.ipynb`) loads:
-  `clue_id`, `source`, `puzzle_name`, `source_url`, `puzzle_date`
+- `puzzle_metadata.ipynb` loads: `clue_id`, `source`, `puzzle_name`, `source_url`, `puzzle_date`, `clue_number`
+- `structural_filtering.ipynb` loads: `clue_id`, `clue`, `answer`, `definition`
 
 ---
 
@@ -71,10 +73,30 @@ assert df[df['source'].isin(['cru_cryptics', 'nytimes', 'leoedit'])]['definition
 
 ## 4. Derived Columns in `puzzle_metadata.csv`
 
-The puzzle metadata notebook (`02_puzzle_metadata.ipynb`) produces
-`data/puzzle_metadata.csv` with the following derived columns. It is a
-standalone file — not joined into `clues_filtered.csv` — and can be run
-independently of the structural filtering notebook.
+**Produced by:** `ccc-project/notebooks/puzzle_metadata.ipynb`
+**Output:** `ccc-project/data/puzzle_metadata.csv`
+
+This is a standalone file keyed on `clue_id`. It is not joined into
+`clues_filtered.csv` automatically — downstream notebooks join it in when
+needed. It can be produced independently of structural filtering.
+
+**Note on `clue_id`:** `clue_id` originates in the George Ho sqlite database
+and is unique in `clues_raw.csv`. It is **not** unique in `clues_filtered.csv`
+after multi-definition expansion. When joining `puzzle_metadata.csv` onto
+filtered data, expect multiple rows per `clue_id`.
+
+Derived columns:
+
+| Column | Description |
+|--------|-------------|
+| `clue_id` | Join key — unique in `clues_raw.csv`; not unique in `clues_filtered.csv` |
+| `publisher` | Canonical publisher name |
+| `series` | Puzzle series within the publication (e.g., "Toughie", "QC") |
+| `setter` | Setter pseudonym or surname; pipe-separated for collaborations |
+| `puzzle_no` | Puzzle number (int); NaN where not extractable |
+| `puzzle_date` | Publication date; extracted from `puzzle_name` or `source_url` where missing |
+| `clue_no` | Parsed grid number (int); NaN if unparseable |
+| `clue_direction` | `"across"` or `"down"`; parsed from `clue_number`; NaN if unparseable |
 
 ### 4.1 Hardcoded publisher assignments
 

@@ -10,51 +10,56 @@ The authoritative design document is `custom_embedding_model_design_v4.md`
 (Google Drive, "Research Project - NLP CCC's"). This file summarizes the
 workflow decisions derived from it.
 
+**Upstream dependency:** This component reads from two shared artifacts
+produced by `ccc-project/notebooks/`:
+- `ccc-project/data/clues_filtered.csv` — columns: `clue_id`, `surface`,
+  `definition`, `answer`
+- `ccc-project/data/puzzle_metadata.csv` — joined in when needed
+
+It also imports `ccc-project/notebooks/clue_utils.py` for definition-finding
+and delimiter-placement logic used in f_clue phrase construction.
+
+Do not regenerate these files from within this component.
+
 ---
 
 ## The Branching Structure
 
 ```
-clues_raw.csv
-    │
-    ▼
-Stage 0: Structural filtering
-    │
-    ▼
-clues_filtered.csv
+ccc-project/data/clues_filtered.csv        (shared upstream artifact)
     │
     ▼
 Stage 1: WordNet filtering + split assignment
     │
     ▼
-clues_wn_filtered.csv (with split column)
-    │                    │
-    │                    ▼
-    │           Stage 1b: g_stock f_clue embeddings (GPU)
-    │           embeddings/g_stock/f_clue.npy + index
+filtered_split/wn_synset/
+    ├── clues_wn_filtered.csv (with split column)
+    ├── vocabulary.csv / vocabulary_val.csv
+    └── clue_phrases/
+        └── f_clue.csv
     │
     ▼
 Stage 2: Per-f phrase construction + coverage measurement
     │
-    ├── f_common_wndef branch
-    │   ├── clues_wndef_filtered.csv (inherits split column)
+    ├── wndef/
+    │   ├── clues_wndef_filtered.csv
     │   ├── vocabulary_wndef.csv / vocabulary_wndef_val.csv
-    │   └── phrases/f_common_wndef.csv
+    │   └── f_common_wndef.csv
     │
-    └── f_common_wnex branch
-        ├── clues_wnex_filtered.csv (inherits split column)
+    └── wnex/
+        ├── clues_wnex_filtered.csv
         ├── vocabulary_wnex.csv / vocabulary_wnex_val.csv
-        └── phrases/f_common_wnex.csv
+        └── f_common_wnex.csv
               │
               ▼
     Stage 3: Triplet construction + model training (per g_i)
               │
-              ├── triplets/g1.csv (training split only)
+              ├── triplets/g1.csv + g1_meta.json
               └── models/g1/ (weights → Google Drive)
                     │
                     ▼
     Stage 4: Embedding generation (per g_i, validation split only, GPU)
-              └── embeddings/g1/f_<name>_val.npy
+              └── embeddings/g1/f_<n>_val.npy
                     │
                     ▼
     Stage 5: Hypothesis testing (shared comparison notebook)
@@ -67,44 +72,16 @@ Stage 2: Per-f phrase construction + coverage measurement
 
 ---
 
-## Stage 0: Structural Filtering
-
-**Notebook:** `notebooks/nb_00_structural_filtering.ipynb`
-**Environment:** Local (CPU)
-**Inputs:** `../data/clues_raw.csv`
-**Outputs:** `data/clues_filtered.csv`
-
-Filters `clues_raw.csv` to clues satisfying CCC structural constraints,
-independent of any external linguistic resource:
-
-1. Remove rows with missing clue, answer, or definition
-2. Remove bracketed clues (mis-parsed entries)
-3. Validate answer adheres to the length/format code in the clue
-4. Parse double-definition clues (split on `/`, expand to multiple rows)
-5. Verify definition appears as intact whole-word(s) in the surface text
-6. Verify definition appears at the edge of the surface text
-
-Retain all available columns including linguistic annotation (wordplay_type,
-indicator) and provenance metadata (author, series, publisher). The precise
-column list should be confirmed against `clues_raw.csv` during development.
-See DATA.md for the target schema.
-
-**Critical:** Do not apply any WordNet constraints here. Do not assign the
-train/validate/test split here. This file is the shared upstream artifact
-that all downstream branches read from.
-
----
-
 ## Stage 1: WordNet Filtering and Split Assignment
 
-**Notebook:** `notebooks/nb_01_wn_filtering_and_split.ipynb`
+**Notebook:** `notebooks/01_wn_filtering_and_split.ipynb`
 **Environment:** Local (CPU)
-**Inputs:** `data/clues_filtered.csv`
+**Inputs:** `../../data/clues_filtered.csv`
 **Outputs:**
-- `data/clues_wn_filtered.csv` (with `split` column)
-- `data/clues_val.csv` (convenience subset)
-- `data/vocabulary.csv`
-- `data/vocabulary_val.csv`
+- `data/filtered_split/wn_synset/clues_wn_filtered.csv` (with `split` column)
+- `data/filtered_split/wn_synset/clues_val.csv` (convenience subset)
+- `data/filtered_split/wn_synset/vocabulary.csv`
+- `data/filtered_split/wn_synset/vocabulary_val.csv`
 
 ### 1a: WordNet filtering
 
@@ -114,7 +91,7 @@ as the superset for all f-specific datasets. See DATA.md for the WordNet lookup
 procedure (including article stripping and underscore conversion for multi-word
 entries).
 
-**Output:** `data/clues_wn_filtered.csv`
+**Output:** `data/filtered_split/wn_synset/clues_wn_filtered.csv`
 
 ### 1b: Split assignment
 
@@ -131,28 +108,31 @@ inherit their split assignments from this column. They do not receive
 independent splits. The actual resulting split fractions for each f-specific
 dataset should be reported in FINDINGS.md as part of coverage measurement.
 
-Save `data/clues_val.csv` as a convenience subset (rows where split ==
-'validate').
+Save `data/filtered_split/wn_synset/clues_val.csv` as a convenience subset
+(rows where split == 'validate').
 
 ### 1c: Full vocabulary construction
 
 Build the unified vocabulary from all unique words appearing as either a
-definition or answer in `clues_wn_filtered.csv`. Save as `data/vocabulary.csv`
-with a `row` column giving the canonical position (0-indexed). This ordering
-is fixed permanently — do not reorder.
+definition or answer in `clues_wn_filtered.csv`. Save as
+`data/filtered_split/wn_synset/vocabulary.csv` with a `row` column giving the
+canonical position (0-indexed). This ordering is fixed permanently — do not
+reorder.
 
-Save `data/vocabulary_val.csv` as the subset of vocabulary words appearing in
-validation-split clues, with its own canonical ordering.
+Save `data/filtered_split/wn_synset/vocabulary_val.csv` as the subset of
+vocabulary words appearing in validation-split clues, with its own canonical
+ordering.
 
 ### 1d: g_stock f_clue embedding generation (GPU)
 
 **Script:** `scripts/embed_f_clue_gstock.py` + `scripts/embed_f_clue_gstock.sh`
 **Environment:** Great Lakes (GPU)
-**Inputs:** `data/clues_wn_filtered.csv`, `data/phrases/f_clue.csv`
+**Inputs:** `data/filtered_split/wn_synset/clues_wn_filtered.csv`,
+  `data/filtered_split/wn_synset/clue_phrases/f_clue.csv`
 
 Wait — phrase construction (Stage 2) must happen before this embedding step.
-Therefore Stage 1d executes *after* Stage 2 has produced `phrases/f_clue.csv`.
-It is listed under Stage 1 conceptually (because it uses the wn-filtered
+Therefore Stage 1d executes *after* Stage 2 has produced `f_clue.csv`.
+It is listed under Stage 1 conceptually (because it uses the wn_synset
 dataset scope) but depends on Stage 2 output.
 
 Encode all f_clue phrases for the full `clues_wn_filtered.csv` dataset using
@@ -174,10 +154,11 @@ Record runtime in FINDINGS.md.
 
 ## Stage 2: Per-f Phrase Construction and Coverage Measurement
 
-**Notebook:** `notebooks/nb_02_phrase_construction.ipynb`
+**Notebook:** `notebooks/02_phrase_construction.ipynb`
 **Environment:** Local (CPU)
-**Inputs:** `data/clues_wn_filtered.csv`, WordNet (via NLTK)
-**Outputs:** Per-f filtered clue files, vocabulary files, phrase files
+**Inputs:** `data/filtered_split/wn_synset/clues_wn_filtered.csv`, WordNet (via NLTK)
+**Outputs:** Per-f subset directories under `data/filtered_split/wn_synset/`,
+  plus `data/filtered_split/wn_synset/clue_phrases/f_clue.csv`
 
 This notebook handles all WordNet-based f's (currently f_common_wndef and
 f_common_wnex) in sequence. A separate notebook will be created for any
@@ -196,38 +177,33 @@ word-boundary matching to locate the definition. Drop any rows where the
 definition appears more than once in the surface (ambiguous delimiter
 placement).
 
-**Output:** `data/phrases/f_clue.csv`
+**Output:** `data/filtered_split/wn_synset/clue_phrases/f_clue.csv`
 **Index:** (clue_id, definition) — one row per (clue, definition) pair
+
+Note: `clue_phrases/` does not further filter the `wn_synset` row scope.
+All rows in `clues_wn_filtered.csv` that have unambiguous definition placement
+are represented here.
 
 ### f_common_wndef construction
 
-For each word in `vocabulary.csv`, look up its most common WordNet synset
-(sense index 0) and construct the phrase as `"<t>word</t>: <synset definition
-text>"`. Every word with at least one synset has a valid f_common_wndef phrase,
-so this f covers the full vocabulary.
-
-Filter `clues_wn_filtered.csv` to rows where both definition and answer have
-valid f_common_wndef phrases (this should be nearly all rows, but verify).
-Save:
-- `data/clues_wndef_filtered.csv` (inherits split column from clues_wn_filtered)
-- `data/vocabulary_wndef.csv` (full; canonical ordering = index)
-- `data/vocabulary_wndef_val.csv` (validation-split subset)
-- `data/phrases/f_common_wndef.csv`
+For each word in the full vocabulary, look up its most frequent WordNet sense
+(index 0) and construct `"<t>word</t>: <WordNet definition text>"`. Save rows
+with valid phrases only under `data/filtered_split/wn_synset/wndef/`:
+- `clues_wndef_filtered.csv` (inherits split column)
+- `vocabulary_wndef.csv` (full; canonical ordering = index)
+- `vocabulary_wndef_val.csv` (validation-split subset)
+- `f_common_wndef.csv`
 
 ### f_common_wnex construction
 
-For each word in `vocabulary.csv`, look up its most common WordNet synset
-(sense index 0) and attempt to use its usage example as the phrase, wrapping
-the target word in `<t></t>`. A phrase is valid only if a usage example exists
-*and* the target word appears exactly once in it. Words without a valid usage
-example have no f_common_wnex phrase and are absent from the wnex vocabulary.
-
-Filter `clues_wn_filtered.csv` to rows where both definition and answer have
-valid f_common_wnex phrases. Save:
-- `data/clues_wnex_filtered.csv` (inherits split column)
-- `data/vocabulary_wnex.csv` (full; canonical ordering = index)
-- `data/vocabulary_wnex_val.csv` (validation-split subset)
-- `data/phrases/f_common_wnex.csv`
+For each word in the full vocabulary, look up its most frequent WordNet sense
+and use the WordNet usage example sentence, with the target word wrapped in
+`<t></t>`. Defined only for words with a valid usage example where the target
+word appears exactly once. Save under `data/filtered_split/wn_synset/wnex/`:
+- `clues_wnex_filtered.csv` (inherits split column)
+- `vocabulary_wnex.csv` (full; canonical ordering = index)
+- `vocabulary_wnex_val.csv` (validation-split subset)
+- `f_common_wnex.csv`
 
 ### Coverage measurement (summary cell)
 
@@ -244,30 +220,39 @@ Measurements."
 
 ## Stage 3: Triplet Construction and Model Training
 
-**Notebook:** `notebooks/nb_03_train_<g_name>.ipynb` (one per g_i)
+**Notebook:** `notebooks/03_train_<g_name>.ipynb` (one per g_i)
 **Script:** `scripts/train_<g_name>.py` + `scripts/train_<g_name>.sh`
 **Environment:** Notebook locally for inspection; script on Great Lakes (GPU)
-**Inputs:** Phrase files, `clues_<f>_filtered.csv` (training split only)
-**Outputs:** `data/triplets/<g_name>.csv`, model weights (Google Drive),
-  `models/<g_name>/README.md`
+**Inputs:** Phrase files from `data/filtered_split/wn_synset/`,
+  `clues_<f>_filtered.csv` (training split only)
+**Outputs:** `data/triplets/<g_name>.csv`, `data/triplets/<g_name>_meta.json`,
+  model weights (Google Drive), `models/<g_name>/README.md`
 
 ### Triplet construction
 
 Assemble (anchor, positive, negative) text triplets from the training split
 only. The validation and test splits must never appear in a triplet file.
 
-Each triplet row contains three text strings:
+Each triplet row contains three fully constructed phrase strings:
 - **anchor:** f_clue phrase for the definition in its clue context
 - **positive:** f phrase for the positive target word
 - **negative:** f phrase for the negative word (distractor)
 
-The triplet is constructed from one clue row plus phrase lookups — not from
-joins across multiple clue rows. Save the triplet dataset as a committed
-artifact: `data/triplets/<g_name>.csv`. This file can be reused if retraining
-with the same design.
+A triplet file spans multiple subset directories and f's — the anchor comes
+from `clue_phrases/`, while the positive and negative come from `wndef/` or
+`wnex/` or another subset. The training rows are the intersection of clues
+that have valid phrases under all three f's used. Save as a committed
+artifact: `data/triplets/<g_name>.csv`.
 
-Naming: the triplet file shares the name of the g model it was used to train
-(e.g., `triplets/g1.csv` for g_1).
+Save a companion `data/triplets/<g_name>_meta.json` documenting:
+- Which f was used for each triplet role (anchor, positive, negative)
+- Source paths of the phrase files used
+- Number of rows in the triplet file
+- Split used (always `'train'`)
+- `random_state`
+
+This metadata file is the authoritative provenance record for the triplet
+dataset. `models/<g_name>/README.md` references it rather than duplicating it.
 
 ### Model training
 
@@ -307,7 +292,7 @@ only. Full-dataset embeddings are generated only for the final chosen g (Stage
 
 For each f used in the current experiments:
 - Encode phrases for `vocabulary_<f>_val.csv` words using g_i
-- Save as `data/embeddings/<g_i>/f_<name>_val.npy`
+- Save as `data/embeddings/<g_i>/f_<n>_val.npy`
 - The index is `vocabulary_<f>_val.csv` itself — no separate index file needed
 
 For f_clue:
@@ -325,8 +310,8 @@ Great Lakes partition used.
 
 ## Stage 5: Hypothesis Testing
 
-**Primary notebook:** `notebooks/nb_05_hypothesis_testing.ipynb`
-**Per-g exploration notebooks (optional):** `notebooks/nb_05_explore_<g_name>.ipynb`
+**Primary notebook:** `notebooks/05_hypothesis_testing.ipynb`
+**Per-g exploration notebooks (optional):** `notebooks/05_explore_<g_name>.ipynb`
 **Environment:** Local (CPU)
 **Inputs:** Embedding arrays from `data/embeddings/`
 **Outputs:** FINDINGS.md entries, figures in `outputs/figures/`
@@ -362,7 +347,7 @@ Record all numerical results in FINDINGS.md.
 
 For deeper investigation of a specific g_i (neighborhood structure, which
 words moved most, failure cases), create a separate notebook named
-`nb_05_explore_<g_name>.ipynb`. Move to `notebooks/archive/` when done with
+`05_explore_<g_name>.ipynb`. Move to `notebooks/archive/` when done with
 that model.
 
 ---
@@ -373,14 +358,14 @@ that model.
 DECISIONS.md.
 
 **Script:** `scripts/embed_final_<g_name>.py` + corresponding `.sh`
-**Notebook:** `notebooks/nb_06_final_evaluation.ipynb`
+**Notebook:** `notebooks/06_final_evaluation.ipynb`
 **Environment:** Embedding generation on Great Lakes (GPU); evaluation locally
 
 **Do not begin this stage until the final g is documented in DECISIONS.md.**
 Do not load, inspect, or embed test-split data at any earlier stage.
 
 Generate full-dataset embeddings for the chosen g:
-- `data/embeddings/<g_name>/f_<name>.npy` (full vocabulary, no _val suffix)
+- `data/embeddings/<g_name>/f_<n>.npy` (full vocabulary, no _val suffix)
 - `data/embeddings/<g_name>/f_clue.npy` + index (full clues_wn_filtered scope)
 
 Run ATE and any other evaluation metrics on the test split. Record all results
@@ -390,21 +375,22 @@ in FINDINGS.md.
 
 ## What Gets Computed When: Summary Table
 
-| Artifact | Scope | Stage | Environment |
-|----------|-------|-------|-------------|
-| `clues_filtered.csv` | All structurally valid clues | 0 | Local |
-| `clues_wn_filtered.csv` + split | All clues with ≥1 WN synset | 1 | Local |
-| `clues_val.csv` | Validation subset of above | 1 | Local |
-| `vocabulary.csv` / `_val` | Full WN vocab / val subset | 1 | Local |
-| `phrases/f_clue.csv` | All wn_filtered clues | 2 | Local |
-| `embeddings/g_stock/f_clue.npy` | Full wn_filtered clues | 1d (after 2) | Great Lakes |
-| `clues_<f>_filtered.csv` + vocab + phrases | Per-f subset | 2 | Local |
-| `triplets/<g_name>.csv` | Training split only | 3 | Local |
-| Model weights | — | 3 | Great Lakes → Google Drive |
-| `embeddings/<g_i>/f_<name>_val.npy` | Validation split | 4 | Great Lakes |
-| ATE results, figures | — | 5 | Local |
-| Full-dataset embeddings for final g | All splits | 6 | Great Lakes |
-| Test-set evaluation | Test split | 6 | Local |
+| Artifact | Location | Stage | Environment |
+|----------|----------|-------|-------------|
+| `puzzle_metadata.csv` | `ccc-project/data/` | Shared | Local |
+| `clues_filtered.csv` | `ccc-project/data/` | Shared | Local |
+| `clues_wn_filtered.csv` + split | `filtered_split/wn_synset/` | 1 | Local |
+| `clues_val.csv` | `filtered_split/wn_synset/` | 1 | Local |
+| `vocabulary.csv` / `_val` | `filtered_split/wn_synset/` | 1 | Local |
+| `f_clue.csv` | `filtered_split/wn_synset/clue_phrases/` | 2 | Local |
+| `embeddings/g_stock/f_clue.npy` + index | `embeddings/g_stock/` | 1d (after 2) | Great Lakes |
+| `clues_<f>_filtered.csv` + vocab + phrase | `filtered_split/wn_synset/<f>/` | 2 | Local |
+| `triplets/<g_name>.csv` + `_meta.json` | `triplets/` | 3 | Local |
+| Model weights | Google Drive | 3 | Great Lakes |
+| `embeddings/<g_i>/f_<n>_val.npy` | `embeddings/<g_i>/` | 4 | Great Lakes |
+| ATE results, figures | `outputs/` | 5 | Local |
+| Full-dataset embeddings for final g | `embeddings/<g_name>/` | 6 | Great Lakes |
+| Test-set evaluation | — | 6 | Local |
 
 ---
 
