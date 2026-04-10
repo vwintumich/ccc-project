@@ -1,0 +1,36 @@
+# custom_embedding_model — Python dependencies
+# Install: pip install -r requirements.txt
+
+# Data handling
+pandas>=2.0
+numpy>=1.24
+
+# NLP / Embeddings
+sentence-transformers>=3.0
+torch>=2.0             # GPU training requires a CUDA-capable build;
+                       # on Great Lakes and Colab, torch+CUDA is pre-installed
+nltk>=3.8              # WordNet synset lookup; download wordnet and omw-1.4 in-notebook
+
+# Visualization
+matplotlib>=3.7
+seaborn>=0.12
+
+# Utilities
+tqdm>=4.64             # Progress bars for embedding loops and training
+
+# Notes:
+# - The embedding model (gabrielloiseau/CALE-MBERT-en) is downloaded
+#   automatically by sentence-transformers on first use. Pin the commit
+#   hash in models/g_stock/README.md for reproducibility.
+# - NLTK data must be downloaded once per environment:
+#     import nltk
+#     nltk.download('wordnet')
+#     nltk.download('omw-1.4')
+# - GPU steps (model training, embedding generation) run on Great Lakes
+#   via SLURM scripts. The local environment only needs CPU-capable torch
+#   for inspection and hypothesis testing notebooks.
+# - nbstripout and nbdime are required for notebook version control
+#   (one-time setup per team member — see CLAUDE.md):
+#     pip install nbstripout nbdime
+#     nbstripout --install
+#     nbdime config-git --enable
