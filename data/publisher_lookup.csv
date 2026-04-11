@@ -52,6 +52,11 @@ fifteensquared,puzzle_name_leading,independent by raider,Independent,,Raider,Hig
 fifteensquared,puzzle_name_leading,quiptic,Guardian,Quiptic,,High,Missing prefix; Guardian Quiptic without Guardian prefix.
 fifteensquared,puzzle_name_leading,guardian prize puzzle,Guardian,Prize,,High,Variant label for Guardian Prize.
 fifteensquared,puzzle_name_leading,guardian n,Guardian,,,High,Puzzle number prefix not stripped; maps to standard Guardian cryptic.
+fifteensquared,puzzle_name_leading,guardian prize crossword,Guardian,Prize,,High,Variant label for Guardian Prize.
+fifteensquared,puzzle_name_leading,guardian quiptic n,Guardian,Quiptic,,High,Quiptic with puzzle number prefix not stripped; n is the number token.
+fifteensquared,puzzle_name_leading,guardian christmas prize puzzle,Guardian,Christmas Prize,,High,Seasonal variant of Guardian Prize.
+fifteensquared,puzzle_name_leading,financial times n,Financial Times,,,High,FT with puzzle number prefix not stripped; n is the number token.
+fifteensquared,puzzle_name_leading,everyman n,Observer,Everyman,,High,Everyman with puzzle number prefix not stripped; n is the number token.
 fifteensquared,puzzle_name_trailing,paul,,,Paul,High,UK (British English). Guardian setter.
 fifteensquared,puzzle_name_trailing,mudd,,,Mudd,High,UK (British English). Financial Times setter; pseudonym of John Halpern. (Wikipedia)
 fifteensquared,puzzle_name_trailing,picaroon,,,Picaroon,High,UK (British English). Guardian setter.
@@ -298,6 +303,7 @@ thehinducrosswordcorner,puzzle_name_leading,the sunday crossword,The Hindu,Sunda
 thehinducrosswordcorner,puzzle_name_leading,thee sunday crossword,The Hindu,Sunday Crossword,,High,Misspelling of The Sunday Crossword.
 thehinducrosswordcorner,puzzle_name_leading,the sunday crosword,The Hindu,Sunday Crossword,,High,Misspelling of The Sunday Crossword.
 thehinducrosswordcorner,puzzle_name_leading,n,The Hindu,,,Low,Truncated No; malformed.
+thehinducrosswordcorner,puzzle_name_leading,"the sunday crossword, sunday",The Hindu,Sunday Crossword,,High,Sunday Crossword variant where the day name is appended after a comma.
 thehinducrosswordcorner,puzzle_name_trailing,arden,,,Arden,High,India (Indian English). The Hindu setter; known for smooth clue surfaces. (crosswordunclued.com)
 thehinducrosswordcorner,puzzle_name_trailing,gridman,,,Gridman,High,India (Indian English). Pseudonym of C.G. Rishikesh; one of the longest-serving Hindu setters joining the panel in 2001. (thehinducrosswordcorner.blogspot.com)
 thehinducrosswordcorner,puzzle_name_trailing,incognito,,,Incognito,High,India (Indian English). Pseudonym of Kishore Rao; known as the gentlest Hindu setter; uses multilingual puns. (crosswordunclued.com)
