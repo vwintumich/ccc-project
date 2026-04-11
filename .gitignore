@@ -12,7 +12,9 @@ indicator_clustering/outputs/*
 
 # Notebook checkpoints
 **/.ipynb_checkpoints/
-data/
+data/*
+!data/id_map.csv
+!data/publisher_lookup.csv
 prompt_materials/
 
 # Python bytecode cache

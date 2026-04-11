@@ -1,0 +1,354 @@
+source,field,raw,publisher,series,setter,confidence,notes
+bigdave44,puzzle_name_leading,daily telegraph,Daily Telegraph,,,High,UK (British English). Often regarded as a good starting point for newcomers; tends toward Ximenean style; anonymous setters. Published Mon-Sat; Saturday puzzle is a prize crossword. (Wikipedia; bestforpuzzles.com)
+bigdave44,puzzle_name_leading,sunday telegraph,Sunday Telegraph,,,High,UK (British English). Difficulty very similar to the Daily Telegraph. Set by Brian Greer. (fifteensquared.net; bestforpuzzles.com)
+bigdave44,puzzle_name_leading,toughie,Daily Telegraph,Toughie,,High,UK (British English). Published Tue-Fri alongside the regular cryptic; setter pseudonyms published; can take a very Libertarian approach depending on the setter. Significantly harder than the regular DT. (bestforpuzzles.com; Wikipedia)
+bigdave44,puzzle_name_leading,sunday toughie,Sunday Telegraph,Sunday Toughie,,High,UK (British English). Prize puzzle; distinct from the regular Sunday Telegraph cryptic. (bigdave44.com)
+bigdave44,puzzle_name_leading,double toughie,Daily Telegraph,Double Toughie,,High,UK (British English). Two Toughie grids combined; higher difficulty than a standard Toughie. (bigdave44.com)
+bigdave44,puzzle_name_leading,ntspp,Big Dave's Blog,NTSPP,,High,UK (British English). NTSPP = Not The Saturday Prize Puzzle; introduced Feb 2010; original community puzzles not from a print publication; many setters have gone on to be published in the national press. (bigdave44.com)
+bigdave44,puzzle_name_leading,rookie corner,Big Dave's Blog,Rookie Corner,,High,UK (British English); international setters occasionally appear. Launched April 2014 for debut setters; difficulty and quality variable by design. (bigdave44.com)
+bigdave44,puzzle_name_leading,mpp,Big Dave's Blog,MPP,,High,UK (British English). MPP = Monthly Prize Puzzle; introduced June 2012; prize is a Telegraph crossword book; original community puzzle. (bigdave44.com)
+bigdave44,puzzle_name_leading,qpp,Big Dave's Blog,QPP,,High,UK (British English). QPP = Quarterly Prize Puzzle; typically set by experienced community setters such as Prolixic; prize is a Telegraph crossword book; may include a meta-puzzle element. (bigdave44.com)
+bigdave44,puzzle_name_leading,sp,Big Dave's Blog,SP,,High,"UK (British English). SP = Special Puzzle; one-off puzzles created for Sloggers & Betters events, often by named setters such as Elgar; may include advanced features like barred grids or extra constraints. (bigdave44.com)"
+bigdave44,puzzle_name_leading,xtra,Big Dave's Blog,Xtra,,Medium,"UK (British English). Refers to Big Dave's Xtra Crossword Blog, a secondary overflow blog. Low row count (36); exact nature unclear. (bigdave44x.wordpress.com)"
+fifteensquared,puzzle_name_leading,guardian,Guardian,,,High,UK (British English). Setter pseudonyms published; difficulty varies significantly by setter; tends toward Libertarian cluing. (Wikipedia)
+fifteensquared,puzzle_name_leading,guardian prize,Guardian,Prize,,High,UK (British English). Saturday prize crossword; harder than the regular weekday Guardian. (fifteensquared.net)
+fifteensquared,puzzle_name_leading,guardian quiptic,Guardian,Quiptic,,High,UK (British English). Aimed at beginners and those short of time; easier than the regular Guardian cryptic; published Mondays. (Amazon/Guardian)
+fifteensquared,puzzle_name_leading,guardian genius,Guardian,Genius,,High,UK (British English). Monthly online puzzle; harder than the regular Guardian cryptic. (guardian.com)
+fifteensquared,puzzle_name_leading,guardian saturday puzzle,Guardian,Saturday,,High,UK (British English). Saturday prize crossword.
+fifteensquared,puzzle_name_leading,guardian saturday crossword,Guardian,Saturday,,High,UK (British English). Variant label for Saturday Guardian puzzle.
+fifteensquared,puzzle_name_leading,guardian saturday prize crossword,Guardian,Saturday Prize,,High,UK (British English). Variant label for Saturday Guardian prize crossword.
+fifteensquared,puzzle_name_leading,guardian easter prize puzzle,Guardian,Easter Prize,,High,UK (British English). Special seasonal prize puzzle.
+fifteensquared,puzzle_name_leading,guardian christmas prize,Guardian,Christmas Prize,,High,UK (British English). Special seasonal prize puzzle.
+fifteensquared,puzzle_name_leading,guardian prize picaroon,Guardian,Prize,Picaroon,High,UK (British English). Setter name embedded in leading token; Picaroon is a Guardian setter.
+fifteensquared,puzzle_name_leading,guardian prize enigmatist,Guardian,Prize,Enigmatist,High,UK (British English). Setter name embedded in leading token; Enigmatist is a notable Guardian setter. (crossword.org.uk)
+fifteensquared,puzzle_name_leading,financial times,Financial Times,,,High,UK (British English). Tends toward Ximenean style; setter pseudonyms published. (Wikipedia)
+fifteensquared,puzzle_name_leading,financial times monday prize,Financial Times,Monday Prize,,High,UK (British English). Weekly prize puzzle.
+fifteensquared,puzzle_name_leading,independent,Independent,,,High,UK (British English). Setter pseudonyms published; tends toward Ximenean style. (Wikipedia)
+fifteensquared,puzzle_name_leading,independent on sunday,Independent,Sunday,,High,UK (British English). Sunday edition of The Independent.
+fifteensquared,puzzle_name_leading,independent online,Independent,Online,,Medium,UK (British English). The Independent moved to online-only publication in 2016. (Wikipedia)
+fifteensquared,puzzle_name_leading,independent punk,Independent,,Punk,High,UK (British English). Punk is the pseudonym John Halpern uses for his Independent puzzles. Setter name embedded in leading token. (Wikipedia)
+fifteensquared,puzzle_name_leading,everyman,Observer,Everyman,,High,"UK (British English). One of the most widely-attempted Sunday crosswords; often suggested as a good entry point for beginners. Multiple setters across dataset span: Allan Scott (1994-2015), Colin Gumbrell (2015-2019), multiple setters thereafter. (Google Books; fifteensquared.net)"
+fifteensquared,puzzle_name_leading,azed,Observer,Azed,Azed,High,UK (British English). Set by Jonathan Crowther (Azed) since March 1972; strictly Ximenean; uses a barred grid with a wider vocabulary than standard cryptics; requires Chambers Dictionary; includes monthly clue-writing competition. Advanced difficulty. (Wikipedia)
+fifteensquared,puzzle_name_leading,inquisitor,Independent,Inquisitor,,High,UK (British English). Published in the Independent Magazine (Saturday edition); advanced cryptic series edited by John Henderson. (bestforpuzzles.com)
+fifteensquared,puzzle_name_leading,enigmatic variations,Sunday Telegraph,Enigmatic Variations,,High,UK (British English). Advanced cryptic series in the Sunday Telegraph; founded by James Leonard; uses varied special formats; multiple setters. Discontinued July 2022. (phionline.net.nz; crosswordsolver.org)
+fifteensquared,puzzle_name_leading,cyclops,Private Eye,,Cyclops,High,UK (British English). Set by Eddie James (Cyclops); topical risque content; clues and answers often reference current British politics and Private Eye in-jokes. Fortnightly. (Wikipedia)
+fifteensquared,puzzle_name_leading,sloggers betters,Sloggers & Betters,,,High,UK (British English). Community puzzle events; city/setter extracted separately via regex.
+fifteensquared,puzzle_name_leading,araucaria newsnight crossword,,Newsnight,Araucaria,Medium,UK (British English). Minor series Araucaria set for the BBC Newsnight programme. Publisher unverified; not a print publication. (fifteensquared.net)
+fifteensquared,puzzle_name_leading,guarduan,Guardian,,,High,Misspelling of Guardian.
+fifteensquared,puzzle_name_leading,guadian,Guardian,,,High,Misspelling of Guardian.
+fifteensquared,puzzle_name_leading,indepedent on sunday,Independent,Sunday,,High,Misspelling of Independent On Sunday.
+fifteensquared,puzzle_name_leading,indpendent on sunday,Independent,Sunday,,High,Misspelling of Independent On Sunday.
+fifteensquared,puzzle_name_leading,financial time,Financial Times,,,High,Truncated variant of Financial Times.
+fifteensquared,puzzle_name_leading,ft,Financial Times,,,High,Abbreviation for Financial Times.
+fifteensquared,puzzle_name_leading,ft christmas crossword,Financial Times,Christmas,,High,Seasonal variant.
+fifteensquared,puzzle_name_leading,axed,Observer,Azed,Azed,High,Likely misspelling of Azed.
+fifteensquared,puzzle_name_leading,cyclops 625 right wing press clutch at straws,Private Eye,,Cyclops,High,Malformed: puzzle title appended to setter name; flag for cleanup.
+fifteensquared,puzzle_name_leading,__trashed,,,,Low,Malformed data; discard.
+fifteensquared,puzzle_name_leading,pdf,,,,Low,Malformed data; discard.
+fifteensquared,puzzle_name_leading,special,Guardian,Special,,Medium,Insufficient context; likely Guardian but unverified.
+fifteensquared,puzzle_name_leading,genius,Guardian,Genius,,Medium,Missing Guardian prefix; inferred from context.
+fifteensquared,puzzle_name_leading,independent crossword,Independent,,,High,Variant label.
+fifteensquared,puzzle_name_leading,independent by raider,Independent,,Raider,High,Setter name embedded in leading token.
+fifteensquared,puzzle_name_leading,quiptic,Guardian,Quiptic,,High,Missing prefix; Guardian Quiptic without Guardian prefix.
+fifteensquared,puzzle_name_leading,guardian prize puzzle,Guardian,Prize,,High,Variant label for Guardian Prize.
+fifteensquared,puzzle_name_leading,guardian n,Guardian,,,High,Puzzle number prefix not stripped; maps to standard Guardian cryptic.
+fifteensquared,puzzle_name_trailing,paul,,,Paul,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,mudd,,,Mudd,High,UK (British English). Financial Times setter; pseudonym of John Halpern. (Wikipedia)
+fifteensquared,puzzle_name_trailing,picaroon,,,Picaroon,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,rufus,,,Rufus,High,UK (British English). Guardian setter; pseudonym of Roger Squires. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,nutmeg,,,Nutmeg,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,brummie,,,Brummie,High,UK (British English). Guardian/Independent setter; real name Eddie James who also sets as Cyclops for Private Eye. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,phi,,,Phi,High,UK (British English). Independent setter; pseudonym of Paul Henderson. (Wikipedia)
+fifteensquared,puzzle_name_trailing,bradman,,,Bradman,High,UK (British English). Financial Times setter; pseudonym of Don Manley. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,tees,,,Tees,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,qaos,,,Qaos,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,pasquale,,,Pasquale,High,UK (British English). Guardian setter; pseudonym of Don Manley. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,tramp,,,Tramp,High,UK (British English). Guardian setter; also sets as Jambazi in the Independent. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,falcon,,,Falcon,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,wanderer,,,Wanderer,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,vulcan,,,Vulcan,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,redshank,,,Redshank,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,chifonie,,,Chifonie,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,pan,,,Pan,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,brendan,,,Brendan,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,monk,,,Monk,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,neo,,,Neo,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,philistine,,,Philistine,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,dante,,,Dante,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,alberich,,,Alberich,High,UK (British English). Financial Times setter; pseudonym of Neil Shepherd. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,imogen,,,Imogen,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,crucible,,,Crucible,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,vlad,,,Vlad,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,anto,,,Anto,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,puck,,,Puck,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,julius,,,Julius,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,gozo,,,Gozo,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,hoskins,,,Hoskins,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,aardvark,,,Aardvark,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,hectence,,,Hectence,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,plain,,,Plain,High,UK (British English). Azed plain puzzle type; setter = Azed.
+fifteensquared,puzzle_name_trailing,chalmie,,,Chalmie,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,arachne,,,Arachne,High,UK (British English). Guardian setter; pseudonym of Sarah Hayes. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,poins,,,Poins,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,slormgorm,,,Slormgorm,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,gaff,,,Gaff,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,boatman,,,Boatman,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,peto,,,Peto,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,armonie,,,Armonie,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,goliath,,,Goliath,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,carpathian,,,Carpathian,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,sleuth,,,Sleuth,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,matilda,,,Matilda,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,gurney,,,Gurney,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,jason,,,Jason,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,hypnos,,,Hypnos,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,hamilton,,,Hamilton,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,orense,,,Orense,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,artexlen,,,Artexlen,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,kairos,,,Kairos,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,rosa klebb,,,Rosa Klebb,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,knut,,,Knut,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,eccles,,,Eccles,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,serpent,,,Serpent,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,crux,,,Crux,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,shed,,,Shed,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,vigo,,,Vigo,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,bluth,,,Bluth,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,orlando,,,Orlando,High,UK (British English). Independent setter; real name Michael Curl. (bestforpuzzles.com)
+fifteensquared,puzzle_name_trailing,filbert,,,Filbert,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,peter,,,Peter,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,zamorca,,,Zamorca,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,dac,,,Dac,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,alchemi,,,Alchemi,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,io,,,Io,High,UK (British English). Guardian setter; pseudonym of John Henderson. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,morph,,,Morph,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,hob,,,Hob,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,phssthpok,,,Phssthpok,High,UK (British English). Financial Times setter; name from a Larry Niven science fiction novel. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,klingsor,,,Klingsor,High,UK (British English). Independent setter; pseudonym of Neil Shepherd. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,gila,,,Gila,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,raich,,,Raich,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,enigmatist,,,Enigmatist,High,UK (British English). Guardian setter; pseudonym of John Henderson. (crossword.org.uk)
+fifteensquared,puzzle_name_trailing,moo,,,Moo,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,araucaria,,,Araucaria,High,UK (British English). Guardian setter; pseudonym of John Galbraith Graham (1921-2013). Also set for FT as Cinephile. (Wikipedia)
+fifteensquared,puzzle_name_trailing,crosophile,,,Crosophile,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,flimsy,,,Flimsy,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,maskarade,,,Maskarade,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,basilisk,,,Basilisk,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,moley,,,Moley,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,punk,,,Punk,High,UK (British English). Independent setter; pseudonym of John Halpern. (Wikipedia)
+fifteensquared,puzzle_name_trailing,buccaneer,,,Buccaneer,High,UK (British English). Financial Times setter; pseudonym of James Brydon. (spectator.co.uk)
+fifteensquared,puzzle_name_trailing,otterden,,,Otterden,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,sayang,,,Sayang,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,loroso,,,Loroso,High,UK (British English). Guardian setter; pseudonym of Dean Mayer. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,dogberry,,,Dogberry,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,wire,,,Wire,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,silvanus,,,Silvanus,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,gordius,,,Gordius,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,italicus,,,Italicus,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,magwitch,,,Magwitch,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,radian,,,Radian,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,screw,,,Screw,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,leonidas,,,Leonidas,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,velia,,,Velia,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,wiglaf,,,Wiglaf,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,quixote,,,Quixote,High,UK (British English). Independent setter; pseudonym of Don Manley. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,bonxie,,,Bonxie,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,tyrus,,,Tyrus,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,skinny,,,Skinny,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,atrica,,,Atrica,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,provis,,,Provis,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,loglady,,,Loglady,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,nitsy,,,Nitsy,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,maize,,,Maize,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,fed,,,Fed,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,rodriguez,,,Rodriguez,High,UK (British English). Independent setter; pseudonym of James Brydon. (spectator.co.uk)
+fifteensquared,puzzle_name_trailing,anax,,,Anax,High,UK (British English). Independent setter; pseudonym of Dean Mayer. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,beale,,,Beale,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,external,,,External,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,shabbo,,,Shabbo,High,UK (British English). Daily Telegraph Toughie setter.
+fifteensquared,puzzle_name_trailing,steerpike,,,Steerpike,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,chandler,,,Chandler,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,eimi,,,Eimi,High,UK (British English). Independent crossword editor (Mike Hutchinson). (Wikipedia)
+fifteensquared,puzzle_name_trailing,dill,,,Dill,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,methuselah,,,Methuselah,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,nimrod,,,Nimrod,High,UK (British English). Independent setter; pseudonym of John Henderson. (crosswordunclued.com)
+fifteensquared,puzzle_name_trailing,anglio,,,Anglio,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,scorpion,,,Scorpion,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,bobcat,,,Bobcat,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,pangakupu,,,Pangakupu,High,UK (British English). Guardian setter; pseudonym of Paul Henderson (Phi in the Independent). (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,cincinnus,,,Cincinnus,High,UK (British English). Independent setter; pseudonym of Michael Curl (also Orlando). (bestforpuzzles.com)
+fifteensquared,puzzle_name_trailing,cinephile,,,Cinephile,High,UK (British English). Financial Times setter; pseudonym of Araucaria (John Galbraith Graham). (Wikipedia)
+fifteensquared,puzzle_name_trailing,commoner,,,Commoner,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,flitwick,,,Flitwick,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,dalibor,,,Dalibor,High,UK (British English). Sloggers & Betters setter.
+fifteensquared,puzzle_name_trailing,brunel,,,Brunel,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,donk,,,Donk,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,bartland,,,Bartland,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,azed,,,Azed,High,UK (British English). Observer setter; pseudonym of Jonathan Crowther. (Wikipedia)
+fifteensquared,puzzle_name_trailing,egbert,,,Egbert,High,UK (British English). Sloggers & Betters setter.
+fifteensquared,puzzle_name_trailing,soup,,,Soup,High,UK (British English). Guardian setter; real name Dr Hamish Symington. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,angel,,,Angel,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,rosa,,,Rosa,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,daedalus,,,Daedalus,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,guy,,,Guy,High,UK (British English). Financial Times setter.
+fifteensquared,puzzle_name_trailing,bogus,,,Bogus,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,jack,,,Jack,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,kite,,,Kite,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,rorschach,,,Rorschach,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,bannsider,,,Bannsider,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,mev,,,Mev,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,harpo,,,Harpo,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,alan,,,Alan,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,playfair,,,,High,Azed special puzzle type using Playfair cipher; setter = Azed. Map series to Playfair in code.
+fifteensquared,puzzle_name_trailing,pabus,,,Pabus,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,lohengrin,,,Lohengrin,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,hieroglyph,,,Hieroglyph,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,logodaedalus,,,Logodaedalus,High,UK (British English). Guardian setter.
+fifteensquared,puzzle_name_trailing,vernon,,,Vernon,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,quince,,,Quince,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,hippogryph,,,Hippogryph,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,harold,,,Harold,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,snowflake,,,Snowflake,High,UK (British English). Independent setter.
+fifteensquared,puzzle_name_trailing,transgender,,,Transgender,Low,UK (British English). Cannot verify as setter pseudonym; may be misparsed puzzle title.
+fifteensquared,puzzle_name_trailing,umpire,,,Umpire,High,UK (British English). Confirmed Independent setter; described as relatively new. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,exit,,,Exit,High,UK (British English). Sloggers & Betters setter.
+fifteensquared,puzzle_name_trailing,misprints,,,,High,Azed special puzzle type; setter = Azed. Map series to Misprints in code.
+fifteensquared,puzzle_name_trailing,across,,,,High,Azed special puzzle type; setter = Azed. Map series to Across in code.
+fifteensquared,puzzle_name_trailing,overlaps,,,,High,Azed special puzzle type; setter = Azed. Map series to Overlaps in code.
+fifteensquared,puzzle_name_trailing,oops,,,Oops,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,raider,,,Raider,High,UK (British English). Confirmed Independent setter. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,chameleon,,,Chameleon,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,enigmatist and soup,,,Enigmatist|Soup,High,UK (British English). One-off collaborative puzzle (Araucaria centenary tribute); both set individually. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,s park,,,S Park,Low,UK (British English). Unverified; possibly S&B event entry.
+fifteensquared,puzzle_name_trailing,dutch,,,Dutch,High,UK (British English). Confirmed Independent setter. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,math,,,Math,Low,UK (British English). Unverified.
+fifteensquared,puzzle_name_trailing,courtier,,,Courtier,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,jambazi,,,Jambazi,High,UK (British English). Independent pseudonym of Guardian setter Tramp. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,mordred,,,Mordred,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,glow worm,,,Glow Worm,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,glowworm,,,Glow Worm,Medium,UK (British English). Likely same setter as Glow Worm; normalized.
+fifteensquared,puzzle_name_trailing,sphere,,,Sphere,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,bend,,,Bend,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,biggles,,,Biggles,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,audreus,,,Audreus,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,noz,,,Noz,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,trunk,,,Trunk,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,grecian,,,Grecian,High,UK (British English). Confirmed Independent setter. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,sphinx,,,Sphinx,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,quaiteaux,,,Quaiteaux,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,xestobium,,,Xestobium,High,UK (British English). Confirmed Independent on Sunday setter. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,reveller,,,Reveller,Medium,UK (British English). Plausible pseudonym; unverified.
+fifteensquared,puzzle_name_trailing,mobo,,,Mobo,Low,UK (British English). Unverified.
+fifteensquared,puzzle_name_trailing,lark,,,Lark,High,UK (British English). Confirmed Independent setter. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,ate,,,Ate,Low,UK (British English). Unverified; possibly misparsed.
+fifteensquared,puzzle_name_trailing,boatman fifty variations on an original theme,,,Boatman,High,Puzzle title appended to setter name; normalized to Boatman.
+fifteensquared,puzzle_name_trailing,maskarade late summer prize cryptic crossword,,,Maskarade,High,Puzzle title appended to setter name; normalized to Maskarade.
+fifteensquared,puzzle_name_trailing,donk last ever,,,Donk,High,Puzzle title appended to setter name; normalized to Donk.
+fifteensquared,puzzle_name_trailing,araucauria,,,Araucaria,High,Misspelling of Araucaria.
+fifteensquared,puzzle_name_trailing,aardvard,,,Aardvark,High,Misspelling of Aardvark.
+fifteensquared,puzzle_name_trailing,chifone,,,Chifonie,High,Misspelling of Chifonie.
+fifteensquared,puzzle_name_trailing,hynos,,,Hypnos,High,Misspelling of Hypnos.
+fifteensquared,puzzle_name_trailing,laroso,,,Loroso,High,Misspelling of Loroso.
+fifteensquared,puzzle_name_trailing,payfair,,,,High,Misspelling of Playfair; maps to Azed special type.
+fifteensquared,puzzle_name_trailing,guardian,,,,High,Publisher leaked into setter field; no setter present.
+fifteensquared,puzzle_name_trailing,anon,,,,High,No setter present.
+fifteensquared,puzzle_name_trailing,with picture quiz,,,,High,Blog post feature label appended after setter name; not setter information. Strip.
+fifteensquared,puzzle_name_trailing,plain competition puzzle,,Plain,Azed,High,"Azed special format label; setter = Azed, series = Plain."
+times_xwd_times,puzzle_name_leading,times,The Times,Times Cryptic,,High,UK (British English). Anonymous setters; strict Ximenean-adjacent house style. Mon-Fri daily plus Saturday prize. (Wikipedia)
+times_xwd_times,puzzle_name_leading,times jumbo,The Times,Jumbo,,High,UK (British English). 23x23 Saturday jumbo puzzle. (Wikipedia)
+times_xwd_times,puzzle_name_leading,jumbo,The Times,Jumbo,,High,UK (British English). Truncated variant of Times Jumbo.
+times_xwd_times,puzzle_name_leading,times quick,The Times,Quick Cryptic,,High,UK (British English). Introduced March 2014; smaller easier version of the main daily cryptic designed for beginners. (Wikipedia)
+times_xwd_times,puzzle_name_leading,qc,The Times,Quick Cryptic,,High,UK (British English). Abbreviation for Quick Cryptic.
+times_xwd_times,puzzle_name_leading,saturday times,The Times,Weekend Cryptic,,High,UK (British English). Saturday prize cryptic.
+times_xwd_times,puzzle_name_leading,times saturday,The Times,Weekend Cryptic,,High,UK (British English). Variant label for Saturday prize cryptic.
+times_xwd_times,puzzle_name_leading,sunday times,Sunday Times,Sunday Times Cryptic,,High,UK (British English). Difficulty very similar to The Times daily cryptic. (fifteensquared.net)
+times_xwd_times,puzzle_name_leading,mephisto,Sunday Times,Mephisto,,High,UK (British English). Advanced barred-grid cryptic in the Sunday Times; team of setters including Don Manley Tim Moorey and Paul McKenna. Higher difficulty than standard cryptic. (bestforpuzzles.com)
+times_xwd_times,puzzle_name_leading,monthly club special,The Times,Monthly Club Special,,High,UK (British English). Extremely difficult monthly puzzle for Times Crossword Club subscribers; uses obscure Chambers vocabulary; described as Championship level. (timesforthetimes.co.uk)
+times_xwd_times,puzzle_name_leading,club monthly,The Times,Monthly Club Special,,High,UK (British English). Variant label for Monthly Club Special.
+times_xwd_times,puzzle_name_leading,tls crossword,Times Literary Supplement,TLS Crossword,,High,UK (British English). Mix of easy cryptic clues and arts/literature general knowledge; can be obscure. TLS is a fortnightly literary review published by News UK; originated as a Times supplement in 1902. (timesforthetimes.co.uk; Wikipedia)
+times_xwd_times,puzzle_name_leading,sunday times christmas,Sunday Times,Christmas Special,,High,UK (British English). Special seasonal puzzle; typically a large 23x23 grid often set by Dean Mayer. (times-xwd-times.livejournal.com)
+times_xwd_times,puzzle_name_leading,sunday times christmas extra,Sunday Times,Christmas Extra,,High,UK (British English). Variant of the Sunday Times Christmas special.
+times_xwd_times,puzzle_name_leading,times bank holiday jumbo,The Times,Jumbo,,High,UK (British English). Bank holiday special Jumbo edition.
+times_xwd_times,puzzle_name_leading,bank holiday jumbo,The Times,Jumbo,,High,UK (British English). Truncated variant.
+times_xwd_times,puzzle_name_leading,times boxing day jumbo,The Times,Jumbo,,High,UK (British English). Boxing Day special Jumbo.
+times_xwd_times,puzzle_name_leading,boxing day jumbo,The Times,Jumbo,,High,UK (British English). Truncated variant.
+times_xwd_times,puzzle_name_leading,summer bank holiday jumbo,The Times,Jumbo,,High,UK (British English). Summer bank holiday special Jumbo.
+times_xwd_times,puzzle_name_leading,easter monday bank holiday jumbo,The Times,Jumbo,,High,UK (British English). Easter Monday special Jumbo.
+times_xwd_times,puzzle_name_leading,dean mayer,Sunday Times,,Dean Mayer,High,UK (British English). Sunday Times setter known for creative wordplay and higher-than-average difficulty. Setter name used as puzzle_name; malformed. (times-xwd-times.livejournal.com)
+times_xwd_times,puzzle_name_leading,mephist,Sunday Times,Mephisto,,High,Misspelling of Mephisto.
+times_xwd_times,puzzle_name_leading,times quick ctyptic,The Times,Quick Cryptic,,High,Misspelling of cryptic.
+times_xwd_times,puzzle_name_leading,tmes quick,The Times,Quick Cryptic,,High,Misspelling of Times.
+times_xwd_times,puzzle_name_leading,times quickie,The Times,Quick Cryptic,,High,Informal variant label.
+times_xwd_times,puzzle_name_leading,quick,The Times,Quick Cryptic,,High,Truncated label.
+times_xwd_times,puzzle_name_leading,times crossword,The Times,Times Cryptic,,High,Variant label.
+times_xwd_times,puzzle_name_leading,times number,The Times,Times Cryptic,,Medium,Number is a puzzle number prefix; maps to Times Cryptic.
+times_xwd_times,puzzle_name_leading,times no,The Times,Times Cryptic,,High,No is puzzle number prefix.
+times_xwd_times,puzzle_name_leading,times jumbo no,The Times,Jumbo,,High,No is puzzle number prefix.
+times_xwd_times,puzzle_name_leading,times saturday no,The Times,Weekend Cryptic,,High,No is puzzle number prefix.
+times_xwd_times,puzzle_name_leading,sunday times no,Sunday Times,Sunday Times Cryptic,,High,No is puzzle number prefix.
+times_xwd_times,puzzle_name_leading,monthly club special no,The Times,Monthly Club Special,,High,No is puzzle number prefix.
+times_xwd_times,puzzle_name_leading,times quick crossword no,The Times,Quick Cryptic,,High,Variant label with number prefix.
+times_xwd_times,puzzle_name_leading,times quick no,The Times,Quick Cryptic,,High,No is puzzle number prefix.
+times_xwd_times,puzzle_name_leading,quick no,The Times,Quick Cryptic,,High,Truncated label with number prefix.
+times_xwd_times,puzzle_name_leading,quick number,The Times,Quick Cryptic,,High,Truncated label with number prefix.
+times_xwd_times,puzzle_name_leading,qcc,The Times,Quick Cryptic,,Medium,Likely Quick Cryptic Club variant; low count (26 rows).
+times_xwd_times,puzzle_name_leading,saturday,,Weekend Cryptic,,Medium,Stray comma variant; malformed Saturday entry.
+times_xwd_times,puzzle_name_leading,times quick crossword,The Times,Quick Cryptic,,High,Unreachable previously; trailing 'no' stripped before lookup leaving this token.
+thehinducrosswordcorner,puzzle_name_leading,the sunday crossword,The Hindu,Sunday Crossword,,High,India (Indian English). Sunday edition crossword series in The Hindu.
+thehinducrosswordcorner,puzzle_name_leading,thee sunday crossword,The Hindu,Sunday Crossword,,High,Misspelling of The Sunday Crossword.
+thehinducrosswordcorner,puzzle_name_leading,the sunday crosword,The Hindu,Sunday Crossword,,High,Misspelling of The Sunday Crossword.
+thehinducrosswordcorner,puzzle_name_leading,n,The Hindu,,,Low,Truncated No; malformed.
+thehinducrosswordcorner,puzzle_name_trailing,arden,,,Arden,High,India (Indian English). The Hindu setter; known for smooth clue surfaces. (crosswordunclued.com)
+thehinducrosswordcorner,puzzle_name_trailing,gridman,,,Gridman,High,India (Indian English). Pseudonym of C.G. Rishikesh; one of the longest-serving Hindu setters joining the panel in 2001. (thehinducrosswordcorner.blogspot.com)
+thehinducrosswordcorner,puzzle_name_trailing,incognito,,,Incognito,High,India (Indian English). Pseudonym of Kishore Rao; known as the gentlest Hindu setter; uses multilingual puns. (crosswordunclued.com)
+thehinducrosswordcorner,puzzle_name_trailing,afterdark,,,Afterdark,High,India (Indian English). The Hindu setter; also appears as aFTERDARK on the blog (stylistic only).
+thehinducrosswordcorner,puzzle_name_trailing,dr. x,,,Dr. X,High,India (Indian English). Pseudonym of Dr. Satyen Nabar; also sets for Hindustan Times as Bone Setter. (thehinducrosswordcorner.blogspot.com)
+thehinducrosswordcorner,puzzle_name_trailing,neyartha,,,Neyartha,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,vulcan,,,Vulcan,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,lightning,,,Lightning,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,anon,,,,High,Pre-2008 anonymous puzzle; The Hindu began carrying setters bylines only in 2008. (crosswordunclued.com)
+thehinducrosswordcorner,puzzle_name_trailing,buzzer,,,Buzzer,High,India (Indian English). The Hindu setter; known for empathy toward solvers. (crosswordunclued.com)
+thehinducrosswordcorner,puzzle_name_trailing,xchequer,,,xChequer,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,sunnet,,,Sunnet,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,spinner,,,Spinner,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,kriskross,,,KrisKross,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,hypatia,,,Hypatia,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,scintillator,,,Scintillator,High,India (Indian English). Pseudonym of Shyam; the word scintillating impressed him at age ten in The Hindu sports column. (crosswordunclued.com)
+thehinducrosswordcorner,puzzle_name_trailing,skulldugger,,,Skulldugger,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,the phantom,,,The Phantom,High,India (Indian English). Identified by a blog commenter as Raghu. (thehinducrosswordcorner.blogspot.com)
+thehinducrosswordcorner,puzzle_name_trailing,aspartame,,,Aspartame,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,avtaar,,,Avtaar,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,karaoke,,,Karaoke,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,bruno,,,Bruno,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,gussalufz,,,Gussalufz,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,exa,,,Exa,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,vidwan,,,Vidwan,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,mac,,,Mac,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,wrdplougher,,,WrdPlougher,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,dreamer,,,Dreamer,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,anitya,,,Anitya,High,India (Indian English). The Hindu setter.
+thehinducrosswordcorner,puzzle_name_trailing,klue klux klan,,,Klue Klux Klan,High,India (Indian English). The Hindu setter pseudonym; 28 rows.
+thehinducrosswordcorner,puzzle_name_trailing,skuldugger,,,Skulldugger,High,Misspelling of Skulldugger.
+thehinducrosswordcorner,puzzle_name_trailing,"dr. x,",,,Dr. X,High,Stray comma variant of Dr. X; normalize to Dr. X.
+thehinducrosswordcorner,puzzle_name_trailing,dr x,,,Dr. X,High,Missing period variant of Dr. X.
+thehinducrosswordcorner,puzzle_name_trailing,"dr, x,",,,Dr. X,High,Punctuation variant of Dr. X; normalize to Dr. X.
+thehinducrosswordcorner,puzzle_name_trailing,scinitillator,,,Scintillator,High,Misspelling of Scintillator.
+thehinducrosswordcorner,puzzle_name_trailing,"spinner,",,,Spinner,High,Stray comma variant of Spinner; normalize to Spinner.
+thehinducrosswordcorner,puzzle_name_trailing,phantom,,,The Phantom,High,Truncated variant of The Phantom.
+thebrowser,source_url_trailing,ries,,,Ries,High,USA (North American English). Regular Browser contributor; full name Andrew J. Ries. (Amazon)
+thebrowser,source_url_trailing,zawistowski,,,Zawistowski,High,USA (North American English). Regular Browser contributor; full name Stella Zawistowski. (Amazon)
+thebrowser,source_url_trailing,cardin,,,Cardin,High,USA (North American English). Regular Browser contributor; full name Nate Cardin. (Amazon)
+thebrowser,source_url_trailing,nediger,,,Nediger,High,USA (North American English). Regular Browser contributor; full name Will Nediger. (Amazon)
+thebrowser,source_url_trailing,pasco,,,Pasco,High,USA (North American English). Regular Browser contributor; full name Paolo Pasco. (Amazon)
+thebrowser,source_url_trailing,goodchild,,,Goodchild,High,USA (North American English). Regular Browser contributor; full name Sara Goodchild. (Amazon)
+thebrowser,source_url_trailing,mossberg,,,Mossberg,High,USA (North American English). Regular Browser contributor; full name Steve Mossberg. (Amazon)
+thebrowser,source_url_trailing,brian,,,Brian,High,USA (North American English). Guest contributor; full name Ori Brian. (Amazon)
+thebrowser,source_url_trailing,quigley,,,Quigley,High,USA (North American English). Guest contributor; full name Brendan Emmett Quigley. (Amazon)
+thebrowser,source_url_trailing,hawkins,,,Hawkins,High,USA (North American English). Guest contributor; full name Kate Hawkins. (Amazon)
+thebrowser,source_url_trailing,jacobs goodchild,,,Jacobs|Goodchild,High,USA (North American English). Collaborative puzzle; A.J. Jacobs and Sara Goodchild. (Amazon)
+thebrowser,source_url_trailing,roedernediger,,,Roeder|Nediger,High,USA (North American English). Collaborative puzzle; Oliver Roeder and Will Nediger. (Amazon)
+thebrowser,source_url_trailing,geller,,,Geller,High,USA (North American English). Guest contributor; full name Lily Geller. (Amazon)
+thebrowser,source_url_trailing,fabi,,,Fabi,High,USA (North American English). Guest contributor; full name Rachel Fabi. (Amazon)
+thebrowser,source_url_trailing,- ries,,,Ries,High,Stray dash; normalized to Ries.
+thebrowser,source_url_trailing,vu,,,Vu,High,USA (North American English). Guest contributor; full name Hoang-Kim Vu. (Amazon)
+thebrowser,source_url_trailing,simpson,,,Simpson,Medium,USA (North American English). Not identified in Amazon book listings; likely a guest contributor.

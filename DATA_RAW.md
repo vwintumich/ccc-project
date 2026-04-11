@@ -69,7 +69,7 @@ assert df[df['source'].isin(['cru_cryptics', 'nytimes', 'leoedit'])]['definition
 |------|-------------|---------|-------------|-------|
 | `clues_raw.csv` | `clue_id` | ✅ | George Ho (pre-existing) | one row per clue |
 | `clues_filtered.csv` | `row_id` | ✅ | `structural_filtering.ipynb` (last step before write) | one row per (clue, definition) pair; `clue_id` retained as FK |
-| `id_map.csv` | `clue_id` | ✅ | `assign_ids.py` | maps `clue_id` → `puzzle_id`; generated file, in `.gitignore` |
+| `id_map.csv` | `clue_id` | ✅ | `assign_ids.py` | maps `clue_id` → `puzzle_id`; committed to repo; do not manually edit |
 | `puzzle_metadata.csv` | `puzzle_id` | ✅ | `puzzle_metadata.ipynb` | one row per puzzle |
 | `clue_metadata.csv` | `clue_id` | ✅ | future notebook | one row per original clue |
 
@@ -108,7 +108,8 @@ of each other.
 **Input:** `../data/clues_raw.csv` — loads `clue_id`, `source`, `puzzle_name`,
 `source_url`.
 **Output:** `../data/id_map.csv` — columns `clue_id` (int), `puzzle_id` (int);
-sorted by `(puzzle_id, clue_id)`; `index=False`.
+sorted by `(puzzle_id, clue_id)`; `index=False`. Committed to repo; do not
+manually edit.
 
 **How `puzzle_id` is assigned:**
 

@@ -91,3 +91,23 @@ One known exception exists: `clue_id` 9773 contains a slash inside a quoted
 phrase that is genuinely part of the surface. Losing this single case is
 accepted as collateral loss — a targeted exception would add complexity that
 is not justified by a single affected row.
+
+---
+
+### `data/id_map.csv` and `data/publisher_lookup.csv` — committed to repo
+
+**Choice:** `data/id_map.csv` and `data/publisher_lookup.csv` are committed
+to the repo via `.gitignore` exceptions (`!data/id_map.csv` and
+`!data/publisher_lookup.csv` following the `data/*` ignore line). Neither
+file should be manually edited; any regeneration requires a documented
+reason recorded in this file first.
+
+**Rationale:** `id_map.csv` is small, fully deterministic, and derived from
+fixed raw data (`clues_raw.csv`) by `notebooks/assign_ids.py`. Committing it
+eliminates the run-order dependency between `assign_ids.py` and
+`puzzle_metadata.ipynb`: contributors can open and run
+`puzzle_metadata.ipynb` directly without first executing a separate script.
+`publisher_lookup.csv` is the authoritative, hand-curated lookup table for
+puzzle metadata extraction and was already committed — the exception line
+makes this explicit alongside the `id_map.csv` exception so the
+gitignore/exception pair documents the policy for both files in one place.
