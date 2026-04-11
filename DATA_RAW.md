@@ -1,122 +1,169 @@
 # DATA_RAW.md — Raw Data Schema and Puzzle Metadata Extraction
 
-This document describes the raw input data for the CCC project and the puzzle
-metadata extraction logic used across all pipeline components. It is a
-reference for Claude Code when building or editing metadata extraction and
-structural filtering notebooks.
-
-**Shared resource:** This file lives at the `ccc-project/` root and applies
-to all components (`clue_misdirection/`, `custom_embedding_model/`, etc.).
+This document describes the raw input data for the clue misdirection pipeline,
+the data architecture connecting all derived files, and the extraction logic
+implemented in `puzzle_metadata.ipynb`. It is intended as a reference for
+Claude Code when building or editing any notebook or script in this project.
 
 ---
 
 ## 1. Source File
 
-**File:** `data/clues_raw.csv`
+**File:** `../data/clues_raw.csv`
 **Origin:** Extracted from George Ho's CCC dataset (`data.sqlite3`) by
 `indicator_clustering/NB00`. Do not go back to the sqlite directly.
 **Size:** 660,613 rows
-**Index:** `clue_id` (integer). `clue_id` originates in the George Ho sqlite
-database and is unique per row in `clues_raw.csv`. After multi-definition
-expansion in `structural_filtering.ipynb`, it is no longer unique in
-`clues_filtered.csv` — two rows can share a `clue_id` if the original clue
-had two valid definitions.
+**Loading:** `clue_id` is kept as a regular column, not set as the pandas
+index. It is unique in this file and serves as the primary key.
 
 ---
 
 ## 2. Columns in `clues_raw.csv`
 
-These are the actual column names as loaded. The index column is `clue_id`.
-
 | Column | Type | Description |
 |--------|------|-------------|
-| `clue_id` | int | Unique row identifier (used as index) |
+| `clue_id` | int | Unique row identifier; primary key of `clues_raw.csv`; kept as a column, not used as pandas index |
 | `clue` | str | Full clue text including answer format in parentheses, e.g. `"Plant in a garden party (5)"` |
 | `answer` | str | The crossword answer, uppercase, e.g. `"PARTY"` |
-| `definition` | str | The definition substring within the clue. For double-definition clues, contains `/`-separated alternatives. Frequently NaN (see §5). |
-| `clue_number` | str | Clue position in the grid, e.g. `"23a"`, `"18d"`. Parsed into `clue_no` (int) and `clue_direction` (`"across"` or `"down"`) in `puzzle_metadata.ipynb`. |
+| `definition` | str | The definition substring within the clue. For double-definition clues, contains `/`-separated alternatives. Frequently NaN for some sources (see §8). |
+| `clue_number` | str | Clue position in the grid, e.g. `"23a"`, `"18d"`. Parseable into `clue_no` (int) and `clue_direction` (`"across"` or `"down"`). Currently not used in the pipeline. |
 | `puzzle_date` | str | Publication date of the puzzle. Present for most sources; NaN for `thebrowser`. |
-| `puzzle_name` | str | Blog entry title or puzzle name. Format varies by source (see §4). |
-| `source_url` | str | URL or file path of the source blog entry or puzzle file. Format varies by source (see §4). |
-| `source` | str | Source identifier. One of 10 values (see §3). |
-
-**Column loading by notebook:**
-- `puzzle_metadata.ipynb` loads: `clue_id`, `source`, `puzzle_name`, `source_url`, `puzzle_date`, `clue_number`
-- `structural_filtering.ipynb` loads: `clue_id`, `clue`, `answer`, `definition`
+| `puzzle_name` | str | Blog entry title or puzzle name. Format varies significantly by source (see §6). |
+| `source_url` | str | URL or file path of the source blog entry or puzzle file. Used as the puzzle grouping key by `assign_ids.py`. No null values. |
+| `source` | str | Source identifier. One of 10 values (see §3). Used directly as the `blog` column in `puzzle_metadata.csv`. |
 
 ---
 
 ## 3. Sources
 
-Ten distinct values of `source`, with row counts:
+Ten distinct values of `source`, with row counts and puzzle counts:
 
-| source | rows | notes |
-|--------|------|-------|
-| `bigdave44` | 232,884 | UK cryptic blog; Daily/Sunday Telegraph + community series |
-| `fifteensquared` | 225,725 | UK cryptic blog; Guardian, Independent, FT, Observer, etc. |
-| `times_xwd_times` | 101,240 | UK cryptic blog; The Times and Sunday Times stable |
-| `thehinducrosswordcorner` | 71,719 | Indian cryptic blog; The Hindu newspaper |
-| `natpostcryptic` | 11,014 | Canadian cryptic blog; National Post (some weekday puzzles syndicated from Daily Telegraph UK) |
-| `cru_cryptics` | 7,287 | Community forum; **no `definition` parsed** |
-| `nytimes` | 4,687 | New York Times; **no `definition` parsed** |
-| `newyorker` | 3,242 | The New Yorker |
-| `thebrowser` | 2,601 | US cryptic publication (weekly, 2021–2025) |
-| `leoedit` | 214 | Amuselabs Leoedit; **no `definition` parsed** |
+| source | rows | puzzles | notes |
+|--------|------|---------|-------|
+| `bigdave44` | 232,884 | 7,942 | UK cryptic blog; Daily/Sunday Telegraph + community series |
+| `fifteensquared` | 225,725 | 7,730 | UK cryptic blog; Guardian, Independent, FT, Observer, etc. |
+| `times_xwd_times` | 101,240 | 3,484 | UK cryptic blog; The Times and Sunday Times stable |
+| `thehinducrosswordcorner` | 71,719 | 2,484 | Indian cryptic blog; The Hindu newspaper |
+| `natpostcryptic` | 11,014 | 357 | Canadian cryptic blog; National Post |
+| `cru_cryptics` | 7,287 | 240 | Community forum; **no `definition` parsed** |
+| `nytimes` | 4,687 | 152 | New York Times; **no `definition` parsed** |
+| `newyorker` | 3,242 | 148 | The New Yorker |
+| `thebrowser` | 2,601 | 84 | US cryptic publication (weekly, 2021–2025) |
+| `leoedit` | 214 | 7 | Amuselabs Leoedit; **no `definition` parsed** |
+
+**Total:** 660,613 clues across 22,628 puzzles (~29–31 clues per puzzle).
 
 Sources with no `definition`: `cru_cryptics`, `nytimes`, `leoedit`. These are
-excluded from the main filtering pipeline. Verify with:
+excluded from `structural_filtering.ipynb`. Verify with:
 ```python
 assert df[df['source'].isin(['cru_cryptics', 'nytimes', 'leoedit'])]['definition'].isna().all()
 ```
 
 ---
 
-## 4. Derived Columns in `puzzle_metadata.csv`
+## 4. Data Architecture
 
-**Produced by:** `ccc-project/notebooks/puzzle_metadata.ipynb`
-**Output:** `ccc-project/data/puzzle_metadata.csv`
+### 4.1 Files and primary keys
 
-This is a standalone file keyed on `clue_id`. It is not joined into
-`clues_filtered.csv` automatically — downstream notebooks join it in when
-needed. It can be produced independently of structural filtering.
+| file | primary key | unique? | assigned in | notes |
+|------|-------------|---------|-------------|-------|
+| `clues_raw.csv` | `clue_id` | ✅ | George Ho (pre-existing) | one row per clue |
+| `clues_filtered.csv` | `row_id` | ✅ | `structural_filtering.ipynb` (last step before write) | one row per (clue, definition) pair; `clue_id` retained as FK |
+| `id_map.csv` | `clue_id` | ✅ | `assign_ids.py` | maps `clue_id` → `puzzle_id`; generated file, in `.gitignore` |
+| `puzzle_metadata.csv` | `puzzle_id` | ✅ | `puzzle_metadata.ipynb` | one row per puzzle |
+| `clue_metadata.csv` | `clue_id` | ✅ | future notebook | one row per original clue |
 
-**Note on `clue_id`:** `clue_id` originates in the George Ho sqlite database
-and is unique in `clues_raw.csv`. It is **not** unique in `clues_filtered.csv`
-after multi-definition expansion. When joining `puzzle_metadata.csv` onto
-filtered data, expect multiple rows per `clue_id`.
+### 4.2 Why `clue_id` is not unique in `clues_filtered.csv`
 
-Derived columns:
+Double-definition clues have a `definition` field containing `/`-separated
+alternatives. `structural_filtering.ipynb` expands these into multiple rows —
+one per valid definition — so the same `clue_id` can appear multiple times.
+The composite `(clue_id, definition)` is unique. `row_id` is assigned as a
+simple sequential integer to give each expanded row a single unambiguous
+primary key.
 
-| Column | Description |
-|--------|-------------|
-| `clue_id` | Join key — unique in `clues_raw.csv`; not unique in `clues_filtered.csv` |
-| `publisher` | Canonical publisher name |
-| `series` | Puzzle series within the publication (e.g., "Toughie", "QC") |
-| `setter` | Setter pseudonym or surname; pipe-separated for collaborations |
-| `puzzle_no` | Puzzle number (int); NaN where not extractable |
-| `puzzle_date` | Publication date; extracted from `puzzle_name` or `source_url` where missing |
-| `clue_no` | Parsed grid number (int); NaN if unparseable |
-| `clue_direction` | `"across"` or `"down"`; parsed from `clue_number`; NaN if unparseable |
+### 4.3 Join patterns
 
-### 4.1 Hardcoded publisher assignments
+- **Puzzle metadata → clues_filtered:** join `clues_filtered.csv` on `clue_id`
+  to `id_map.csv` to get `puzzle_id`, then join `puzzle_metadata.csv` on
+  `puzzle_id`. Puzzle metadata will repeat across double-definition rows —
+  this is correct and expected.
+- **Clue metadata → clues_filtered:** join directly on `clue_id`. Clue
+  metadata will also repeat across double-definition rows — also correct.
 
-For these sources, `publisher` is assigned directly in code without any lookup:
+### 4.4 Independence requirement
+
+No notebook at the root level may depend on another notebook having run first.
+`assign_ids.py` is a script (not a notebook) and must be run before
+`puzzle_metadata.ipynb`. This dependency is documented in `README.md`.
+`structural_filtering.ipynb` and `puzzle_metadata.ipynb` are fully independent
+of each other.
+
+---
+
+## 5. `assign_ids.py`
+
+**Location:** `notebooks/assign_ids.py`
+**Run:** `cd notebooks && python assign_ids.py`
+**Input:** `../data/clues_raw.csv` — loads `clue_id`, `source`, `puzzle_name`,
+`source_url`.
+**Output:** `../data/id_map.csv` — columns `clue_id` (int), `puzzle_id` (int);
+sorted by `(puzzle_id, clue_id)`; `index=False`.
+
+**How `puzzle_id` is assigned:**
+
+Puzzles are identified by grouping clues on `source_url` after normalization:
+
+1. **Trailing slash strip:** `str.rstrip("/")` applied to all sources.
+   Collapses one known `fifteensquared` anomaly identified in investigation.
+2. **`bigdave44` numeric-ID normalization:** Some puzzles have two URLs — a
+   human-readable slug (e.g. `.../toughie-2766/`) and a numeric WordPress post
+   ID (e.g. `.../141686/`). Numeric-ID URLs are detected via `r"/\d+/$"`. For
+   any `puzzle_name` that maps to both forms, the numeric-ID URL is replaced by
+   the slug URL. Numeric-ID URLs with no slug sibling are kept as-is. 32
+   replacements were made in the current dataset.
+3. **`puzzle_id` assignment:** Unique normalized `source_url` values are sorted
+   by `(source, normalized_source_url)` and assigned sequential integer IDs via
+   `pd.factorize`. Sort order ensures stability across reruns.
+
+**Validation:** Asserts that every `clue_id` from the input appears exactly
+once in the output and that no `puzzle_id` is null.
+
+---
+
+## 6. `puzzle_metadata.csv` Schema
+
+Produced by `puzzle_metadata.ipynb`. One row per puzzle.
+
+| column | source |
+|--------|--------|
+| `puzzle_id` | from `id_map.csv` |
+| `blog` | directly from `source` column in `clues_raw.csv` |
+| `publisher` | hardcoded or extracted via `publisher_lookup.csv` |
+| `series` | extracted via `publisher_lookup.csv` |
+| `setter` | hardcoded, extracted via lookup, or from `source_url`; pipe-separated for collaborations |
+| `puzzle_date` | from `puzzle_date` column or extracted from `puzzle_name`/`source_url` |
+
+`puzzle_no` is not included — `puzzle_id` serves as the unique identifier.
+`clue_no` and `clue_direction` are clue-level metadata and belong in the
+future `clue_metadata.csv`, not here.
+
+### 6.1 Hardcoded publisher assignments
 
 | source | publisher | setter | notes |
 |--------|-----------|--------|-------|
-| `natpostcryptic` | `"National Post"` | `"Hex"` | Hex = pseudonym of Emily Cox & Henry Rathvon. Weekday puzzles may be syndicated from the Daily Telegraph UK, but this is not flagged in the output. |
-| `cru_cryptics` | `"Cru Cryptics Forum"` | — | Excluded from main pipeline. |
-| `nytimes` | `"New York Times"` | — | Excluded from main pipeline. |
-| `leoedit` | `"Amuselabs Leoedit"` | — | Excluded from main pipeline. |
-| `thebrowser` | `"The Browser"` | from `source_url` | US publication; setters use real surnames, not pseudonyms. |
+| `natpostcryptic` | `"National Post"` | `"Hex"` | Hex = pseudonym of Emily Cox & Henry Rathvon |
+| `cru_cryptics` | `"Cru Cryptics Forum"` | — | |
+| `nytimes` | `"New York Times"` | — | |
+| `leoedit` | `"Amuselabs Leoedit"` | — | |
+| `thebrowser` | `"The Browser"` | from `source_url` | setters use real surnames |
 | `newyorker` | `"The New Yorker"` | — | |
 | `thehinducrosswordcorner` | `"The Hindu"` | from `puzzle_name` | |
 
-### 4.2 Extraction from `puzzle_name` and `source_url`
+### 6.2 Extraction fields
 
 The lookup table `data/publisher_lookup.csv` maps extracted substrings to
-canonical `publisher`, `series`, and `setter` values. The `field` column
-identifies where the substring was extracted from:
+canonical `publisher`, `series`, and `setter` values via the `field` column:
 
 | field value | extraction location |
 |-------------|---------------------|
@@ -130,11 +177,11 @@ Which sources use which fields:
 |--------|--------------------|--------------------|-------------------|
 | `bigdave44` | ✅ publisher + series | | |
 | `fifteensquared` | ✅ publisher + series | ✅ setter | |
-| `times_xwd_times` | ✅ series (publisher hardcoded to The Times/Sunday Times) | | |
+| `times_xwd_times` | ✅ series | | |
 | `thehinducrosswordcorner` | ✅ series prefix | ✅ setter | |
 | `thebrowser` | | | ✅ setter |
 
-### 4.3 `puzzle_name` formats by source
+### 6.3 `puzzle_name` formats by source
 
 #### `bigdave44`
 ```
@@ -152,34 +199,35 @@ Examples: `"Daily Telegraph 27164"`, `"NTSPP – 488"`, `"Toughie 2766"`
 ```
 [Publisher] [Number] by [Setter]
 [Publisher] [Number] [Setter]
-[Series] [Number]              ← setter-only entries (Azed, Everyman, etc.)
+[Series] [Number]
 ```
 Examples: `"Guardian Cryptic 27509 by Qaos"`, `"Financial Times 14450 Neo"`, `"Azed 2446"`
 
-- Leading token → allowlist lookup (publisher/series). Strip `"Cryptic"` noise before lookup.
+- Leading token → allowlist lookup (publisher/series); strip `"Cryptic"` noise before lookup
 - Trailing token (after number, optional `by`) → setter lookup
 - Collaborative puzzles stored as pipe-separated list: `"Enigmatist|Soup"`
 - Azed special types (Misprints, Playfair, Overlaps, Across) → `setter = "Azed"`, `series = [type name]`
 - Sloggers & Betters entries: `publisher = "Sloggers & Betters"`, city extracted as series, setter(s) after `"by"` keyword
 - `puzzle_date` already present; no date extraction needed
+- Known missing lookup entries: `"quiptic"` → Guardian/Quiptic; `"guardian prize puzzle"` → Guardian/Prize; `"guardian n"` → Guardian/—; `"times quick crossword"` → The Times/Quick Cryptic
+- Known trailing pollution handled in extraction regex: `"with picture quiz"` → strip; `"plain competition puzzle"` → `setter = "Azed"`, `series = "Plain"`; bare number suffix (e.g. `"2"`) → strip (blog disambiguation suffix, not a different setter or series)
 
 #### `times_xwd_times`
 ```
 [Series] [Number]
 [Series] No [Number]
-[Series] [Number,]             ← trailing comma (stray); strip before parsing
-[Series] [Number with comma]   ← e.g. "26,495"; strip comma from number
+[Series] [Number,]
+[Series] [Number with comma]
 ```
 Examples: `"Times Cryptic No 27948"`, `"QC 1425"`, `"Times 26,495"`, `"Jumbo 1433"`
 
 - Publisher hardcoded: `"The Times"` for Times series, `"Sunday Times"` for Sunday series, `"Times Literary Supplement"` for TLS
 - Leading token (normalized) → series name via lookup
 - Strip `"Cryptic"` and `"No"` noise; strip commas from puzzle number
-- Significant malformed data: month-only tokens, puzzle titles leaking in, stray commas — map to NaN and log
+- Significant malformed data: month-only tokens, puzzle titles leaking in, blank entries (185 rows) — map to NaN and log
 - `puzzle_date` already present
 
 #### `thehinducrosswordcorner`
-Two formats:
 ```
 Format 1 (main series):
 No NNNNN, Weekday DD Mon YYYY, Setter
@@ -194,58 +242,52 @@ Examples: `"No 11542, Wednesday 04 Nov 2015, Gridman"`, `"The Sunday Crossword N
 - Publisher hardcoded: `"The Hindu"`
 - Leading prefix (before number): empty → main series; `"The Sunday Crossword"` (and misspellings) → series lookup
 - Setter: trailing field after the date comma; may contain `.` (e.g. `"Dr. X"`); absent for Sunday Crossword entries
-- Setter normalization lookup handles misspellings and punctuation variants (e.g. `"Dr. x,"` → `"Dr. X"`)
-- `"Anon"` → `setter = NaN` (pre-2008 anonymous puzzles before bylines were introduced)
+- Setter normalization lookup handles misspellings and punctuation variants
+- `"Anon"` → `setter = NaN` (pre-2008 anonymous puzzles)
 - `puzzle_date` already present
 
 #### `natpostcryptic`
 ```
 [Day of week], [Month] [D], [Year] — [Puzzle Title]
 ```
-Examples: `"Saturday, December 27, 2014 — Holiday Film Fest"`
+Example: `"Saturday, December 27, 2014 — Holiday Film Fest"`
 
 - Publisher hardcoded: `"National Post"`; setter hardcoded: `"Hex"`
 - No publisher, setter, or puzzle number extractable from `puzzle_name`
-- `puzzle_date` already present; puzzle title not extracted (not needed)
+- `puzzle_date` already present
 
 #### `cru_cryptics`
 ```
-cru-cryptics/CrypticNNN.puz
+source_url: cru-cryptics/CrypticNNN.puz
 ```
 - Publisher hardcoded: `"Cru Cryptics Forum"`
-- Puzzle number extracted directly from `source_url` via `r"Cryptic(\d+)\.puz"`
+- `puzzle_name` is uninformative (variations of `"Cru Cryptic"` with redacted content)
 - No setter available
 
 #### `nytimes`
 ```
-nytimes/NY Times Variety - YYYYMMDD - Cryptic Crossword.puz
+source_url: nytimes/NY Times Variety - YYYYMMDD - Cryptic Crossword.puz
 ```
 - Publisher hardcoded: `"New York Times"`
-- Date extracted from `source_url` via `r"(\d{8})"`, parsed as `%Y%m%d`
+- Date extractable from `source_url` via `r"\d{8}"`, parsed as `%Y%m%d`
 - No puzzle number or setter available
 
 #### `thebrowser`
 ```
-thebrowser/Cryptic NN - MonDDYY SetterSurname.puz
+source_url:   thebrowser/Cryptic NN - MonDDYY SetterSurname.puz
+puzzle_name:  CRYPTIC #13 (March 27, 2021)
 ```
-Examples: `"thebrowser/Cryptic 13 - Mar2721 Ries.puz"`, `"thebrowser/Cryptic 32 - Aug0821 Zawistowski.puz"`
-
 - Publisher hardcoded: `"The Browser"`
-- Puzzle number: extracted from `puzzle_name` via `r"#(\d+)"` (format: `"CRYPTIC #13 (March 27, 2021)"`)
+- Puzzle number: extracted from `puzzle_name` via `r"#(\d+)"`
 - Date: extracted from `puzzle_name` parenthesized date; verify against `source_url` compressed date (`%b%d%y`)
-- Setter: extracted from `source_url` (last word before `.puz`); lookup table handles collaborative entries (`"Jacobs Goodchild"` → `["Jacobs", "Goodchild"]`) and stray dashes (`"- Ries"` → `"Ries"`)
+- Setter: extracted from `source_url` (last word before `.puz`); lookup handles collaborative entries (`"Jacobs Goodchild"` → `"Jacobs|Goodchild"`) and stray dashes (`"- Ries"` → `"Ries"`)
 - Setters use real surnames, not pseudonyms (North American convention)
 - `puzzle_date` mostly NaN in raw data — use extracted date
 
 #### `newyorker`
 ```
-puzzle_name examples:
-  "Cryptic Crossword No. 94"
-  "The Cryptic Crossword: Sunday, January 30, 2022"
-
-source_url examples:
-  https://www.newyorker.com/puzzles-and-games-dept/cryptic-crossword/no-21
-  https://www.newyorker.com/puzzles-and-games-dept/cryptic-crossword/2022/01/30
+puzzle_name:  "Cryptic Crossword No. 94"  or  "The Cryptic Crossword: Sunday, January 30, 2022"
+source_url:   https://www.newyorker.com/.../cryptic-crossword/no-21  or  .../2022/01/30
 ```
 - Publisher hardcoded: `"The New Yorker"`
 - Puzzle number: extract from `puzzle_name` via `r"No\.\s*(\d+)"` or from `source_url` via `r"no-(\d+)"`; NaN for date-only entries
@@ -259,81 +301,12 @@ source_url examples:
 
 ---
 
-## 5. Edge Cases and Surprises
+## 7. Lookup Table
 
-### `definition` null rates
-- `cru_cryptics`, `nytimes`, `leoedit`: definition is NaN for essentially all
-  rows — these sources could not be parsed for definitions and are excluded
-  from the main pipeline.
-- Other sources: `definition` is present but may be NaN for individual rows;
-  the structural filtering notebook drops these.
-
-### `puzzle_date` mostly NaN for `thebrowser`
-- Extract date from `puzzle_name` (parenthesized format: `"March 27, 2021"`)
-  instead.
-- Cross-verify against `source_url` compressed date (`"Mar2721"` → `%b%d%y`).
-
-### `times_xwd_times` has significant `puzzle_name` noise
-- Month-only tokens (`"April"`, `"October"`), puzzle titles leaking in
-  (`"Red Scare,"`, `"Keats And Yeats Are On Your Side,"`), single-letter
-  entries (`"T"`), and blank entries (185 rows).
-- Stray trailing commas on puzzle numbers (e.g. `"4835,"`); strip before
-  parsing.
-- Commas embedded in puzzle numbers (e.g. `"26,495"`); strip before casting
-  to int.
-- All unresolvable tokens → NaN; logged in notebook summary cell.
-
-### `fifteensquared` setter extraction complexity
-- 539 unique raw trailing substrings; refined regex reduces to ~199 plausible
-  setters.
-- Month names bleed through as fake setter names (from Sloggers & Betters
-  date-labelled entries); excluded via blocklist.
-- `"Enigmatist And Soup"` → collaborative puzzle; split to
-  `["Enigmatist", "Soup"]`.
-- Azed special types (`"Misprints"`, `"Playfair"`, `"Overlaps"`, `"Across"`)
-  → not setter names; `setter = "Azed"`, `series = [type]`.
-- `"Guardian"` appearing as trailing substring → publisher leaked into setter
-  field; NaN.
-- `"Anon"` → NaN (no setter recorded).
-- S&B entries: setter name sometimes followed by date or event title (e.g.
-  `"Hob Saturday Prize Puzzle 080815"`); strip everything from `"Saturday"`
-  onwards.
-
-### `thehinducrosswordcorner` setter normalization
-- Pre-2008 puzzles published anonymously; `"Anon"` → NaN.
-- `"Dr. X"` has multiple punctuation variants in the data: `"Dr. X,"`,
-  `"Dr X"`, `"Dr, X,"` — all normalize to `"Dr. X"`.
-- `"Phantom"` → `"The Phantom"` (canonical form used on the blog).
-- `"Skulldugger"` / `"Skuldugger"` → `"Skulldugger"`.
-- `"Spinner,"` (stray comma) → `"Spinner"`.
-- `"KrisKross"` / `"Kriskross"` → `"KrisKross"`.
-
-### `natpostcryptic` syndication
-- Weekday puzzles may have originally appeared in the Daily Telegraph UK
-  several months earlier. Publisher is hardcoded as `"National Post"` for all
-  rows without distinguishing syndicated vs. original content.
-
-### Setter field is a list
-- Stored as a pipe-separated string (e.g. `"Enigmatist|Soup"`,
-  `"Jacobs|Goodchild"`) to accommodate collaborative puzzles. Parse with
-  `.str.split("|")` downstream.
-
-### `puzzle_name` sometimes contains the setter name within the leading token
-- `fifteensquared` examples: `"Guardian Prize Picaroon"`, `"Independent Punk"`,
-  `"Guardian Prize Enigmatist"`.
-- These are handled by dedicated rows in `publisher_lookup.csv` rather than
-  by the generic trailing-token extraction.
-
----
-
-## 6. Lookup Table
-
-**File:** `data/publisher_lookup.csv`
-**Columns:** `source`, `field`, `raw`, `publisher`, `series`, `setter`,
-  `confidence`, `notes`
+**File:** `data/publisher_lookup.csv` (committed to repo)
+**Columns:** `source`, `field`, `raw`, `publisher`, `series`, `setter`, `confidence`, `notes`
 **Rows:** 349
-**Key:** `(source, field, raw)` — `raw` is the normalized (lowercased,
-  stripped) extracted substring
+**Key:** `(source, field, raw)` — `raw` is the normalized (lowercased, stripped) extracted substring
 
 The `raw` column uses `QUOTE_MINIMAL` quoting — only fields containing commas
 are quoted (e.g. `"dr. x,"`, `"dr, x,"`, `"spinner,"`).
@@ -341,6 +314,63 @@ are quoted (e.g. `"dr. x,"`, `"dr, x,"`, `"spinner,"`).
 The `setter` column uses pipe-separated values for collaborative puzzles.
 The `confidence` column takes values `High`, `Medium`, or `Low`.
 
+When loading, apply `.drop_duplicates(subset=["source", "field", "raw"])`
+defensively before joining. A known duplicate exists for
+`(thehinducrosswordcorner, puzzle_name_trailing, kriskross)` and should be
+removed from the CSV directly as a follow-up.
+
 Any extracted substring not found in the lookup table is assigned NaN for
 all derived fields and logged to the unmatched-tokens summary at the end of
-the puzzle metadata notebook.
+`puzzle_metadata.ipynb`.
+
+---
+
+## 8. Edge Cases and Surprises
+
+### `definition` null rates
+- `cru_cryptics`, `nytimes`, `leoedit`: definition is NaN for essentially all rows — excluded from `structural_filtering.ipynb`.
+- Other sources: `definition` may be NaN for individual rows; `structural_filtering.ipynb` drops these.
+
+### `puzzle_date` mostly NaN for `thebrowser`
+- Extract date from `puzzle_name` parenthesized format instead.
+- Cross-verify against `source_url` compressed date (`"Mar2721"` → `%b%d%y`).
+
+### `times_xwd_times` `puzzle_name` noise
+- Month-only tokens, puzzle titles leaking in, single-letter entries, blank entries (185 rows).
+- Stray trailing commas on puzzle numbers; commas embedded in puzzle numbers.
+- All unresolvable tokens → NaN; logged in notebook summary cell.
+
+### `fifteensquared` setter extraction complexity
+- ~199 plausible setters after regex refinement.
+- Month names bleed through as fake setter names from S&B date-labelled entries; excluded via blocklist.
+- Number suffixes (e.g. `"Armonie 2"`) are blog disambiguation suffixes for same-day same-setter puzzles — strip to base name.
+- `"with picture quiz"` is a blog post feature label, not setter information — strip.
+- `"plain competition puzzle"` → `setter = "Azed"`, `series = "Plain"`.
+- `"Guardian"` as trailing substring → publisher leaked into setter field; NaN.
+- `"Anon"` → NaN.
+
+### `thehinducrosswordcorner` setter normalization
+- Pre-2008 puzzles anonymous; `"Anon"` → NaN.
+- `"Dr. X"` variants: `"Dr. X,"`, `"Dr X"`, `"Dr, X,"` — all normalize to `"Dr. X"`.
+- `"Phantom"` → `"The Phantom"`.
+- `"Skulldugger"` / `"Skuldugger"` → `"Skulldugger"`.
+- `"Spinner,"` → `"Spinner"`.
+- `"KrisKross"` / `"Kriskross"` → `"KrisKross"`.
+
+### `source_url` quality (from `source_url_investigation.ipynb`)
+- No null values across any source.
+- `bigdave44` uses `http` (not `https`); all other URL-based sources use `https`.
+- `cru_cryptics`, `nytimes`, `thebrowser` use file paths, not URLs; uppercase present in paths — consistent within source.
+- One `fifteensquared` row missing trailing slash — handled by `str.rstrip("/")` in `assign_ids.py`.
+- 18 `source_url` → `puzzle_name` collisions are spurious (missing space before setter name in `puzzle_name`); `source_url` is correct.
+- Some `bigdave44` puzzles have two URLs (slug + numeric WordPress ID); 32 resolved by `assign_ids.py`; puzzles with two numeric-ID URLs and no slug cannot be resolved and are treated as separate puzzles.
+
+### `natpostcryptic` syndication
+- Weekday puzzles may have originally appeared in the Daily Telegraph UK. Publisher hardcoded as `"National Post"` for all rows without distinguishing syndicated vs. original content.
+
+### Setter field is pipe-separated
+- Stored as a pipe-separated string (e.g. `"Enigmatist|Soup"`) for collaborative puzzles. Parse with `.str.split("|")` downstream.
+
+### `puzzle_name` setter name embedded in leading token
+- `fifteensquared` examples: `"Guardian Prize Picaroon"`, `"Independent Punk"`.
+- Handled by dedicated rows in `publisher_lookup.csv`, not by generic trailing-token extraction.
