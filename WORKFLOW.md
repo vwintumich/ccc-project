@@ -82,18 +82,19 @@ Columns loaded from `clues_raw.csv`: `clue_id`, `clue`, `answer`, `definition`.
 
 Filtering steps:
 
-1. Remove rows where `definition` or `answer` is null
-2. Validate that `answer` matches the length/format code in `clue`
-3. Parse double-definition clues: split `definition` on `/` into a list of
+1. Remove rows where `clue`, `definition`, or `answer` is null
+2. Clean the clue surface: strip `/` unconditionally; exclude rows where `*`
+   is the first character followed by an uppercase letter (strip `*`
+   elsewhere); exclude rows where brackets surround or partially surround an
+   all-caps sequence, strip brackets from remaining rows
+3. Validate that `answer` matches the length/format code in `clue`
+4. Parse double-definition clues: split `definition` on `/` into a list of
    candidate definitions; retain only candidates that appear as intact whole
    words in the surface text (accepting `<word>'s` as a valid match for
    `<word>`); keep the clue row only if at least one valid definition appears
    at the start or end of the surface; expand to one row per valid definition
-4. Verify at least one valid definition appears at the start or end of the
-   surface text
-5. **Bracket diagnostic** (not a filter): after all other steps, count and
-   display surviving rows that contain `[` in the clue field; view them as a
-   cell output to confirm they are not malformed; document the decision in
+5. **Bracket, `*`, and `/` diagnostics** (not filters): display surviving
+   rows containing each character for reference; decisions documented in
    `DECISIONS.md`
 
 Definition-in-surface matching uses `clue_utils.py` (see below), which
