@@ -91,6 +91,23 @@ primary key.
 - **Clue metadata → clues_filtered:** join directly on `clue_id`. Clue
   metadata will also repeat across double-definition rows — also correct.
 
+```python
+# Standard join: add puzzle metadata to clues_filtered
+clues = pd.read_csv("data/clues_filtered.csv")
+id_map = pd.read_csv("data/id_map.csv")
+puzzle_meta = pd.read_csv("data/puzzle_metadata.csv")
+
+# Step 1: get puzzle_id for each row (repeats across double-definition rows — correct)
+clues = clues.merge(id_map, on="clue_id", how="left")
+
+# Step 2: join puzzle metadata on puzzle_id
+clues = clues.merge(puzzle_meta, on="puzzle_id", how="left")
+
+# Standard join: add clue metadata to clues_filtered (future)
+clue_meta = pd.read_csv("data/clue_metadata.csv")
+clues = clues.merge(clue_meta, on="clue_id", how="left")
+```
+
 ### 4.4 Independence requirement
 
 No notebook at the root level may depend on another notebook having run first.
