@@ -259,6 +259,9 @@ fifteensquared,puzzle_name_trailing,guardian,,,,High,Publisher leaked into sette
 fifteensquared,puzzle_name_trailing,anon,,,,High,No setter present.
 fifteensquared,puzzle_name_trailing,with picture quiz,,,,High,Blog post feature label appended after setter name; not setter information. Strip.
 fifteensquared,puzzle_name_trailing,plain competition puzzle,,Plain,Azed,High,"Azed special format label; setter = Azed, series = Plain."
+fifteensquared,puzzle_name_trailing,nestor,,,Nestor,High,"Confirmed Independent setter; real name Roger Phillips, member of the Times setting team. (fifteensquared.net)"
+fifteensquared,puzzle_name_trailing,mitz,,,Mitz,High,Confirmed Independent setter; debut September 2016. Also known as Guardian crossword statistician on fifteensquared. (fifteensquared.net)
+fifteensquared,puzzle_name_trailing,bucko,,,Bucko,High,Confirmed Independent setter; described as a relatively new compiler in 2015 with multiple puzzles blogged. (fifteensquared.net)
 times_xwd_times,puzzle_name_leading,times,The Times,Times Cryptic,,High,UK (British English). Anonymous setters; strict Ximenean-adjacent house style. Mon-Fri daily plus Saturday prize. (Wikipedia)
 times_xwd_times,puzzle_name_leading,times jumbo,The Times,Jumbo,,High,UK (British English). 23x23 Saturday jumbo puzzle. (Wikipedia)
 times_xwd_times,puzzle_name_leading,jumbo,The Times,Jumbo,,High,UK (British English). Truncated variant of Times Jumbo.
@@ -341,6 +344,7 @@ thehinducrosswordcorner,puzzle_name_trailing,"dr, x,",,,Dr. X,High,Punctuation v
 thehinducrosswordcorner,puzzle_name_trailing,scinitillator,,,Scintillator,High,Misspelling of Scintillator.
 thehinducrosswordcorner,puzzle_name_trailing,"spinner,",,,Spinner,High,Stray comma variant of Spinner; normalize to Spinner.
 thehinducrosswordcorner,puzzle_name_trailing,phantom,,,The Phantom,High,Truncated variant of The Phantom.
+thehinducrosswordcorner,puzzle_name_trailing,from the files of sankalak,,,Sankalak,High,Posthumously published Sankalak puzzles; special series label appearing as trailing text after the date field.
 thebrowser,source_url_trailing,ries,,,Ries,High,USA (North American English). Regular Browser contributor; full name Andrew J. Ries. (Amazon)
 thebrowser,source_url_trailing,zawistowski,,,Zawistowski,High,USA (North American English). Regular Browser contributor; full name Stella Zawistowski. (Amazon)
 thebrowser,source_url_trailing,cardin,,,Cardin,High,USA (North American English). Regular Browser contributor; full name Nate Cardin. (Amazon)

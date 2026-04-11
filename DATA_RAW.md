@@ -306,7 +306,7 @@ source_url:   https://www.newyorker.com/.../cryptic-crossword/no-21  or  .../202
 
 **File:** `data/publisher_lookup.csv` (committed to repo)
 **Columns:** `source`, `field`, `raw`, `publisher`, `series`, `setter`, `confidence`, `notes`
-**Rows:** 359
+**Rows:** 363
 **Key:** `(source, field, raw)` — `raw` is the normalized (lowercased, stripped) extracted substring
 
 The `raw` column uses `QUOTE_MINIMAL` quoting — only fields containing commas
