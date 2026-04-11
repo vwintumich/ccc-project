@@ -49,17 +49,30 @@ annotations that can safely be removed by stripping the bracket characters.
 **Choice:** Asterisks in the clue surface are handled as follows:
 
 - Rows where `*` is the very first character of the clue **and** is
-  immediately followed by an uppercase letter are **excluded**.
+  immediately followed by an uppercase letter have the **leading `*`
+  stripped** from the surface (the rest of the clue is preserved). The
+  row is **not dropped**.
 - All other occurrences of `*` are **kept** as part of the surface.
+- No rows are ever excluded on the basis of `*`.
 - A diagnostic cell displaying surviving rows containing `*` is retained in
   the notebook for reference.
 
-**Rationale:** A leading `*` followed by a capital letter marks a clue from
-a specialty themed puzzle (e.g. a Nina or thematic variant) whose surface is
-not a standalone cryptic clue. Other uses of `*` — typically censorship
-(`b*** hell`, `M*A*S*H`) or blogger annotations (`(Real ner[d])*`) — occur
-inside genuine clue text and should be preserved so the surface reading
-stays intact.
+**Rationale:** A leading `*` followed by a capital letter is a thematic
+marker (e.g. a Nina or specialty puzzle variant) indicating the clue
+belongs to a theme set, but the text that follows is itself a standalone
+cryptic clue — for example, `*A despicable person (6)` → TOERAG reduces
+cleanly to `A despicable person` once the marker is removed. Stripping
+just the leading `*` preserves these clues while removing the non-surface
+annotation. Other uses of `*` — typically censorship (`b*** hell`,
+`M*A*S*H`) or blogger annotations (`(Real ner[d])*`) — occur inside
+genuine clue text and must be preserved so the surface reading stays
+intact.
+
+**History:** An earlier version of this filter excluded the leading-`*` +
+capital rows outright and stripped `*` unconditionally from all remaining
+surfaces. That behavior was wrong on both counts: it lost recoverable
+thematic clues, and it corrupted censorship/annotation surfaces like
+`b*** hell` by silently removing the `*`. The current rule replaces it.
 
 ---
 
