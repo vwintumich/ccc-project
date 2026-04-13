@@ -1,0 +1,5 @@
+# Pre-refactor notebook backups (local only)
+notebooks/.pre-refactor/
+
+# Embedding arrays (too large for git; stored on Great Lakes / Google Drive)
+data/embeddings/**/*.npy
