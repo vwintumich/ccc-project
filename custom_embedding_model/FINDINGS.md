@@ -104,22 +104,57 @@ overfitting.
 
 ## Stage 1: WordNet Filtering and Split Assignment
 
-*Not yet run.*
+**Notebook:** `01_wn_filtering_and_split.ipynb` — completed 2026-04-13
+**Environment:** Local, `crossword` kernel (NLTK 3.9.2, scikit-learn 1.8.0)
 
-### Coverage measurements (to be filled in)
+### Coverage measurements
 
 | Metric | Value |
 |--------|-------|
-| clues_filtered.csv rows | — |
-| clues_wn_filtered.csv rows | — |
-| Fraction retained after WN filter | — |
-| Unique (definition, answer) pairs | — |
-| Train pairs (target ~30%) | — |
-| Validate pairs (target ~20%) | — |
-| Test pairs (target ~50%) | — |
-| vocabulary.csv words | — |
-| vocabulary_val.csv words | — |
-| Val vocab as fraction of full vocab | — |
+| clues_filtered.csv rows | 457,262 |
+| clues_wn_filtered.csv rows | 239,406 |
+| Fraction retained after WN filter | 52.4% |
+| Unique (definition, answer) pairs | 150,805 |
+| Train pairs (target ~30%) | 45,241 (30.0%) |
+| Validate pairs (target ~20%) | 30,161 (20.0%) |
+| Test pairs (target ~50%) | 75,403 (50.0%) |
+| Train rows | 72,107 (30.1%) |
+| Validate rows | 47,933 (20.0%) |
+| Test rows | 119,366 (49.9%) |
+| vocabulary.csv words | 53,930 |
+| vocabulary_val.csv words | 26,152 |
+| Val vocab as fraction of full vocab | 48.5% |
+
+### Article-stripping recovery
+
+Expanded from Milestone II's `"a "` only to `"a "`, `"an "`, `"the "`,
+`"to "` (Decision 16). Recovery counts for unique definitions:
+
+| Prefix | Unique defs recovered | Unique answers recovered |
+|--------|----------------------|-------------------------|
+| `"a"` | 1,579 | 43 |
+| `"an"` | 257 | 1 |
+| `"the"` | 615 | 231 |
+| `"to"` | 737 | 13 |
+
+The three new prefixes recovered 1,609 additional unique definitions beyond
+what `"a "` alone would have captured.
+
+### Vocabulary overlap
+
+| Category | Count |
+|----------|-------|
+| Words appearing as both definition and answer | 18,200 |
+| Words appearing only as definition | 8,965 |
+| Words appearing only as answer | 26,765 |
+
+### Version discrepancy finding
+
+Running NB 01 under the default `python3` kernel (NLTK 3.8.1) vs. the
+`crossword` kernel (NLTK 3.9.2) produced a 49-row difference (239,455 vs.
+239,406). Root cause: different NLTK versions resolve slightly different
+sets of words to WordNet synsets. Led to Decision 17 (pin NLTK and
+scikit-learn) and Decision 18 (version provenance in notebooks).
 
 ---
 

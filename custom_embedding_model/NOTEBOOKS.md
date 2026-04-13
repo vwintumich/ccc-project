@@ -29,7 +29,7 @@ here. See `ccc-project/WORKFLOW.md` for `puzzle_metadata.ipynb`,
 
 | Notebook | Status | Environment | Reads | Writes |
 |----------|--------|-------------|-------|--------|
-| `01_wn_filtering_and_split.ipynb` | ❌ | Local | `../../data/clues_filtered.csv` | `filtered_split/wn_synset/clues_wn_filtered.csv`, `filtered_split/wn_synset/clues_val.csv`, `filtered_split/wn_synset/vocabulary.csv`, `filtered_split/wn_synset/vocabulary_val.csv` |
+| `01_wn_filtering_and_split.ipynb` | ✅ | Local | `../../data/clues_filtered.csv` | `filtered_split/wn_synset/clues_wn_filtered.csv`, `filtered_split/wn_synset/clues_val.csv`, `filtered_split/wn_synset/vocabulary.csv`, `filtered_split/wn_synset/vocabulary_val.csv` |
 
 Applies the WordNet synset filter (both definition and answer must have at
 least one synset). Assigns the 30/20/50 train/validate/test split at the
