@@ -48,7 +48,7 @@
 
 ## Runtime
 
-- f_clue construction: 8.0s
+- f_clue construction: 7.8s
 - f_common_wndef construction: 3.3s
 - f_common_wnex construction: 1.2s
-- Total notebook: 14.9s
+- Total notebook: 14.5s
