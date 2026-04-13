@@ -207,3 +207,65 @@ training) are recorded in FINDINGS.md, not in NOTEBOOKS.md.
 sample mode) that must be recorded alongside the number to be useful.
 FINDINGS.md is the natural home for empirical measurements with context.
 NOTEBOOKS.md records static facts about notebooks, not empirical results.
+
+---
+
+## Decision 16: Article and Infinitive Stripping for WordNet Lookup
+
+**Choice:** When looking up WordNet synsets for a definition or answer, strip
+the first matching prefix from `"a "`, `"an "`, `"the "`, `"to "` (in that
+order) if the initial lookup fails. Only one prefix is tried per word — the
+first that matches the input. If that stripped lookup also fails, the word
+has no synsets.
+
+**Rationale:** Cryptic crossword definitions often include a leading article
+or infinitive marker as part of the natural surface reading (e.g., "a shade",
+"the law", "to flee"). WordNet stores headwords without these prefixes.
+Stripping `"a "` was used in the Milestone II pipeline; expanding to
+`"an "`, `"the "`, and `"to "` recovered 1,609 additional unique definitions
+in NB 01. The prefix `"one "` was considered and rejected because "one" carries
+semantic content and could cause false matches.
+
+---
+
+## Decision 17: Pin Critical Package Versions
+
+**Choice:** The following packages are pinned to exact versions in
+`requirements.txt` because version differences produce different results:
+
+- `nltk==3.9.2` — different NLTK versions resolve different words to WordNet
+  synsets, changing row counts (observed: NLTK 3.8.1 vs 3.9.2 produced a
+  49-row difference in NB 01)
+- `scikit-learn==1.8.0` — `train_test_split` with `random_state=42` must
+  produce identical splits; algorithm changes between versions would
+  invalidate all downstream artifacts
+
+Other packages use `>=` minimums. When a package is promoted to an exact pin,
+document the reason here.
+
+**Rationale:** Discovered when the Verifier agent ran NB 01 under the default
+`python3` kernel (NLTK 3.8.1) and produced different row counts than
+Victoria's run on the `crossword` kernel (NLTK 3.9.2). Silent version
+differences in packages that affect data filtering or splitting can
+invalidate results without any visible error.
+
+---
+
+## Decision 18: Version Provenance in Notebooks and Results Files
+
+**Choice:** Every notebook must include:
+
+1. A **version-reporting cell** immediately after imports that prints the
+   versions of all packages used in that notebook. This is a `print()`
+   statement, not an assertion — it should not block execution if a
+   collaborator has a slightly different environment, but it makes
+   mismatches immediately visible.
+
+2. A **versions section** in the results file
+   (`outputs/<notebook-name>-results.md`) stamping the exact versions
+   that produced those results.
+
+**Rationale:** Nathan may run notebooks on Great Lakes with different package
+versions. Printing versions in the notebook output makes mismatches visible
+at a glance. Stamping versions in the results file creates a permanent
+provenance record tied to the actual numbers.
