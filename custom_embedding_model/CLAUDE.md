@@ -432,5 +432,5 @@ George Ho's cryptic crossword clue dataset (660,613 clues).
   experimental findings as the project progresses.
 - `ccc-project/DATA_RAW.md` — raw data schema and puzzle metadata extraction
   logic. Shared across all components.
-- `custom_embedding_model_design_v4.md` (Google Drive) — the authoritative
+- `custom_embedding_model_design_v5.md` (in planning/)— the authoritative
   design document. All `.md` files in this directory are derived from it.
