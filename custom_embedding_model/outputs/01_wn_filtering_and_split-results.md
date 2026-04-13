@@ -62,5 +62,5 @@
 
 ## Runtime
 
-- WordNet lookups: 4.1s
-- Total notebook: 5.6s
+- WordNet lookups: 3.6s
+- Total notebook: 5.0s
