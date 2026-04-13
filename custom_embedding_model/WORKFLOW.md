@@ -6,9 +6,8 @@ has a branching structure: one upstream dataset feeds multiple phrase
 construction strategies (f's), each of which feeds its own triplet and
 embedding pipeline. Reading this document before writing any code is essential.
 
-The authoritative design document is `custom_embedding_model_design_v4.md`
-(Google Drive, "Research Project - NLP CCC's"). This file summarizes the
-workflow decisions derived from it.
+The authoritative design document is `custom_embedding_model_design_v5.md`
+(in `planning/`). This file summarizes the workflow decisions derived from it.
 
 **Upstream dependency:** This component reads from two shared artifacts
 produced by `ccc-project/notebooks/`:
@@ -154,15 +153,21 @@ Record runtime in FINDINGS.md.
 
 ## Stage 2: Per-f Phrase Construction and Coverage Measurement
 
-**Notebook:** `notebooks/02_phrase_construction.ipynb`
+**Notebook naming convention:** `02_phrase_construction_<resource>.ipynb` —
+one notebook per resource family. Each resource family has its own filtering
+notebook (Stage 1) and phrase construction notebook (Stage 2). If a future
+resource does not require WordNet, it branches from `clues_filtered.csv`
+with its own filtering step and produces a sibling scope directory under
+`data/filtered_split/`.
+
+**WordNet notebook:** `notebooks/02_phrase_construction_wn.ipynb`
 **Environment:** Local (CPU)
 **Inputs:** `data/filtered_split/wn_synset/clues_wn_filtered.csv`, WordNet (via NLTK)
 **Outputs:** Per-f subset directories under `data/filtered_split/wn_synset/`,
   plus `data/filtered_split/wn_synset/clue_phrases/f_clue.csv`
 
 This notebook handles all WordNet-based f's (currently f_common_wndef and
-f_common_wnex) in sequence. A separate notebook will be created for any
-dictionary- or LLM-based f's if needed.
+f_common_wnex) in sequence.
 
 **Critical — strict f definitions:** Each f is defined only for words where
 the required phrase can be constructed without any fallback. If a word lacks
@@ -382,9 +387,9 @@ in FINDINGS.md.
 | `clues_wn_filtered.csv` + split | `filtered_split/wn_synset/` | 1 | Local |
 | `clues_val.csv` | `filtered_split/wn_synset/` | 1 | Local |
 | `vocabulary.csv` / `_val` | `filtered_split/wn_synset/` | 1 | Local |
-| `f_clue.csv` | `filtered_split/wn_synset/clue_phrases/` | 2 | Local |
+| `f_clue.csv` | `filtered_split/wn_synset/clue_phrases/` | 2 (WN) | Local |
 | `embeddings/g_stock/f_clue.npy` + index | `embeddings/g_stock/` | 1d (after 2) | Great Lakes |
-| `clues_<f>_filtered.csv` + vocab + phrase | `filtered_split/wn_synset/<f>/` | 2 | Local |
+| `clues_<f>_filtered.csv` + vocab + phrase | `filtered_split/wn_synset/<f>/` | 2 (WN) | Local |
 | `triplets/<g_name>.csv` + `_meta.json` | `triplets/` | 3 | Local |
 | Model weights | Google Drive | 3 | Great Lakes |
 | `embeddings/<g_i>/f_<n>_val.npy` | `embeddings/<g_i>/` | 4 | Great Lakes |
