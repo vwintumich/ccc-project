@@ -160,36 +160,67 @@ scikit-learn) and Decision 18 (version provenance in notebooks).
 
 ## Stage 2: Phrase Construction
 
-*Not yet run.*
+**Notebook:** `02_phrase_construction_wn.ipynb` — completed 2026-04-13
+**Environment:** Local, `crossword` kernel (NLTK 3.9.2, pandas 3.0.0, numpy 2.3.5)
 
-### f_clue coverage (to be filled in)
-
-| Metric | Value |
-|--------|-------|
-| clues_wn_filtered.csv rows | — |
-| Rows with valid f_clue phrase | — |
-| Rows dropped (definition appears 2+ times in surface) | — |
-
-### f_common_wndef coverage (to be filled in)
+### f_clue coverage
 
 | Metric | Value |
 |--------|-------|
-| vocabulary.csv words | — |
-| Words with valid f_common_wndef phrase | — |
-| clues_wndef_filtered.csv rows | — |
-| Fraction of clues_wn_filtered.csv retained | — |
-| Train/validate/test fractions (actual) | — |
+| clues_wn_filtered.csv rows (input) | 239,406 |
+| Rows with valid f_clue phrase | 239,406 (100.0%) |
+| Rows dropped | 0 (0.0%) |
 
-### f_common_wnex coverage (to be filled in)
+`tag_definition_in_surface` succeeded on every row — no ambiguous definition
+placements in the wn_synset-filtered dataset.
+
+### f_common_wndef coverage
 
 | Metric | Value |
 |--------|-------|
-| vocabulary.csv words | — |
-| Words with valid f_common_wnex phrase | — |
-| Fraction of full vocabulary with wnex phrase | — |
-| clues_wnex_filtered.csv rows | — |
-| Fraction of clues_wn_filtered.csv retained | — |
-| Train/validate/test fractions (actual) | — |
+| vocabulary.csv words (input) | 53,930 |
+| Words with valid f_common_wndef phrase | 53,930 (100.0%) |
+| Self-referential phrases | 1,139 (2.1%) |
+| clues_wndef_filtered.csv rows | 239,406 (100.0% of clues_wn_filtered) |
+| vocabulary_wndef_val.csv words | 26,152 |
+| Train fraction | 72,107 (30.1%) |
+| Validate fraction | 47,933 (20.0%) |
+| Test fraction | 119,366 (49.9%) |
+
+100% coverage is expected: every word in vocabulary.csv has at least one synset
+(the NB 01 filter), and synset[0] always has a definition. wndef vocabulary
+equals the full vocabulary; wndef-filtered clues equal the full clue set.
+
+1,139 words (2.1%) have self-referential definitions — the word appears
+untagged in its own WordNet definition text (e.g., "admit: declare to be true
+or admit the existence…"). These are flagged with `self_ref=True` in
+`f_common_wndef.csv` for downstream subsetting but are not filtered out.
+
+### f_common_wnex coverage
+
+| Metric | Value |
+|--------|-------|
+| vocabulary.csv words (input) | 53,930 |
+| Words with valid f_common_wnex phrase | 8,360 (15.5%) |
+| clues_wnex_filtered.csv rows | 24,327 (10.2% of clues_wn_filtered) |
+| vocabulary_wnex_val.csv words | 3,008 |
+| Train fraction | 7,075 (29.1%) |
+| Validate fraction | 4,825 (19.8%) |
+| Test fraction | 12,427 (51.1%) |
+
+Low coverage is expected: many WordNet synsets lack usage examples, and among
+those with examples, the target word must appear exactly once for unambiguous
+tagging. wnex is a strict subset of wndef (8,360 words in both, 0 in wnex
+only, 45,570 in wndef only).
+
+### Cross-f comparison
+
+| Metric | Value |
+|--------|-------|
+| Words in wndef but not wnex | 45,570 |
+| Words in wnex but not wndef | 0 |
+| Words in both | 8,360 |
+| Rows in clues_wndef_filtered but not clues_wnex_filtered | 215,079 |
 
 ---
 

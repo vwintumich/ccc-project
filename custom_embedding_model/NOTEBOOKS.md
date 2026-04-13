@@ -69,7 +69,7 @@ from a different scope directory. See WORKFLOW.md Stage 2.
 
 | Notebook | Status | Environment | Reads | Writes |
 |----------|--------|-------------|-------|--------|
-| `02_phrase_construction_wn.ipynb` | ❌ | Local | `filtered_split/wn_synset/clues_wn_filtered.csv`, WordNet | See below |
+| `02_phrase_construction_wn.ipynb` | ✅ | Local | `filtered_split/wn_synset/clues_wn_filtered.csv`, WordNet | See below |
 
 Handles all WordNet-based f's in sequence. Also constructs f_clue phrases
 for the full wn_synset scope using `clue_utils.py` (imported from

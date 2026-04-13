@@ -185,6 +185,7 @@ unambiguously once in the surface text)
 | row | int | Row position (matches vocabulary_wndef.csv) |
 | synset_name | str | WordNet synset identifier, e.g. "plant.n.01" |
 | phrase | str | `"<t>word</t>: <synset definition text>"` |
+| self_ref | bool | True if the target word also appears untagged in the phrase (i.e., the word appears in its own WordNet definition). These words are not filtered out — the flag enables downstream subsetting for evaluation. |
 
 ### `data/phrases/f_common_wnex.csv`
 
