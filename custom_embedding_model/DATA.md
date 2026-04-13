@@ -71,33 +71,25 @@ assert embeddings.shape[1] == 1024, \
 
 ## Clue Data Files
 
-### `data/clues_filtered.csv`
+### `../../data/clues_filtered.csv`
 
-**Produced by:** Stage 0 (nb_00_structural_filtering.ipynb)
+**Produced by:** Shared upstream pipeline (`notebooks/structural_filtering.ipynb`)
 **Contains:** All clues passing CCC structural constraints
 **Does not contain:** Split column, WordNet constraints
 
 | Column | Type | Description |
 |--------|------|-------------|
 | clue_id | int | Unique row identifier from source DB |
-| clue | str | Raw clue text including answer format, e.g. "Plant in a garden party (5)" |
 | surface | str | Clue text with answer format stripped, e.g. "Plant in a garden party" |
 | definition | str | Definition substring within surface text. May be multi-word. |
 | answer | str | Answer word or phrase (may be multi-word) |
-| answer_format | str | Answer length/format code, e.g. "(5)" or "(3,4)" |
-| wordplay_type | str | Algorithmically verified wordplay type (hidden, reversal, anagram, etc.). May be null. |
-| indicator | str | Indicator word or phrase. May be null. |
-| author | str | Puzzle author. May be null. |
-| series | str | Puzzle series name. May be null. |
-| publisher | str | Publisher name. May be null. |
 
-Note: Additional columns from `clues_raw.csv` may be retained. Confirm the
-full column list against the source data during notebook development and update
-this schema accordingly.
+Note: Additional columns from `clues_raw.csv` may be retained. See
+`ccc-project/WORKFLOW.md` for the full upstream pipeline.
 
-### `data/clues_wn_filtered.csv`
+### `data/filtered_split/wn_synset/clues_wn_filtered.csv`
 
-**Produced by:** Stage 1 (nb_01_wn_filtering_and_split.ipynb)
+**Produced by:** Stage 1 (`01_wn_filtering_and_split.ipynb`)
 **Contains:** Subset of clues_filtered.csv where both definition and answer
 have at least one WordNet synset, plus split assignment
 **Inherits:** All columns from clues_filtered.csv
@@ -157,11 +149,13 @@ numbering starts at 0. The ordering is fixed at creation and never changed.
 
 ## Phrase Files
 
-All phrase files live in `data/phrases/`. They are generated once for the full
-usable dataset and reused. No `_val` suffix — phrases are always full-dataset.
+Phrase files live inside their respective scope/subset directories under
+`data/filtered_split/`. They are generated once for the full usable dataset
+and reused. No `_val` suffix — phrases are always full-dataset.
 
-### `data/phrases/f_clue.csv`
+### `data/filtered_split/wn_synset/clue_phrases/f_clue.csv`
 
+**Produced by:** Stage 2 (`02_phrase_construction_wn.ipynb`)
 **Indexed by:** (clue_id, definition) composite key
 **Contains:** One row per (clue, definition) pair in clues_wn_filtered.csv
 where a valid f_clue phrase could be constructed (i.e., definition appears
@@ -174,8 +168,9 @@ unambiguously once in the surface text)
 | split | str | Inherited split assignment |
 | phrase | str | Tagged passage: surface text with definition wrapped in `<t></t>` |
 
-### `data/phrases/f_common_wndef.csv`
+### `data/filtered_split/wn_synset/wndef/f_common_wndef.csv`
 
+**Produced by:** Stage 2 (`02_phrase_construction_wn.ipynb`)
 **Indexed by:** word (matches vocabulary_wndef.csv ordering)
 **Contains:** One row per word in vocabulary_wndef.csv
 
@@ -187,8 +182,9 @@ unambiguously once in the surface text)
 | phrase | str | `"<t>word</t>: <synset definition text>"` |
 | self_ref | bool | True if the target word also appears untagged in the phrase (i.e., the word appears in its own WordNet definition). These words are not filtered out — the flag enables downstream subsetting for evaluation. |
 
-### `data/phrases/f_common_wnex.csv`
+### `data/filtered_split/wn_synset/wnex/f_common_wnex.csv`
 
+**Produced by:** Stage 2 (`02_phrase_construction_wn.ipynb`)
 **Indexed by:** word (matches vocabulary_wnex.csv ordering)
 **Contains:** One row per word in vocabulary_wnex.csv (only words with a valid
 usage example where the target word appears exactly once)
