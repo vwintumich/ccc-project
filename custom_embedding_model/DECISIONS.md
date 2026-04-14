@@ -269,3 +269,39 @@ invalidate results without any visible error.
 versions. Printing versions in the notebook output makes mismatches visible
 at a glance. Stamping versions in the results file creates a permanent
 provenance record tied to the actual numbers.
+
+---
+
+## Decision 19: GPU Script Environment Provenance
+
+**Choice:** Every GPU script that produces committed artifacts (`.npy`
+embedding files, model weights, etc.) must:
+
+1. **Print versions at startup** to stdout (captured in the SLURM log):
+   Python, torch, sentence-transformers, transformers, numpy, and any other
+   packages used by the script.
+
+2. **Record the environment in FINDINGS.md** when logging the run's results.
+   The FINDINGS.md entry for each GPU step must include: Python version, torch
+   version (including CUDA build suffix), sentence-transformers version,
+   transformers version, and the conda environment name used.
+
+3. **Maintain `requirements-greatlakes.txt`** as a pinned snapshot of the
+   Great Lakes conda environment used for GPU work. Update it whenever the
+   environment changes. Generate with
+   `conda list -n nlp_env --export > requirements-greatlakes.txt` or
+   equivalent.
+
+The local environment (`requirements.txt`) and the Great Lakes environment
+(`requirements-greatlakes.txt`) are tracked separately because they serve
+different purposes: local work is CPU-only (notebooks, hypothesis testing),
+while Great Lakes work is GPU (embedding generation, model training). The
+two environments share pinned versions for packages that affect data
+integrity (NLTK, scikit-learn per Decision 17) but may differ on packages
+that only affect computation (torch, sentence-transformers).
+
+**Rationale:** Embedding outputs are committed artifacts that downstream
+analysis depends on. If a future reproduction attempt uses different package
+versions and gets different embeddings, there must be a permanent record of
+what produced the originals. SLURM logs are ephemeral; FINDINGS.md and a
+committed requirements file are not.
