@@ -1,8 +1,6 @@
 # Model: g1
 
-**Status:** placeholder — weights not yet trained. Fill in the sections below
-from the `SUMMARY` block in the Great Lakes SLURM log after the
-`scripts/train_g1.sh` job completes.
+**Status:** trained 2026-04-13 — weights in Google Drive
 
 ## Base model
 
@@ -37,13 +35,13 @@ Hyperparameters:
   - max_length: 128
   - random_state: 42
 
-Date trained: *(fill in after run)*
-Runtime: *(fill in: hours on Great Lakes, partition, GPU type)*
-Per-epoch loss: *(fill in from training_log.json)*
+Date trained: 2026-04-13
+Runtime: 49.0 min (0.82 h) on Great Lakes gpu partition, Tesla V100-PCIE-16GB
+Per-epoch loss: [0.488, 0.104, 0.013]
 
 Environment versions (per Decision 19):
-  - Python: *(fill in)*
-  - torch: *(fill in, including CUDA build suffix)*
-  - transformers: *(fill in)*
-  - numpy: *(fill in)*
-  - pandas: *(fill in)*
+  - Python: 3.12.12
+  - torch: 2.5.1+cu121
+  - transformers: 4.57.6
+  - numpy: 2.3.5
+  - pandas: 3.0.0

@@ -273,22 +273,42 @@ only, 45,570 in wndef only).
 
 ## Stage 3: g_1 Training
 
-*Not yet run.*
+**Script:** `scripts/train_g1.py` (submitted via `scripts/train_g1.sh`) — completed 2026-04-13
+**Environment:** Great Lakes, `nlp_env` conda environment
 
 | Metric | Value |
 |--------|-------|
 | Triplet file | data/triplets/g1.csv |
-| Training rows | — |
+| Training rows | 69,921 |
 | Base model | gabrielloiseau/CALE-MBERT-en |
 | Margin α | 1.0 |
-| Learning rate | — |
-| Epochs | — |
-| Batch size | — |
-| Final training loss | — |
-| Great Lakes partition | — |
-| Wall-clock runtime | — |
-| Date trained | — |
-| Google Drive path | — |
+| Learning rate | 2e-5 |
+| Epochs | 3 |
+| Batch size | 32 |
+| Per-epoch loss | [0.488, 0.104, 0.013] |
+| Great Lakes partition | gpu (Tesla V100-PCIE-16GB) |
+| Wall-clock runtime | 49.0 min (0.82 h) |
+| Date trained | 2026-04-13 |
+| Google Drive path | custom_embedding_models/g1/ |
+
+### Environment versions
+
+| Package | Version |
+|---------|---------|
+| Python | 3.12.12 |
+| torch | 2.5.1+cu121 |
+| transformers | 4.57.6 |
+| numpy | 2.3.5 |
+| pandas | 3.0.0 |
+| conda environment | nlp_env |
+
+### Notes
+
+- The SLURM script was missing `PYTHONUNBUFFERED=1`, so stdout was buffered
+  and SLURM log progress appeared in chunks rather than streaming. Cosmetic
+  only — no impact on training or saved artifacts.
+- A harmless `conda activate` error was printed at job start but the correct
+  environment was in use throughout. Cosmetic only — no impact on results.
 
 ---
 

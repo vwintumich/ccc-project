@@ -1,0 +1,149 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+/home/vwinters/.conda/envs/nlp_env/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:224: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn(
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loaded triplet file: data/triplets/g1.csv
+  Total rows: 69,921
+Triplet dataset: 69,921 rows
+Batches per epoch: 2,185 (batch size = 32)
+
+Loading model: gabrielloiseau/CALE-MBERT-en ...
+Model loaded in 7.7s
+Parameters:      394,781,696 total, 394,781,696 trainable
+Hidden dim:      1024
+
+Training configuration:
+  Learning rate:   2e-05
+  Weight decay:    0.01
+  Margin:          1.0
+  Epochs:          3
+  Grad accum:      1
+  Total steps:     6,555
+  Warmup steps:    655
+  Max length:      128
+  Seed:            42
+
+  Epoch 1 | Step   100 | Loss: 2.4490 | LR: 3.05e-06
+  Epoch 1 | Step   200 | Loss: 0.8532 | LR: 6.11e-06
+  Epoch 1 | Step   300 | Loss: 0.6904 | LR: 9.16e-06
+  Epoch 1 | Step   400 | Loss: 0.6037 | LR: 1.22e-05
+  Epoch 1 | Step   500 | Loss: 0.5237 | LR: 1.53e-05
+  Epoch 1 | Step   600 | Loss: 0.4678 | LR: 1.83e-05
+  Epoch 1 | Step   700 | Loss: 0.4233 | LR: 1.98e-05
+  Epoch 1 | Step   800 | Loss: 0.4234 | LR: 1.95e-05
+  Epoch 1 | Step   900 | Loss: 0.3706 | LR: 1.92e-05
+  Epoch 1 | Step  1000 | Loss: 0.3640 | LR: 1.88e-05
+  Epoch 1 | Step  1100 | Loss: 0.3545 | LR: 1.85e-05
+  Epoch 1 | Step  1200 | Loss: 0.3584 | LR: 1.82e-05
+  Epoch 1 | Step  1300 | Loss: 0.3130 | LR: 1.78e-05
+  Epoch 1 | Step  1400 | Loss: 0.3123 | LR: 1.75e-05
+  Epoch 1 | Step  1500 | Loss: 0.2970 | LR: 1.71e-05
+  Epoch 1 | Step  1600 | Loss: 0.2935 | LR: 1.68e-05
+  Epoch 1 | Step  1700 | Loss: 0.2800 | LR: 1.65e-05
+  Epoch 1 | Step  1800 | Loss: 0.2688 | LR: 1.61e-05
+  Epoch 1 | Step  1900 | Loss: 0.2864 | LR: 1.58e-05
+  Epoch 1 | Step  2000 | Loss: 0.2721 | LR: 1.54e-05
+  Epoch 1 | Step  2100 | Loss: 0.2530 | LR: 1.51e-05
+
+Epoch 1 complete: avg loss = 0.4883, time = 992s
+Saved checkpoint: models/g1/model_epoch1.pt
+  Epoch 2 | Step   100 | Loss: 0.1143 | LR: 1.45e-05
+  Epoch 2 | Step   200 | Loss: 0.1175 | LR: 1.41e-05
+  Epoch 2 | Step   300 | Loss: 0.1145 | LR: 1.38e-05
+  Epoch 2 | Step   400 | Loss: 0.1102 | LR: 1.35e-05
+  Epoch 2 | Step   500 | Loss: 0.1022 | LR: 1.31e-05
+  Epoch 2 | Step   600 | Loss: 0.0943 | LR: 1.28e-05
+  Epoch 2 | Step   700 | Loss: 0.1111 | LR: 1.24e-05
+  Epoch 2 | Step   800 | Loss: 0.1137 | LR: 1.21e-05
+  Epoch 2 | Step   900 | Loss: 0.1021 | LR: 1.18e-05
+  Epoch 2 | Step  1000 | Loss: 0.1042 | LR: 1.14e-05
+  Epoch 2 | Step  1100 | Loss: 0.1029 | LR: 1.11e-05
+  Epoch 2 | Step  1200 | Loss: 0.1014 | LR: 1.07e-05
+  Epoch 2 | Step  1300 | Loss: 0.0987 | LR: 1.04e-05
+  Epoch 2 | Step  1400 | Loss: 0.0844 | LR: 1.01e-05
+  Epoch 2 | Step  1500 | Loss: 0.0926 | LR: 9.73e-06
+  Epoch 2 | Step  1600 | Loss: 0.0943 | LR: 9.39e-06
+  Epoch 2 | Step  1700 | Loss: 0.1021 | LR: 9.05e-06
+  Epoch 2 | Step  1800 | Loss: 0.1067 | LR: 8.71e-06
+  Epoch 2 | Step  1900 | Loss: 0.1035 | LR: 8.37e-06
+  Epoch 2 | Step  2000 | Loss: 0.1038 | LR: 8.03e-06
+  Epoch 2 | Step  2100 | Loss: 0.1059 | LR: 7.69e-06
+
+Epoch 2 complete: avg loss = 0.1036, time = 928s
+Saved checkpoint: models/g1/model_epoch2.pt
+  Epoch 3 | Step   100 | Loss: 0.0216 | LR: 7.07e-06
+  Epoch 3 | Step   200 | Loss: 0.0152 | LR: 6.73e-06
+  Epoch 3 | Step   300 | Loss: 0.0149 | LR: 6.39e-06
+  Epoch 3 | Step   400 | Loss: 0.0158 | LR: 6.05e-06
+  Epoch 3 | Step   500 | Loss: 0.0141 | LR: 5.71e-06
+  Epoch 3 | Step   600 | Loss: 0.0130 | LR: 5.37e-06
+  Epoch 3 | Step   700 | Loss: 0.0144 | LR: 5.03e-06
+  Epoch 3 | Step   800 | Loss: 0.0117 | LR: 4.69e-06
+  Epoch 3 | Step   900 | Loss: 0.0106 | LR: 4.36e-06
+  Epoch 3 | Step  1000 | Loss: 0.0137 | LR: 4.02e-06
+  Epoch 3 | Step  1100 | Loss: 0.0142 | LR: 3.68e-06
+  Epoch 3 | Step  1200 | Loss: 0.0138 | LR: 3.34e-06
+  Epoch 3 | Step  1300 | Loss: 0.0109 | LR: 3.00e-06
+  Epoch 3 | Step  1400 | Loss: 0.0105 | LR: 2.66e-06
+  Epoch 3 | Step  1500 | Loss: 0.0120 | LR: 2.32e-06
+  Epoch 3 | Step  1600 | Loss: 0.0080 | LR: 1.98e-06
+  Epoch 3 | Step  1700 | Loss: 0.0091 | LR: 1.64e-06
+  Epoch 3 | Step  1800 | Loss: 0.0128 | LR: 1.31e-06
+  Epoch 3 | Step  1900 | Loss: 0.0142 | LR: 9.66e-07
+  Epoch 3 | Step  2000 | Loss: 0.0109 | LR: 6.27e-07
+  Epoch 3 | Step  2100 | Loss: 0.0116 | LR: 2.88e-07
+
+Epoch 3 complete: avg loss = 0.0130, time = 976s
+Saved checkpoint: models/g1/model_epoch3.pt
+
+Final model saved to: models/g1/model
+Training log saved to: models/g1/training_log.json
+
+========================================================================
+SUMMARY (copy into models/g1/README.md and FINDINGS.md)
+========================================================================
+Base model:      gabrielloiseau/CALE-MBERT-en
+Triplet input:   data/triplets/g1.csv
+Training rows:   69,921
+Epochs:          3
+Batch size:      32
+Learning rate:   2e-05
+Margin:          1.0
+Weight decay:    0.01
+Grad accum:      1
+Warmup fraction: 0.1
+Seed:            42
+Per-epoch loss:  [0.48832047593948225, 0.10364801850962693, 0.012952587097133051]
+Total runtime:   2938s (49.0 min, 0.82 h)
+GPU:             Tesla V100-PCIE-16GB
+Python:          3.12.12
+torch:           2.5.1+cu121
+transformers:    4.57.6
+Output dir:      models/g1
+  README.md  (0.0 MB)
+  model/config.json  (0.0 MB)
+  model/model.safetensors  (1506.0 MB)
+  model/special_tokens_map.json  (0.0 MB)
+  model/tokenizer.json  (3.4 MB)
+  model/tokenizer_config.json  (0.0 MB)
+  model_epoch1.pt  (4518.1 MB)
+  model_epoch2.pt  (4518.1 MB)
+  model_epoch3.pt  (4518.1 MB)
+  training_log.json  (0.0 MB)
+========================================================================
