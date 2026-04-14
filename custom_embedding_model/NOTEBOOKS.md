@@ -167,6 +167,16 @@ Four embedding runs needed:
 After job completes, transfer output files back locally. Record runtime in
 FINDINGS.md alongside vocabulary size, clue count, and cluster partition.
 
+| Notebook | Status | Environment | Reads | Writes |
+|----------|--------|-------------|-------|--------|
+| `04_embedding_verification.ipynb` | ✅ | Local | All `data/embeddings/*/` `.npy` and index files, vocabulary files | `outputs/04_embedding_verification-results.md` |
+
+Pre-Stage-5 verification that all four embedding sets are correctly named,
+distinct, and contain valid data. Checks shapes against FINDINGS.md, confirms
+no NaN/zero rows, verifies index file consistency, and computes pairwise
+mean cosine similarity matrices across all (model, phrase_type) combinations
+to confirm no accidental duplicates. Does not produce new data artifacts.
+
 ---
 
 ### Stage 5

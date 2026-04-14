@@ -423,6 +423,42 @@ verified against vocabulary/index files.
 Total runtime 2.9 min. Transferred to local machine 2026-04-14. All shapes
 verified against vocabulary/index files.
 
+### Stage 4 Verification (NB 04) — completed 2026-04-14
+
+**Notebook:** `04_embedding_verification.ipynb`
+**Environment:** Local (CPU)
+
+All four embedding sets (g_stock, g_stock_tokenspan, g1, g1_tokenspan)
+verified across all three phrase types (f_clue_val, f_common_wndef_val,
+f_common_wnex_val). Five hard checks passed:
+
+| Criterion | Result |
+|---|---|
+| All 12 shapes match expected | PASS |
+| No NaN anywhere | PASS |
+| No all-zero rows | PASS |
+| f_clue_val index files consistent | PASS |
+| No off-diagonal mean cosine ≥ 0.999 | PASS |
+
+Max off-diagonal mean cosine across all three matrices: 0.9212
+(g_stock ↔ g_stock_tokenspan on f_clue_val).
+
+#### Cross-model divergence (g_stock ↔ g1, both meanpool)
+
+| Phrase type | Mean cosine |
+|---|---|
+| f_clue_val | 0.296 |
+| f_common_wndef_val | 0.391 |
+| f_common_wnex_val | 0.326 |
+
+Fine-tuning moved embeddings dramatically across all three phrase types, not
+just the wndef phrases the model was trained on. Whether this reflects
+compression (format-specific overfitting) or semantic reorganization is
+deferred to Stage 5.
+
+Full pairwise matrices and per-pair detail tables in
+`outputs/04_embedding_verification-results.md`.
+
 ---
 
 ## Stage 5: Hypothesis Testing
