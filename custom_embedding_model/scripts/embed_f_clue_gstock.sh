@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=embed_fclue_gstock
-#SBATCH --account=<account>
+#SBATCH --account=siads696w26_class
 #SBATCH --partition=gpu
 #SBATCH --gpus=1
 #SBATCH --cpus-per-task=4
@@ -28,8 +28,7 @@
 #       custom_embedding_model/data/embeddings/g_stock/
 # ---------------------------------------------------------------------------
 
-module load python/3.10
-# conda activate <your-env>   # Uncomment and set your environment name
+conda activate nlp_env
 
 python scripts/embed_f_clue_gstock.py \
     --input data/filtered_split/wn_synset/clue_phrases/f_clue.csv \
