@@ -1,5 +1,5 @@
 """
-Fine-tune g_stock (CALE-MBERT-en) with triplet margin loss to produce g_1.
+Fine-tune g_stock (CALE-MBERT-en) with triplet margin loss to produce g1_tokenspan.
 
 Reproduces the training procedure from NB 09 (`notebooks/archive/
 09_learned_g_misdirection.ipynb`) — Step A of the design document. Uses
@@ -7,22 +7,25 @@ HuggingFace `AutoModel` (not SentenceTransformer) so gradients can flow
 through the manual concept-aligned extraction that averages the hidden
 states of tokens inside the `<t></t>` span.
 
+Note: This script uses token span extraction (non-standard). See Decision 20.
+Superseded by train_g1.py which uses CALE's canonical mean pooling.
+
 Reads one input: a committed triplet CSV (by default `data/triplets/g1.csv`)
 with columns (clue_id, definition, answer_wn, distractor_wn, anchor, positive,
 negative). The source phrase files and dataset_harder.parquet are NOT needed
 on Great Lakes — all phrase text is already materialized in the CSV.
 
 Usage (typical Great Lakes submission, via SLURM):
-    python scripts/train_g1.py \
+    python scripts/train_g1_tokenspan.py \
         --input data/triplets/g1.csv \
-        --output-dir models/g1 \
+        --output-dir models/g1_tokenspan \
         --epochs 3 \
         --batch-size 32 \
         --lr 2e-5 \
         --margin 1.0
 
 Smoke test on a small sample (~5 min on GPU, ~20 min on CPU):
-    python scripts/train_g1.py \
+    python scripts/train_g1_tokenspan.py \
         --input data/triplets/g1.csv \
         --output-dir models/g1_smoke \
         --epochs 1 --batch-size 8 --sample 200
@@ -86,7 +89,7 @@ os.environ.setdefault("PYTORCH_ALLOC_CONF", "expandable_segments:True")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Fine-tune CALE with triplet margin loss (g_1, Step A)"
+        description="Fine-tune CALE with triplet margin loss (g1_tokenspan, token span extraction)"
     )
     parser.add_argument("--input", type=Path, required=True,
                         help="Path to triplets/g1.csv")
@@ -503,11 +506,11 @@ def train(args: argparse.Namespace) -> None:
     tmp_log.rename(log_path)
     print(f"Training log saved to: {log_path}")
 
-    # --- Summary block for SLURM log → models/g1/README.md ---
+    # --- Summary block for SLURM log → models/g1_tokenspan/README.md ---
     total_runtime = time.time() - wall_start
     print()
     print("=" * 72)
-    print("SUMMARY (copy into models/g1/README.md and FINDINGS.md)")
+    print("SUMMARY (copy into models/g1_tokenspan/README.md and FINDINGS.md)")
     print("=" * 72)
     print(f"Base model:      {MODEL_NAME}")
     print(f"Triplet input:   {args.input}")

@@ -1,6 +1,6 @@
 # Model: g1_tokenspan
 
-**Status:** trained 2026-04-13 — weights in Google Drive
+**Status:** trained 2026-04-13 — weights on Great Lakes
 
 **Extraction method:** Token span (non-standard). This model averages hidden
 states only within the `<t></t>` span, rather than using CALE's canonical
@@ -10,17 +10,12 @@ mean pooling over all tokens. See Decision 20 for details. Compare against
 ## Base model
 
 - HuggingFace ID: `gabrielloiseau/CALE-MBERT-en`
-- Version/commit hash: *(pin from the downloaded snapshot after training)*
 
 ## Weights location
 
-- Google Drive: "Research Project - NLP CCC's" (owned by Nathan)
-- Path: `custom_embedding_models/g1_tokenspan/`
+- Great Lakes: `/home/vwinters/ccc-project/custom_embedding_model/models/g1_tokenspan/model/`
 
-Weights are **not** committed to this repo (Decision 12). After training on
-Great Lakes, upload the contents of `models/g1_tokenspan/model/` (the
-HuggingFace `save_pretrained()` directory produced by
-`scripts/train_g1_tokenspan.py`) to the Google Drive path above.
+Weights are **not** committed to this repo (Decision 12).
 
 ## Training details
 
