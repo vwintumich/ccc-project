@@ -49,8 +49,8 @@ WordNet lookup logic, article stripping, underscore conversion)
 
 | Script | Status | Environment | Reads | Writes |
 |--------|--------|-------------|-------|--------|
-| `scripts/embed_f_clue_gstock.py` | ❌ | Great Lakes (GPU) | `filtered_split/wn_synset/clues_wn_filtered.csv`, `filtered_split/wn_synset/clue_phrases/f_clue.csv` | `data/embeddings/g_stock/f_clue.npy`, `data/embeddings/g_stock/f_clue_index.csv` |
-| `scripts/embed_f_clue_gstock.sh` | ❌ | Great Lakes (SLURM) | — | — |
+| `scripts/embed_f_clue_gstock.py` | ✅ | Great Lakes (GPU) | `filtered_split/wn_synset/clues_wn_filtered.csv`, `filtered_split/wn_synset/clue_phrases/f_clue.csv` | `data/embeddings/g_stock/f_clue.npy`, `data/embeddings/g_stock/f_clue_index.csv` |
+| `scripts/embed_f_clue_gstock.sh` | ✅ | Great Lakes (SLURM) | — | — |
 
 Encodes all f_clue phrases for the full `clues_wn_filtered.csv` dataset using
 g_stock. Computed once and reused by all f-specific analyses. Must be run
@@ -103,8 +103,8 @@ synset lookup)
 
 | Notebook | Status | Environment | Reads | Writes |
 |----------|--------|-------------|-------|--------|
-| `03_train_g1.ipynb` | ❌ | Local (inspection) / Great Lakes (GPU) | Phrase files from `filtered_split/wn_synset/`, training-split rows | `data/triplets/g1.csv`, `data/triplets/g1_meta.json`, `models/g1/README.md` |
-| `scripts/train_g1.py` | ❌ | Great Lakes (GPU) | Same | Model weights → Google Drive |
+| `03_train_g1.ipynb` | ✅ | Local | Phrase files from `filtered_split/wn_synset/`, `dataset_harder.parquet`, training-split rows | `data/triplets/g1.csv`, `data/triplets/g1_meta.json` |
+| `scripts/train_g1.py` | ❌ | Great Lakes (GPU) | `data/triplets/g1.csv` | Model weights → Google Drive |
 | `scripts/train_g1.sh` | ❌ | Great Lakes (SLURM) | — | — |
 
 Constructs triplets from the training split, drawing anchor phrases from
