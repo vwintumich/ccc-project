@@ -322,8 +322,6 @@ baseline, not against the canonical `g_stock`.
 
 ## Stage 4: Embedding Generation (Validation Split)
 
-*Not yet run for any model.*
-
 ### Extraction method finding
 
 During implementation of `scripts/embed_val.py`, a consistency check comparing
@@ -332,6 +330,38 @@ g_stock f_clue phrases found mean cosine similarity of 0.926 — confirming
 the two methods produce substantively different embeddings. This led to
 Decision 20 (mean pooling is canonical for CALE) and the renaming of g1 to
 g1_tokenspan. See Decision 20 for full evidence.
+
+### g_stock_tokenspan — completed 2026-04-14
+
+**Script:** `scripts/embed_val.py` (submitted via `scripts/embed_val_gstock_tokenspan.sh`)
+**Environment:** Great Lakes, `nlp_env` conda environment
+
+| Embedding | Shape | Indexed by |
+|-----------|-------|------------|
+| `f_clue_val.npy` | (47933, 1024) | `f_clue_val_index.csv` (47,933 rows) |
+| `f_common_wndef_val.npy` | (26152, 1024) | `vocabulary_wndef_val.csv` (26,152 rows) |
+| `f_common_wnex_val.npy` | (3008, 1024) | `vocabulary_wnex_val.csv` (3,008 rows) |
+
+Transferred to local machine 2026-04-14. All shapes verified against
+vocabulary/index files.
+
+### g1_tokenspan — completed 2026-04-14
+
+**Script:** `scripts/embed_val.py` (submitted via `scripts/embed_val_g1_tokenspan.sh`)
+**Environment:** Great Lakes, `nlp_env` conda environment
+
+| Embedding | Shape | Indexed by |
+|-----------|-------|------------|
+| `f_clue_val.npy` | (47933, 1024) | `f_clue_val_index.csv` (47,933 rows) |
+| `f_common_wndef_val.npy` | (26152, 1024) | `vocabulary_wndef_val.csv` (26,152 rows) |
+| `f_common_wnex_val.npy` | (3008, 1024) | `vocabulary_wnex_val.csv` (3,008 rows) |
+
+Transferred to local machine 2026-04-14. All shapes verified against
+vocabulary/index files.
+
+### g_stock (mean pooling) — not yet run
+
+### g1 (mean pooling) — awaiting g1 training completion
 
 ---
 

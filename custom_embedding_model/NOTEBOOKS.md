@@ -129,16 +129,17 @@ test rows must never appear.
 Builds on: `custom_embedding_model/notebooks/archive/09_learned_g_misdirection.ipynb`
 (Nathan — triplet construction, training loop, CALE concept-aligned extraction)
 
-#### g1 (mean pooling — canonical, to be trained)
+#### g1 (mean pooling — canonical, training in progress)
 
 | Script | Status | Environment | Reads | Writes |
 |--------|--------|-------------|-------|--------|
-| `scripts/train_g1.py` | ❌ | Great Lakes (GPU) | `data/triplets/g1.csv` (same triplets as g1_tokenspan, different extraction) | Model weights → Google Drive |
-| `scripts/train_g1.sh` | ❌ | Great Lakes (SLURM) | — | — |
+| `scripts/train_g1.py` | 🔄 | Great Lakes (GPU) | `data/triplets/g1.csv` (same triplets as g1_tokenspan, different extraction) | Model weights → Google Drive |
+| `scripts/train_g1.sh` | 🔄 | Great Lakes (SLURM) | — | — |
 
 Same triplets as g1_tokenspan, but trained using mean pooling (canonical
 CALE extraction per Decision 20). Uses `SentenceTransformer` training APIs
-or equivalent attention-masked mean pooling.
+or equivalent attention-masked mean pooling. Scripts committed; training
+job submitted on Great Lakes 2026-04-14.
 
 ---
 
@@ -158,10 +159,10 @@ meanpool). Generates validation-split embeddings for any g model:
 - `embeddings/<g_name>/f_clue_val.npy` + `f_clue_val_index.csv`
 
 Four embedding runs needed:
-1. g_stock_tokenspan (token span extraction, stock CALE weights)
-2. g1_tokenspan (token span extraction, fine-tuned weights)
-3. g_stock (mean pooling, stock CALE weights)
-4. g1 (mean pooling, fine-tuned weights)
+1. g_stock_tokenspan (token span extraction, stock CALE weights) — ✅ generated, transferred locally
+2. g1_tokenspan (token span extraction, fine-tuned weights) — ✅ generated, transferred locally
+3. g_stock (mean pooling, stock CALE weights) — ❌ not yet run
+4. g1 (mean pooling, fine-tuned weights) — ❌ awaiting g1 training completion
 
 After job completes, transfer output files back locally. Record runtime in
 FINDINGS.md alongside vocabulary size, clue count, and cluster partition.
