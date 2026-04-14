@@ -297,7 +297,7 @@ baseline, not against the canonical `g_stock`.
 | Great Lakes partition | gpu (Tesla V100-PCIE-16GB) |
 | Wall-clock runtime | 49.0 min (0.82 h) |
 | Date trained | 2026-04-13 |
-| Google Drive path | custom_embedding_models/g1_tokenspan/ |
+| Great Lakes path | models/g1_tokenspan/model/ |
 
 ### Environment versions
 
@@ -317,6 +317,42 @@ baseline, not against the canonical `g_stock`.
   only — no impact on training or saved artifacts.
 - A harmless `conda activate` error was printed at job start but the correct
   environment was in use throughout. Cosmetic only — no impact on results.
+
+---
+
+## Stage 3: g1 Training (mean pooling)
+
+**Script:** `scripts/train_g1.py` (submitted via `scripts/train_g1.sh`) — completed 2026-04-14
+**Environment:** Great Lakes, `nlp_env` conda environment
+
+This model uses CALE's canonical mean pooling (Decision 20). Compare against
+g_stock (mean pooling) for a fair baseline.
+
+| Metric | Value |
+|--------|-------|
+| Triplet file | data/triplets/g1.csv |
+| Training rows | 69,921 |
+| Base model | gabrielloiseau/CALE-MBERT-en |
+| Margin α | 1.0 |
+| Learning rate | 2e-5 |
+| Epochs | 3 |
+| Batch size | 32 |
+| Per-epoch loss | [0.470, 0.111, 0.014] |
+| Great Lakes partition | gpu (Tesla V100-PCIE-16GB) |
+| Wall-clock runtime | 43.5 min (0.72 h) |
+| Date trained | 2026-04-14 |
+| Great Lakes path | models/g1/model/ |
+
+### Environment versions
+
+| Package | Version |
+|---------|---------|
+| Python | 3.12.12 |
+| torch | 2.5.1+cu121 |
+| transformers | 4.57.6 |
+| numpy | 2.3.5 |
+| pandas | 3.0.0 |
+| conda environment | nlp_env |
 
 ---
 
@@ -359,9 +395,33 @@ vocabulary/index files.
 Transferred to local machine 2026-04-14. All shapes verified against
 vocabulary/index files.
 
-### g_stock (mean pooling) — not yet run
+### g_stock (mean pooling) — completed 2026-04-14
 
-### g1 (mean pooling) — awaiting g1 training completion
+**Script:** `scripts/embed_val.py` (submitted via `scripts/embed_val_gstock.sh`)
+**Environment:** Great Lakes, `nlp_env` conda environment
+
+| Embedding | Shape | Indexed by |
+|-----------|-------|------------|
+| `f_clue_val.npy` | (47933, 1024) | `f_clue_val_index.csv` (47,933 rows) |
+| `f_common_wndef_val.npy` | (26152, 1024) | `vocabulary_wndef_val.csv` (26,152 rows) |
+| `f_common_wnex_val.npy` | (3008, 1024) | `vocabulary_wnex_val.csv` (3,008 rows) |
+
+Total runtime 2.9 min. Transferred to local machine 2026-04-14. All shapes
+verified against vocabulary/index files.
+
+### g1 (mean pooling) — completed 2026-04-14
+
+**Script:** `scripts/embed_val.py` (submitted via `scripts/embed_val_g1.sh`)
+**Environment:** Great Lakes, `nlp_env` conda environment
+
+| Embedding | Shape | Indexed by |
+|-----------|-------|------------|
+| `f_clue_val.npy` | (47933, 1024) | `f_clue_val_index.csv` (47,933 rows) |
+| `f_common_wndef_val.npy` | (26152, 1024) | `vocabulary_wndef_val.csv` (26,152 rows) |
+| `f_common_wnex_val.npy` | (3008, 1024) | `vocabulary_wnex_val.csv` (3,008 rows) |
+
+Total runtime 2.9 min. Transferred to local machine 2026-04-14. All shapes
+verified against vocabulary/index files.
 
 ---
 

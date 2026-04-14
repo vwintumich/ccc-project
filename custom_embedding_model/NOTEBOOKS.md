@@ -106,7 +106,7 @@ synset lookup)
 | Notebook | Status | Environment | Reads | Writes |
 |----------|--------|-------------|-------|--------|
 | `03_train_g1.ipynb` | ✅ | Local | Phrase files from `filtered_split/wn_synset/`, `dataset_harder.parquet`, training-split rows | `data/triplets/g1.csv`, `data/triplets/g1_meta.json` |
-| `scripts/train_g1_tokenspan.py` | ✅ | Great Lakes (GPU) | `data/triplets/g1_tokenspan.csv` | Model weights → Google Drive |
+| `scripts/train_g1_tokenspan.py` | ✅ | Great Lakes (GPU) | `data/triplets/g1_tokenspan.csv` | Model weights (Great Lakes) |
 | `scripts/train_g1_tokenspan.sh` | ✅ | Great Lakes (SLURM) | — | — |
 
 Constructs triplets from the training split, drawing anchor phrases from
@@ -115,7 +115,7 @@ directory (e.g. `wndef/`). The triplet file represents the intersection of
 rows with valid phrases under all three f's used. Saves `g1_tokenspan_meta.json`
 documenting which f was used for each role, source paths, and row counts.
 Fine-tunes g_stock using triplet margin loss (α = 1.0). Saves model weights
-to Google Drive and commits README to repo.
+to Great Lakes and commits README to repo.
 
 **Note:** The triplet file is shared between g1_tokenspan and g1 — both
 models train on identical text triplets. Only the extraction method differs
@@ -129,17 +129,16 @@ test rows must never appear.
 Builds on: `custom_embedding_model/notebooks/archive/09_learned_g_misdirection.ipynb`
 (Nathan — triplet construction, training loop, CALE concept-aligned extraction)
 
-#### g1 (mean pooling — canonical, training in progress)
+#### g1 (mean pooling — canonical)
 
 | Script | Status | Environment | Reads | Writes |
 |--------|--------|-------------|-------|--------|
-| `scripts/train_g1.py` | 🔄 | Great Lakes (GPU) | `data/triplets/g1.csv` (same triplets as g1_tokenspan, different extraction) | Model weights → Google Drive |
-| `scripts/train_g1.sh` | 🔄 | Great Lakes (SLURM) | — | — |
+| `scripts/train_g1.py` | ✅ | Great Lakes (GPU) | `data/triplets/g1.csv` (same triplets as g1_tokenspan, different extraction) | Model weights (Great Lakes) |
+| `scripts/train_g1.sh` | ✅ | Great Lakes (SLURM) | — | — |
 
 Same triplets as g1_tokenspan, but trained using mean pooling (canonical
 CALE extraction per Decision 20). Uses `SentenceTransformer` training APIs
-or equivalent attention-masked mean pooling. Scripts committed; training
-job submitted on Great Lakes 2026-04-14.
+or equivalent attention-masked mean pooling. Training completed 2026-04-14.
 
 ---
 
@@ -151,6 +150,7 @@ job submitted on Great Lakes 2026-04-14.
 | `scripts/embed_val_gstock.sh` | ✅ | Great Lakes (SLURM) | — | g_stock meanpool val embeddings |
 | `scripts/embed_val_gstock_tokenspan.sh` | ✅ | Great Lakes (SLURM) | — | g_stock tokenspan val embeddings |
 | `scripts/embed_val_g1_tokenspan.sh` | ✅ | Great Lakes (SLURM) | — | g1_tokenspan val embeddings |
+| `scripts/embed_val_g1.sh` | ✅ | Great Lakes (SLURM) | — | g1 meanpool val embeddings |
 
 Shared embedding generation script with `--pooling` flag (tokenspan or
 meanpool). Generates validation-split embeddings for any g model:
@@ -161,8 +161,8 @@ meanpool). Generates validation-split embeddings for any g model:
 Four embedding runs needed:
 1. g_stock_tokenspan (token span extraction, stock CALE weights) — ✅ generated, transferred locally
 2. g1_tokenspan (token span extraction, fine-tuned weights) — ✅ generated, transferred locally
-3. g_stock (mean pooling, stock CALE weights) — ❌ not yet run
-4. g1 (mean pooling, fine-tuned weights) — ❌ awaiting g1 training completion
+3. g_stock (mean pooling, stock CALE weights) — ✅ generated, transferred locally
+4. g1 (mean pooling, fine-tuned weights) — ✅ generated, transferred locally
 
 After job completes, transfer output files back locally. Record runtime in
 FINDINGS.md alongside vocabulary size, clue count, and cluster partition.
@@ -226,6 +226,7 @@ complete. Name them `05_explore_<g_name>.ipynb` before archiving.
 | `embed_val_gstock.sh` | SLURM submission: g_stock meanpool val embeddings | Great Lakes |
 | `embed_val_gstock_tokenspan.sh` | SLURM submission: g_stock tokenspan val embeddings | Great Lakes |
 | `embed_val_g1_tokenspan.sh` | SLURM submission: g1_tokenspan val embeddings | Great Lakes |
+| `embed_val_g1.sh` | SLURM submission: g1 meanpool val embeddings | Great Lakes |
 
 All GPU scripts should:
 - Accept command-line arguments for key parameters

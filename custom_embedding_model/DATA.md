@@ -246,6 +246,10 @@ Indexed by the corresponding vocabulary file. No separate index file needed.
 |------|-----------|-------|
 | `g_stock/f_common_wndef.npy` | `vocabulary_wndef.csv` | (N_wndef, 1024) |
 | `g_stock/f_common_wnex.npy` | `vocabulary_wnex.csv` | (N_wnex, 1024) |
+| `g_stock/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) |
+| `g_stock/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) |
+| `g_stock_tokenspan/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) |
+| `g_stock_tokenspan/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) |
 | `g1_tokenspan/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) |
 | `g1_tokenspan/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) |
 | `g1/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) |
@@ -266,6 +270,8 @@ Always accompanied by an explicit `_index.csv` file.
 | File | Scope | Index file |
 |------|-------|-----------|
 | `g_stock/f_clue.npy` | Full clues_wn_filtered | `g_stock/f_clue_index.csv` |
+| `g_stock/f_clue_val.npy` | Validation clues only | `g_stock/f_clue_val_index.csv` |
+| `g_stock_tokenspan/f_clue_val.npy` | Validation clues only | `g_stock_tokenspan/f_clue_val_index.csv` |
 | `g1_tokenspan/f_clue_val.npy` | Validation clues only | `g1_tokenspan/f_clue_val_index.csv` |
 | `g1/f_clue_val.npy` | Validation clues only | `g1/f_clue_val_index.csv` |
 
@@ -285,8 +291,7 @@ HuggingFace ID: gabrielloiseau/CALE-MBERT-en
 Version/commit hash: <hash>
 
 ## Weights location
-Google Drive: "Research Project - NLP CCC's" (owned by Nathan)
-Path: custom_embedding_models/<g_name>/
+Great Lakes: /home/vwinters/ccc-project/custom_embedding_model/models/<g_name>/model/
 
 ## Training details
 Triplet file: data/triplets/<triplet_name>.csv
