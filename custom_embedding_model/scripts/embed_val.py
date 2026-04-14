@@ -2,37 +2,60 @@
 Generate validation-split embeddings for one g model across all three phrase
 types: f_clue, f_common_wndef, and f_common_wnex.
 
-This is a single reusable script run once per model. It produces the
-embedding arrays Stage 5 needs for ATE computation and cross-f
-generalization testing.
+This is a single reusable script run once per (model, pooling-method) pair.
+It produces the embedding arrays Stage 5 needs for ATE computation and
+cross-f generalization testing.
 
-Model loading uses HuggingFace `AutoModel` plus the manual concept-aligned
-extraction function ported from `train_g1.py`. This is used uniformly for
-both g_stock and g_1 so that the pooling is guaranteed to match what g_1
-learned during training. To confirm this does not introduce a discontinuity
-with the existing `g_stock/f_clue.npy` (generated earlier via
-`SentenceTransformer.encode()`), the script runs a small consistency
-verification at startup: re-embed 200 phrases and assert cosine similarity
-> 0.999 against the existing array.
+Model loading uses HuggingFace `AutoModel`. Two extraction methods are
+supported via the required `--pooling` flag:
 
-Usage (typical Great Lakes submission, via SLURM):
-    # For g_stock:
+- ``meanpool`` (Decision 20, canonical): attention-masked mean over all
+  non-padding tokens. Matches ``SentenceTransformer.encode()`` — the method
+  CALE was trained, published, and evaluated with. Use this for the
+  canonical g_stock baseline and for the corrected g1 model.
+- ``tokenspan`` (NB 09 / ``train_g1_tokenspan.py`` historical method):
+  average hidden states only for tokens whose character span lies inside
+  the ``<t></t>`` delimited region. Use this for the g1_tokenspan model
+  and its paired g_stock baseline (so the baseline uses the same extraction
+  as the model it is compared against).
+
+When ``--pooling meanpool`` is passed and the reference files
+(``data/embeddings/g_stock/f_clue.npy`` + ``f_clue_index.csv``) exist, the
+script runs a consistency check at startup: re-embed 200 phrases and assert
+mean cosine similarity > 0.999 against the existing array. For tokenspan
+runs, and for any run where the reference files are missing, the check is
+skipped automatically (with a printed reason).
+
+Usage (typical Great Lakes submissions, via SLURM):
+    # g_stock with mean pooling (canonical baseline):
     python scripts/embed_val.py \
         --model-path gabrielloiseau/CALE-MBERT-en \
         --output-dir data/embeddings/g_stock \
-        --batch-size 64
+        --pooling meanpool --batch-size 64
 
-    # For g_1:
+    # g_stock with token span extraction (baseline for g1_tokenspan):
+    python scripts/embed_val.py \
+        --model-path gabrielloiseau/CALE-MBERT-en \
+        --output-dir data/embeddings/g_stock_tokenspan \
+        --pooling tokenspan --batch-size 64
+
+    # g1_tokenspan:
+    python scripts/embed_val.py \
+        --model-path models/g1_tokenspan/model \
+        --output-dir data/embeddings/g1_tokenspan \
+        --pooling tokenspan --batch-size 64
+
+    # g1 (after training — canonical mean pooling):
     python scripts/embed_val.py \
         --model-path models/g1/model \
         --output-dir data/embeddings/g1 \
-        --batch-size 64
+        --pooling meanpool --batch-size 64
 
 Smoke test on a small sample:
     python scripts/embed_val.py \
         --model-path gabrielloiseau/CALE-MBERT-en \
         --output-dir /tmp/embed_val_smoke \
-        --batch-size 16 --sample 50
+        --pooling meanpool --batch-size 16 --sample 50
 
 Outputs to --output-dir:
     f_clue_val.npy               — (N_val_clues, 1024), float32
@@ -92,6 +115,14 @@ def parse_args() -> argparse.Namespace:
                              "(e.g., 'gabrielloiseau/CALE-MBERT-en' or 'models/g1/model')")
     parser.add_argument("--output-dir", type=Path, required=True,
                         help="Output directory (e.g., data/embeddings/g_stock)")
+    parser.add_argument("--pooling", type=str, required=True,
+                        choices=["meanpool", "tokenspan"],
+                        help="Extraction method. "
+                             "'meanpool' = attention-masked mean over all non-padding "
+                             "tokens (Decision 20 canonical, matches "
+                             "SentenceTransformer.encode()). "
+                             "'tokenspan' = average hidden states within the <t></t> "
+                             "span only (NB 09 / train_g1_tokenspan.py method).")
     parser.add_argument("--data-dir", type=Path,
                         default=Path("data/filtered_split/wn_synset"),
                         help="Root of filtered_split data for this scope")
@@ -110,20 +141,24 @@ def parse_args() -> argparse.Namespace:
                         help="Path to existing g_stock f_clue_index.csv for consistency check")
     parser.add_argument("--verify-sample-size", type=int, default=200,
                         help="Number of rows to use for the consistency verification")
-    parser.add_argument("--skip-verify", action="store_true",
-                        help="Skip the consistency verification step (use only if the "
-                             "reference g_stock f_clue.npy is not available on this host)")
     return parser.parse_args()
 
 
 # =============================================================================
-# §3 — Concept-aligned embedding extraction
+# §3 — Embedding extraction (two methods)
 # =============================================================================
 #
-# Ported verbatim from train_g1.py §5 (which in turn was ported from NB 09
-# §4.2). Averages hidden states over tokens whose character span lies inside
-# the <t>...</t> delimited region. This is the extraction g_1 was trained
-# against, so it must be the extraction used at inference time too.
+# Two extraction methods are supported and dispatched at encode time via the
+# --pooling flag:
+#
+# - tokenspan: averages hidden states over tokens whose character span lies
+#   inside the <t>...</t> delimited region. Ported verbatim from train_g1.py
+#   §5 (which in turn was ported from NB 09 §4.2). This is the extraction
+#   g1_tokenspan was trained against, so it must be the extraction used at
+#   inference time for that model.
+# - meanpool: attention-masked mean over all non-padding tokens. Matches
+#   SentenceTransformer.encode() — CALE's canonical pooling (Decision 20).
+#   Use this for the corrected g1 model and the canonical g_stock baseline.
 
 
 def find_delimiter_char_offsets(text: str) -> tuple:
@@ -206,12 +241,43 @@ def extract_concept_embedding(model, tokenizer, texts, device, max_length: int =
     return concept_vectors
 
 
+def extract_meanpool_embedding(model, tokenizer, texts, device, max_length: int = 128):
+    """Mean-pooled embedding for a batch of CALE-delimited texts.
+
+    Averages last_hidden_state over all non-padding tokens using the
+    attention mask — CALE's canonical pooling (Decision 20), equivalent to
+    ``SentenceTransformer.encode()``. The `<t></t>` delimiters are still
+    present in the input and guide the attention patterns during the forward
+    pass; the pooling itself just averages the resulting hidden states.
+
+    Must be called inside a torch.no_grad() context at inference time.
+    """
+    encoded = tokenizer(
+        texts,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=max_length,
+    ).to(device)
+
+    outputs = model(**encoded)
+    hidden_states = outputs.last_hidden_state          # (batch, seq_len, dim)
+    # unsqueeze(-1) broadcasts the mask across the hidden dim so padding
+    # tokens contribute 0 to the sum and 0 to the count.
+    mask = encoded["attention_mask"].unsqueeze(-1).to(hidden_states.dtype)
+    summed = (hidden_states * mask).sum(dim=1)         # (batch, dim)
+    counts = mask.sum(dim=1)                           # (batch, 1)
+    return summed / counts                             # (batch, dim)
+
+
 def encode_phrases(model, tokenizer, phrases, device, batch_size: int,
-                   max_length: int) -> np.ndarray:
+                   max_length: int, pooling: str) -> np.ndarray:
     """Encode a list of phrases into an (N, 1024) float32 numpy array.
 
-    Runs under torch.no_grad() with model.eval() so dropout is disabled and
-    no gradient graph is built.
+    Dispatches to `extract_concept_embedding` (pooling='tokenspan') or
+    `extract_meanpool_embedding` (pooling='meanpool'). Runs under
+    torch.no_grad() with model.eval() so dropout is disabled and no
+    gradient graph is built.
     """
     model.eval()
     n = len(phrases)
@@ -219,9 +285,17 @@ def encode_phrases(model, tokenizer, phrases, device, batch_size: int,
     with torch.no_grad():
         for start in range(0, n, batch_size):
             batch_texts = phrases[start:start + batch_size]
-            vecs = extract_concept_embedding(
-                model, tokenizer, list(batch_texts), device, max_length
-            )
+            if pooling == "tokenspan":
+                vecs = extract_concept_embedding(
+                    model, tokenizer, list(batch_texts), device, max_length
+                )
+            elif pooling == "meanpool":
+                vecs = extract_meanpool_embedding(
+                    model, tokenizer, list(batch_texts), device, max_length
+                )
+            else:
+                # parse_args restricts choices, so this is belt-and-braces.
+                raise ValueError(f"Unknown pooling method: {pooling!r}")
             # Move to CPU and upcast to float32 immediately; accumulating on
             # GPU would blow past memory on large encoding runs.
             all_vecs.append(vecs.detach().to(torch.float32).cpu().numpy())
@@ -276,11 +350,13 @@ def validate_embeddings(embeddings: np.ndarray, n_expected: int, label: str) -> 
 # =============================================================================
 #
 # The existing data/embeddings/g_stock/f_clue.npy (239,406 rows) was produced
-# by SentenceTransformer.encode(). This script uses AutoModel + manual
-# concept-aligned extraction. Before producing new embeddings, verify the two
-# methods agree: load N rows from the existing array, re-embed those same
-# phrases with our extraction, and assert mean cosine similarity > 0.999.
-# If they disagree, the mismatch must be resolved before proceeding.
+# by SentenceTransformer.encode() — i.e., mean pooling. It is a meaningful
+# reference only when the current run also uses mean pooling on the g_stock
+# weights. The check is therefore run automatically iff:
+#   1. --pooling meanpool is selected, AND
+#   2. the reference files exist.
+# Otherwise (tokenspan runs, fine-tuned g1 runs on a host without the
+# reference files), the check is skipped with a printed reason.
 
 
 def verify_consistency_with_gstock(
@@ -293,21 +369,26 @@ def verify_consistency_with_gstock(
     ref_index_path = args.verify_gstock_index
     f_clue_csv = args.data_dir / "clue_phrases" / "f_clue.csv"
 
-    if args.skip_verify:
-        print("Consistency verification SKIPPED (--skip-verify set).")
+    # Rule 1: tokenspan is expected to differ from the mean-pooled reference,
+    # so skip outright with a clear explanation.
+    if args.pooling != "meanpool":
+        print("Consistency check skipped: tokenspan extraction is expected to "
+              "differ from g_stock/f_clue.npy (produced with mean pooling).")
         print()
         return
 
+    # Rule 2: even on a meanpool run, the reference may not be on this host
+    # (e.g., first-time g_stock generation on a fresh Great Lakes checkout).
     missing = [p for p in (ref_npy_path, ref_index_path, f_clue_csv) if not p.exists()]
     if missing:
-        raise FileNotFoundError(
-            "Cannot run consistency verification; missing files: "
-            + ", ".join(str(p) for p in missing)
-            + ". Pass --skip-verify only if you understand the risk."
-        )
+        print("Consistency check skipped: reference files not found "
+              f"({', '.join(str(p) for p in missing)}).")
+        print()
+        return
 
     print("-" * 72)
-    print("Consistency check: AutoModel extraction vs existing g_stock/f_clue.npy")
+    print("Consistency check: verifying meanpool extraction matches existing "
+          "g_stock/f_clue.npy ...")
     print("-" * 72)
     # Reference embeddings — row-indexed by f_clue_index.csv
     ref_index = pd.read_csv(ref_index_path, keep_default_na=False, na_values=[""])
@@ -340,6 +421,7 @@ def verify_consistency_with_gstock(
     new_embeddings = encode_phrases(
         model, tokenizer, phrases, device,
         batch_size=args.batch_size, max_length=args.max_length,
+        pooling=args.pooling,
     )
     print(f"Re-embedded {n_check} phrases in {time.time() - t0:.1f}s")
 
@@ -362,7 +444,7 @@ def verify_consistency_with_gstock(
     if mean_cos <= 0.999:
         raise AssertionError(
             f"Consistency check FAILED: mean cosine similarity {mean_cos:.6f} "
-            f"<= 0.999. AutoModel extraction does not match "
+            f"<= 0.999. Meanpool extraction does not match "
             f"SentenceTransformer.encode() output for g_stock. "
             f"This is a blocking issue — do not proceed."
         )
@@ -400,11 +482,12 @@ def embed_f_clue_val(
 
     phrases = df_val["phrase"].tolist()
     print(f"Encoding {len(phrases):,} f_clue_val phrases "
-          f"(batch_size={args.batch_size}) ...")
+          f"(batch_size={args.batch_size}, pooling={args.pooling}) ...")
     t0 = time.time()
     embeddings = encode_phrases(
         model, tokenizer, phrases, device,
         batch_size=args.batch_size, max_length=args.max_length,
+        pooling=args.pooling,
     )
     encode_time = time.time() - t0
     print(f"  Encoded in {encode_time:.1f}s "
@@ -488,11 +571,12 @@ def embed_f_common_val(
 
     phrases = joined["phrase"].tolist()
     print(f"Encoding {len(phrases):,} {label} phrases "
-          f"(batch_size={args.batch_size}) ...")
+          f"(batch_size={args.batch_size}, pooling={args.pooling}) ...")
     t0 = time.time()
     embeddings = encode_phrases(
         model, tokenizer, phrases, device,
         batch_size=args.batch_size, max_length=args.max_length,
+        pooling=args.pooling,
     )
     encode_time = time.time() - t0
     print(f"  Encoded in {encode_time:.1f}s "
@@ -533,7 +617,7 @@ def main() -> None:
     print(f"Hidden dim: {hidden_dim}")
     print()
 
-    # --- Consistency check (skipped if --skip-verify) ---
+    # --- Consistency check (automatic — see §6) ---
     verify_consistency_with_gstock(model, tokenizer, device, args)
 
     # --- Prepare output directory ---
@@ -593,6 +677,7 @@ def main() -> None:
     print("=" * 72)
     print(f"Model path:        {args.model_path}")
     print(f"Output directory:  {args.output_dir}")
+    print(f"Pooling method:    {args.pooling}")
     print(f"Model load time:   {load_time:.1f}s")
     print(f"f_clue_val:        {f_clue_emb.shape}, encode {f_clue_time:.1f}s")
     print(f"f_common_wndef_val:{wndef_emb.shape}, encode {wndef_time:.1f}s")

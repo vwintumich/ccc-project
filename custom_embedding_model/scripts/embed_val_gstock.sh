@@ -9,10 +9,15 @@
 #SBATCH --output=logs/embed_val_gstock_%j.out
 
 # ---------------------------------------------------------------------------
-# Generate validation-split embeddings for g_stock (unmodified CALE) across
-# all three phrase types: f_clue, f_common_wndef, f_common_wnex. These are
-# the embeddings Stage 5 needs for ATE computation and cross-f generalization
-# testing against g_1.
+# Generate canonical (mean-pooled) validation-split embeddings for g_stock
+# (unmodified CALE) across all three phrase types: f_clue, f_common_wndef,
+# f_common_wnex. These _val embeddings are saved alongside the existing
+# full-scope files in data/embeddings/g_stock/ and are the canonical baseline
+# for Stage 5 ATE computation against g1 (mean pooling).
+#
+# Per Decision 20, mean pooling is the canonical extraction method for CALE.
+# The companion wrapper scripts/embed_val_gstock_tokenspan.sh produces the
+# tokenspan-pooled g_stock baseline used to evaluate g1_tokenspan fairly.
 #
 # Before submitting:
 #   1. mkdir -p logs                              (SLURM output directory)
@@ -30,8 +35,8 @@
 #   sbatch scripts/embed_val_gstock.sh
 #
 # Expected runtime: ~5 min on a V100/A40 (1-hour wall-time is conservative).
-# Can be submitted simultaneously with embed_val_g1.sh — the jobs are
-# independent.
+# Can be submitted simultaneously with the other embed_val_*.sh wrappers —
+# the jobs are independent.
 #
 # After completion, scp outputs back to the local machine:
 #   scp vwinters@greatlakes-xfer.arc-ts.umich.edu:/home/vwinters/ccc-project/custom_embedding_model/data/embeddings/g_stock/f_clue_val.npy \
@@ -58,4 +63,5 @@ export PYTHONUNBUFFERED=1
 python scripts/embed_val.py \
     --model-path gabrielloiseau/CALE-MBERT-en \
     --output-dir data/embeddings/g_stock \
+    --pooling meanpool \
     --batch-size 64

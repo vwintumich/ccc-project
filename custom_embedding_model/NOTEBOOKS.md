@@ -146,9 +146,10 @@ or equivalent attention-masked mean pooling.
 
 | Script | Status | Environment | Reads | Writes |
 |--------|--------|-------------|-------|--------|
-| `scripts/embed_val.py` | 🔄 | Great Lakes (GPU) | Model weights, phrase files, vocabulary_*_val.csv files | `data/embeddings/<g_name>/*_val.npy` files |
-| `scripts/embed_val_gstock.sh` | 🔄 | Great Lakes (SLURM) | — | — |
-| `scripts/embed_val_g1.sh` | 🔄 | Great Lakes (SLURM) | — | — |
+| `scripts/embed_val.py` | ✅ | Great Lakes (GPU) | Model weights, phrase files, vocabulary_*_val.csv files | `data/embeddings/<g_name>/*_val.npy` files |
+| `scripts/embed_val_gstock.sh` | ✅ | Great Lakes (SLURM) | — | g_stock meanpool val embeddings |
+| `scripts/embed_val_gstock_tokenspan.sh` | ✅ | Great Lakes (SLURM) | — | g_stock tokenspan val embeddings |
+| `scripts/embed_val_g1_tokenspan.sh` | ✅ | Great Lakes (SLURM) | — | g1_tokenspan val embeddings |
 
 Shared embedding generation script with `--pooling` flag (tokenspan or
 meanpool). Generates validation-split embeddings for any g model:
@@ -220,9 +221,10 @@ complete. Name them `05_explore_<g_name>.ipynb` before archiving.
 | `train_g1_tokenspan.sh` | SLURM submission for above | Great Lakes |
 | `train_g1.py` | g1 fine-tuning (mean pooling — canonical) | Great Lakes (GPU) |
 | `train_g1.sh` | SLURM submission for above | Great Lakes |
-| `embed_val.py` | Validation-split embedding generation for any g model | Great Lakes (GPU) |
-| `embed_val_gstock.sh` | SLURM submission: g_stock embeddings | Great Lakes |
-| `embed_val_g1.sh` | SLURM submission: g1 embeddings | Great Lakes |
+| `embed_val.py` | Validation-split embedding generation for any g model (supports `--pooling meanpool\|tokenspan`) | Great Lakes (GPU) |
+| `embed_val_gstock.sh` | SLURM submission: g_stock meanpool val embeddings | Great Lakes |
+| `embed_val_gstock_tokenspan.sh` | SLURM submission: g_stock tokenspan val embeddings | Great Lakes |
+| `embed_val_g1_tokenspan.sh` | SLURM submission: g1_tokenspan val embeddings | Great Lakes |
 
 All GPU scripts should:
 - Accept command-line arguments for key parameters
