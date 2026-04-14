@@ -149,8 +149,10 @@ Save to temporary paths first, then rename to prevent corrupt partial
 files if the job is killed mid-write:
 
 ```python
-tmp_npy = output_dir / "f_clue.npy.tmp"
-tmp_csv = output_dir / "f_clue_index.csv.tmp"
+# np.save() auto-appends ".npy" when the path doesn't already end in it,
+# so temp names must end in ".npy" to avoid a double extension.
+tmp_npy = output_dir / "f_clue.tmp.npy"
+tmp_csv = output_dir / "f_clue_index.tmp.csv"
 
 np.save(tmp_npy, embeddings)
 index_df.to_csv(tmp_csv, index=False)

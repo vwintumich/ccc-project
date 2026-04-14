@@ -179,9 +179,11 @@ assert len(index_df) == embeddings.shape[0], (
 output_dir = args.output_dir
 output_dir.mkdir(parents=True, exist_ok=True)
 
-# Write to .tmp first, then rename — prevents corrupt partial files if killed mid-write
-tmp_npy = output_dir / "f_clue.npy.tmp"
-tmp_csv = output_dir / "f_clue_index.csv.tmp"
+# Write to temp paths first, then rename — prevents corrupt partial files if killed
+# mid-write.  np.save() auto-appends ".npy" when the path doesn't already end in it,
+# so the temp name must end in ".npy" to avoid a double extension.
+tmp_npy = output_dir / "f_clue.tmp.npy"
+tmp_csv = output_dir / "f_clue_index.tmp.csv"
 
 final_npy = output_dir / "f_clue.npy"
 final_csv = output_dir / "f_clue_index.csv"
