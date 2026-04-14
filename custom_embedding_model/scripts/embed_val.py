@@ -350,13 +350,15 @@ def validate_embeddings(embeddings: np.ndarray, n_expected: int, label: str) -> 
 # =============================================================================
 #
 # The existing data/embeddings/g_stock/f_clue.npy (239,406 rows) was produced
-# by SentenceTransformer.encode() — i.e., mean pooling. It is a meaningful
-# reference only when the current run also uses mean pooling on the g_stock
-# weights. The check is therefore run automatically iff:
+# by SentenceTransformer.encode() — i.e., mean pooling on the g_stock weights.
+# It is a meaningful reference only when the current run also uses mean
+# pooling on those same weights. The check is therefore run automatically iff:
 #   1. --pooling meanpool is selected, AND
-#   2. the reference files exist.
-# Otherwise (tokenspan runs, fine-tuned g1 runs on a host without the
-# reference files), the check is skipped with a printed reason.
+#   2. --model-path is the g_stock HuggingFace ID (not a fine-tuned model), AND
+#   3. the reference files exist.
+# Otherwise (tokenspan runs, fine-tuned g1 runs, or first-time g_stock
+# generation on a host without the reference files), the check is skipped
+# with a printed reason.
 
 
 def verify_consistency_with_gstock(
@@ -377,8 +379,17 @@ def verify_consistency_with_gstock(
         print()
         return
 
-    # Rule 2: even on a meanpool run, the reference may not be on this host
-    # (e.g., first-time g_stock generation on a fresh Great Lakes checkout).
+    # Rule 2: fine-tuned models are expected to differ from g_stock by design.
+    # The check is only meaningful for verifying that g_stock + meanpool
+    # extraction reproduces SentenceTransformer.encode() output.
+    if args.model_path != "gabrielloiseau/CALE-MBERT-en":
+        print("Consistency check skipped: model is fine-tuned (not g_stock), "
+              "so embeddings are expected to differ from the g_stock reference.")
+        print()
+        return
+
+    # Rule 3: even on a g_stock meanpool run, the reference may not be on this
+    # host (e.g., first-time g_stock generation on a fresh Great Lakes checkout).
     missing = [p for p in (ref_npy_path, ref_index_path, f_clue_csv) if not p.exists()]
     if missing:
         print("Consistency check skipped: reference files not found "
