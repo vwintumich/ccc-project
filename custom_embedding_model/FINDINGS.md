@@ -226,15 +226,48 @@ only, 45,570 in wndef only).
 
 ## Stage 1d: g_stock f_clue Embedding Generation
 
-*Not yet run.*
+**Script:** `scripts/embed_f_clue_gstock.py` — completed 2026-04-13
+**Environment:** Great Lakes, `nlp_env` conda environment
 
 | Metric | Value |
 |--------|-------|
-| Total rows embedded | — |
-| Embedding array shape | — |
-| Great Lakes partition | — |
-| Wall-clock runtime | — |
-| Date run | — |
+| Total rows embedded | 239,406 |
+| Embedding array shape | (239406, 1024) |
+| Embedding dtype | float32 |
+| L2 norm range | [24.4009, 34.1953] |
+| NaN values | 0 |
+| All-zero rows | 0 |
+| Encoding rate | 675 phrases/sec (batch_size=64) |
+| Encoding time | 354.7s (5 min 51 sec) |
+| Great Lakes partition | gpu (gl1002) |
+| Date run | 2026-04-13 |
+
+### Output files
+
+| File | Size | Location |
+|------|------|----------|
+| `f_clue.npy` | 936 MB | `data/embeddings/g_stock/` |
+| `f_clue_index.csv` | 4.9 MB | `data/embeddings/g_stock/` |
+
+### Environment versions
+
+| Package | Version |
+|---------|---------|
+| Python | 3.12.12 |
+| torch | 2.5.1+cu121 |
+| sentence-transformers | 5.2.2 |
+| transformers | 4.52.3 |
+| numpy | 2.3.5 |
+| conda environment | nlp_env |
+
+### Notes
+
+- Used `SentenceTransformer.encode()` (not manual AutoModel extraction).
+- `normalize_embeddings=False` — raw magnitudes preserved; downstream ATE
+  computation normalizes as needed.
+- Encountered `np.save()` temp file naming bug: numpy auto-appends `.npy`,
+  causing atomic rename to fail. Files were saved successfully but required
+  manual rename on Great Lakes. Bug fixed in commit c3653b9.
 
 ---
 
