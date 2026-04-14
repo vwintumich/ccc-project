@@ -45,6 +45,7 @@ import json
 import os
 import sys
 import time
+import warnings
 from pathlib import Path
 
 import numpy as np
@@ -349,6 +350,15 @@ def train(args: argparse.Namespace) -> None:
         return max(0.0, 1.0 - (step - warmup_steps) / max(1, total_steps - warmup_steps))
 
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
+
+    # Suppress the known false-positive warning about lr_scheduler.step() being
+    # called before optimizer.step(). The call ordering below is correct
+    # (optimizer.step() then scheduler.step()), but PyTorch cannot distinguish
+    # the first iteration from a genuine ordering bug and warns unconditionally.
+    warnings.filterwarnings(
+        "ignore",
+        message=r"Detected call of `lr_scheduler\.step\(\)` before `optimizer\.step\(\)`.*",
+    )
 
     print("Training configuration:")
     print(f"  Learning rate:   {args.lr}")
