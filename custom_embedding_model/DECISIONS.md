@@ -305,3 +305,48 @@ analysis depends on. If a future reproduction attempt uses different package
 versions and gets different embeddings, there must be a permanent record of
 what produced the originals. SLURM logs are ephemeral; FINDINGS.md and a
 committed requirements file are not.
+
+---
+
+## Decision 20: Mean Pooling Is Canonical for CALE
+
+**Choice:** All CALE embeddings in this project must use mean pooling over
+all non-padding tokens (i.e., `SentenceTransformer.encode()` or equivalent
+attention-masked mean pooling over the full hidden state). This is how CALE
+was trained, published, and evaluated.
+
+The token span extraction method used in NB 09 and `scripts/train_g1.py`
+(averaging hidden states only for tokens within the `<t></t>` span) is a
+non-standard extraction method that produces different embeddings (mean
+cosine similarity of 0.926 vs. the canonical method). The model trained
+with this method is renamed `g1_tokenspan` to distinguish it from the
+corrected `g1` (to be trained with mean pooling).
+
+**Evidence:**
+- CALE's published `1_Pooling/config.json` sets `pooling_mode_mean_tokens:
+  true` with all other pooling modes false
+- CALE's `modules.json` contains exactly two modules: Transformer + Pooling
+  (no custom concept-aligned pooling layer)
+- CALE's README and model card show usage via `model.encode()`, not manual
+  extraction
+- `clue_misdirection/notebooks/00_model_comparison.ipynb` used
+  `SentenceTransformer.encode()` for all CALE embeddings in the model
+  selection evaluation that led to Decision 1
+- The consistency check in `scripts/embed_val.py` measured mean cosine
+  similarity of 0.926 between token span extraction and
+  `SentenceTransformer.encode()` — confirming they produce substantively
+  different embeddings
+
+**Naming convention:** Models using mean pooling (the canonical method) carry
+no suffix. Models using token span extraction carry the `_tokenspan` suffix.
+This applies to model names (`g1` vs `g1_tokenspan`), file paths, and all
+documentation references.
+
+**Rationale:** CALE's concept alignment comes from the transformer weights
+and attention mechanism (trained on concept-definition pairs with `<t></t>`
+delimiters), not from a special pooling layer. The `<t></t>` delimiters guide
+the attention patterns during the forward pass, and mean pooling over the
+resulting hidden states produces the concept-aligned embedding. The token
+span method bypasses this design. Since all prior work in this project
+(model selection, g_stock f_clue embeddings) used mean pooling, it must
+remain the standard for comparability.

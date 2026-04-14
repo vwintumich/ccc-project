@@ -205,6 +205,8 @@ usage example where the target word appears exactly once)
 Examples: `triplets/g1.csv`
 
 **Contains:** Training-split triplets used to fine-tune the named g model.
+Multiple models may share a triplet file if they differ only in extraction
+method (e.g., g1_tokenspan and g1 both train on `triplets/g1.csv`).
 **Critical:** Contains training-split rows only. Validation and test rows
 must never appear in a triplet file.
 
@@ -244,6 +246,8 @@ Indexed by the corresponding vocabulary file. No separate index file needed.
 |------|-----------|-------|
 | `g_stock/f_common_wndef.npy` | `vocabulary_wndef.csv` | (N_wndef, 1024) |
 | `g_stock/f_common_wnex.npy` | `vocabulary_wnex.csv` | (N_wnex, 1024) |
+| `g1_tokenspan/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) |
+| `g1_tokenspan/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) |
 | `g1/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) |
 | `g1/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) |
 
@@ -262,6 +266,7 @@ Always accompanied by an explicit `_index.csv` file.
 | File | Scope | Index file |
 |------|-------|-----------|
 | `g_stock/f_clue.npy` | Full clues_wn_filtered | `g_stock/f_clue_index.csv` |
+| `g1_tokenspan/f_clue_val.npy` | Validation clues only | `g1_tokenspan/f_clue_val_index.csv` |
 | `g1/f_clue_val.npy` | Validation clues only | `g1/f_clue_val_index.csv` |
 
 ---
@@ -284,7 +289,7 @@ Google Drive: "Research Project - NLP CCC's" (owned by Nathan)
 Path: custom_embedding_models/<g_name>/
 
 ## Training details
-Triplet file: data/triplets/<g_name>.csv
+Triplet file: data/triplets/<triplet_name>.csv
 Training script: scripts/train_<g_name>.py
 Hyperparameters:
   - margin: 1.0

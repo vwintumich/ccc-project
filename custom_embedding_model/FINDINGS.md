@@ -271,10 +271,18 @@ only, 45,570 in wndef only).
 
 ---
 
-## Stage 3: g_1 Training
+## Stage 3: g1_tokenspan Training
 
-**Script:** `scripts/train_g1.py` (submitted via `scripts/train_g1.sh`) — completed 2026-04-13
+**Script:** `scripts/train_g1_tokenspan.py` (submitted via `scripts/train_g1_tokenspan.sh`) — completed 2026-04-13
 **Environment:** Great Lakes, `nlp_env` conda environment
+
+**Note on extraction method:** This model was trained using token span
+extraction (averaging hidden states only within the `<t></t>` span), which
+is NOT CALE's canonical embedding method. See Decision 20. The model is
+named `g1_tokenspan` to distinguish it from the corrected `g1` (to be
+trained with mean pooling). Results from this model should be compared
+against `g_stock_tokenspan` (g_stock with token span extraction) for a fair
+baseline, not against the canonical `g_stock`.
 
 | Metric | Value |
 |--------|-------|
@@ -289,7 +297,7 @@ only, 45,570 in wndef only).
 | Great Lakes partition | gpu (Tesla V100-PCIE-16GB) |
 | Wall-clock runtime | 49.0 min (0.82 h) |
 | Date trained | 2026-04-13 |
-| Google Drive path | custom_embedding_models/g1/ |
+| Google Drive path | custom_embedding_models/g1_tokenspan/ |
 
 ### Environment versions
 
@@ -312,19 +320,18 @@ only, 45,570 in wndef only).
 
 ---
 
-## Stage 4: g_1 Embedding Generation (Validation Split)
+## Stage 4: Embedding Generation (Validation Split)
 
-*Not yet run.*
+*Not yet run for any model.*
 
-| Metric | Value |
-|--------|-------|
-| Embeddings generated | f_common_wndef_val, f_common_wnex_val, f_clue_val |
-| vocabulary_wndef_val words | — |
-| vocabulary_wnex_val words | — |
-| Validation clues embedded | — |
-| Great Lakes partition | — |
-| Wall-clock runtime | — |
-| Date run | — |
+### Extraction method finding
+
+During implementation of `scripts/embed_val.py`, a consistency check comparing
+AutoModel + token span extraction against `SentenceTransformer.encode()` on
+g_stock f_clue phrases found mean cosine similarity of 0.926 — confirming
+the two methods produce substantively different embeddings. This led to
+Decision 20 (mean pooling is canonical for CALE) and the renaming of g1 to
+g1_tokenspan. See Decision 20 for full evidence.
 
 ---
 
@@ -332,9 +339,19 @@ only, 45,570 in wndef only).
 
 *Not yet run.*
 
-### Step A — g_1 Reproduction (Validation Set ATE)
+### Tokenspan evaluation (g1_tokenspan vs g_stock_tokenspan)
 
-| Metric | g_stock | g_1 |
+| Metric | g_stock_tokenspan | g1_tokenspan |
+|--------|-------------------|--------------|
+| T=0 mean similarity | — | — |
+| T=1 mean similarity | — | — |
+| ATE (mean delta) | — | — |
+| ATE 95% CI | — | — |
+| % pairs with negative delta | — | — |
+
+### Mean pooling evaluation (g1 vs g_stock)
+
+| Metric | g_stock | g1 |
 |--------|---------|-----|
 | T=0 mean similarity | — | — |
 | T=1 mean similarity | — | — |
@@ -344,18 +361,19 @@ only, 45,570 in wndef only).
 
 ### Step B — Formatting Hypothesis Test
 
-**Hypothesis:** g_1 learned to compress f_common_wndef phrases (format-specific
-overfitting) rather than learning something semantically meaningful.
+**Hypothesis:** g1_tokenspan learned to compress f_common_wndef phrases
+(format-specific overfitting) rather than learning something semantically
+meaningful. The same test will be run for g1 (mean pooling).
 
-**Test:** Compare cos_sim(g_1(f_common_wnex(word)), g_stock(f_common_wnex(word)))
+**Test:** Compare cos_sim(g_i(f_common_wnex(word)), g_stock_i(f_common_wnex(word)))
 against the g_stock baseline for words in vocabulary_wnex_val.
 
-| Metric | g_stock baseline | g_1 |
-|--------|-----------------|-----|
-| Mean cos_sim(f_common_wndef, f_common_wnex) for same word | — | — |
-| Fraction of wnex vocab tested | — | — |
-| wnex vocab words tested | — | — |
-| Interpretation | — | — |
+| Metric | g_stock baseline | g1_tokenspan | g1 |
+|--------|-----------------|--------------|-----|
+| Mean cos_sim(f_common_wndef, f_common_wnex) for same word | — | — | — |
+| Fraction of wnex vocab tested | — | — | — |
+| wnex vocab words tested | — | — | — |
+| Interpretation | — | — | — |
 
 ---
 
