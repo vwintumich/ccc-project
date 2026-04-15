@@ -105,26 +105,28 @@ synset lookup)
 
 | Notebook | Status | Environment | Reads | Writes |
 |----------|--------|-------------|-------|--------|
-| `03_train_g1.ipynb` | ✅ | Local | Phrase files from `filtered_split/wn_synset/`, `dataset_harder.parquet`, training-split rows | `data/triplets/g1.csv`, `data/triplets/g1_meta.json` |
-| `scripts/train_g1_tokenspan.py` | ✅ | Great Lakes (GPU) | `data/triplets/g1_tokenspan.csv` | Model weights (Great Lakes) |
+| `03_train_g1.ipynb` | ✅ | Local | Phrase files from `filtered_split/wn_synset/`, `dataset_harder.parquet`, training- and validation-split rows | `data/triplets/g1_train.csv`, `data/triplets/g1_val.csv`, `data/triplets/g1_train_meta.json` |
+| `scripts/train_g1_tokenspan.py` | ✅ | Great Lakes (GPU) | `data/triplets/g1_train.csv` | Model weights (Great Lakes) |
 | `scripts/train_g1_tokenspan.sh` | ✅ | Great Lakes (SLURM) | — | — |
 
-Constructs triplets from the training split, drawing anchor phrases from
-`clue_phrases/`, and positive/negative phrases from the relevant subset
-directory (e.g. `wndef/`). The triplet file represents the intersection of
-rows with valid phrases under all three f's used. Saves `g1_tokenspan_meta.json`
-documenting which f was used for each role, source paths, and row counts.
-Fine-tunes g_stock using triplet margin loss (α = 1.0). Saves model weights
-to Great Lakes and commits README to repo.
+Constructs triplets from the training and validation splits, drawing anchor
+phrases from `clue_phrases/`, and positive/negative phrases from the relevant
+subset directory (e.g. `wndef/`). Each triplet file represents the
+intersection of rows with valid phrases under all three f's used. Saves
+`g1_train_meta.json` documenting which f was used for each role, source
+paths, and row counts for both splits.
 
-**Note:** The triplet file is shared between g1_tokenspan and g1 — both
-models train on identical text triplets. Only the extraction method differs
-(token span vs. mean pooling). This model uses token span extraction
-(non-standard for CALE). See Decision 20. The training script and SLURM
-wrapper are preserved as historical artifacts.
+The training triplet file (`g1_train.csv`) is used by the training scripts.
+The validation triplet file (`g1_val.csv`) is used by NB 05 (model
+evaluation) for validation triplet accuracy. Both are constructed with the
+same procedure; only the split differs. Test-split rows must never appear
+in either file.
 
-**Critical:** Triplet file contains training-split rows only. Validation and
-test rows must never appear.
+**Note:** The training triplet file is shared between g1_tokenspan and g1 —
+both models train on identical text triplets. Only the extraction method
+differs (token span vs. mean pooling). g1_tokenspan uses token span
+extraction (non-standard for CALE). See Decision 20. The training script
+and SLURM wrapper are preserved as historical artifacts.
 
 Builds on: `custom_embedding_model/notebooks/archive/09_learned_g_misdirection.ipynb`
 (Nathan — triplet construction, training loop, CALE concept-aligned extraction)
@@ -133,7 +135,7 @@ Builds on: `custom_embedding_model/notebooks/archive/09_learned_g_misdirection.i
 
 | Script | Status | Environment | Reads | Writes |
 |--------|--------|-------------|-------|--------|
-| `scripts/train_g1.py` | ✅ | Great Lakes (GPU) | `data/triplets/g1.csv` (same triplets as g1_tokenspan, different extraction) | Model weights (Great Lakes) |
+| `scripts/train_g1.py` | ✅ | Great Lakes (GPU) | `data/triplets/g1_train.csv` (same triplets as g1_tokenspan, different extraction) | Model weights (Great Lakes) |
 | `scripts/train_g1.sh` | ✅ | Great Lakes (SLURM) | — | — |
 
 Same triplets as g1_tokenspan, but trained using mean pooling (canonical

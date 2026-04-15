@@ -31,6 +31,21 @@
 - Unique distractor words: 26,735
 - Words appearing as both answer and distractor (across different rows): 15,117
 
+
+## Validation triplets (for NB 05 evaluation)
+
+- Validation rows before distractor join: 47,933
+- Validation rows after distractor join: 46,847 (97.73% retained)
+- Rows lost to distractor join: 1,086 (2.27%)
+- Rows lost to missing anchor phrase: 0
+- Rows lost to missing positive phrase: 0
+- Rows lost to missing negative phrase: 341
+- Final validation triplet rows: 46,506
+- Unique clue_ids (val): 46,248
+- Unique (definition, answer_wn) pairs (val): 29,261
+- Unique answer words (val): 18,947
+- Unique distractor words (val): 22,396
+
 ## Comparison to NB 09
 
 | Dataset | Pairs | Triplet rows |
@@ -44,12 +59,13 @@
 
 ## Outputs
 
-- `data/triplets/g1.csv` — 14.7 MB, 69,921 rows
-- `data/triplets/g1_meta.json` — 0.9 KB
+- `data/triplets/g1_train.csv` — 14.7 MB, 69,921 rows
+- `data/triplets/g1_val.csv` — 9.7 MB, 46,506 rows
+- `data/triplets/g1_train_meta.json` — 1.1 KB (includes train and validation counts)
 
 ## Runtime
 
-- Input load: 1.1s
+- Input load: 1.2s
 - Notebook end-to-end: a few seconds (CPU, text manipulation only)
 
 ## Interpretation
