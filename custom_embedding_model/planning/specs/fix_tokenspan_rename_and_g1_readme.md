@@ -77,7 +77,7 @@ Weights are **not** committed to this repo (Decision 12).
 
 ## Training details
 
-- Triplet file: `data/triplets/g1.csv`
+- Triplet file: `data/triplets/g1_train.csv`
 - Triplet design: T_1 (same triplets as g1_tokenspan — different extraction method)
 - Training script: `scripts/train_g1.py`
 - SLURM script: `scripts/train_g1.sh`

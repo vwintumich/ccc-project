@@ -17,8 +17,13 @@
   "n_unique_answers": 24464,
   "n_unique_distractors": 26735,
   "random_state": 42,
-  "date_created": "2026-04-13",
+  "date_created": "2026-04-14",
   "rows_lost_to_distractor_join": 1692,
   "rows_lost_to_missing_phrases": 494,
-  "unique_distractor_words_not_in_wndef_vocab": 222
+  "unique_distractor_words_not_in_wndef_vocab": 222,
+  "n_val_rows": 46506,
+  "n_val_unique_clue_ids": 46248,
+  "n_val_unique_pairs": 29261,
+  "val_rows_lost_to_distractor_join": 1086,
+  "val_rows_lost_to_missing_phrases": 341
 }

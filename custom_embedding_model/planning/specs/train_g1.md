@@ -29,7 +29,7 @@ comparison clean.
 
 ## Inputs
 
-- `data/triplets/g1.csv` — same triplet file used by g1_tokenspan
+- `data/triplets/g1_train.csv` — same triplet file used by g1_tokenspan
   (69,921 training rows)
 
 ## Outputs
@@ -54,7 +54,7 @@ rather than concept-aligned token span extraction. Update the usage examples:
 
 ```
 python scripts/train_g1.py \
-    --input data/triplets/g1.csv \
+    --input data/triplets/g1_train.csv \
     --output-dir models/g1 \
     --epochs 3 --batch-size 32 --lr 2e-5 --margin 1.0
 ```
@@ -62,7 +62,7 @@ python scripts/train_g1.py \
 Smoke test:
 ```
 python scripts/train_g1.py \
-    --input data/triplets/g1.csv \
+    --input data/triplets/g1_train.csv \
     --output-dir models/g1_smoke \
     --epochs 1 --batch-size 8 --sample 200
 ```
@@ -148,7 +148,7 @@ Create `scripts/train_g1.sh` modeled on `scripts/train_g1_tokenspan.sh`:
 - Same resources (1 GPU, 32G, 4 CPUs, 4h wall)
 - `source activate nlp_env` (not conda activate)
 - `export PYTHONUNBUFFERED=1`
-- Command: `python scripts/train_g1.py --input data/triplets/g1.csv --output-dir models/g1`
+- Command: `python scripts/train_g1.py --input data/triplets/g1_train.csv --output-dir models/g1`
 - Header comments: pre-submission checklist, submit command, scp commands for
   retrieving outputs
 

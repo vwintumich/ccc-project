@@ -584,8 +584,8 @@ ccc-project/
     │   │           ├── vocabulary_wnex_val.csv
     │   │           └── f_common_wnex.csv
     │   ├── triplets/                       # Spans subset dirs and f's; one file per g
-    │   │   ├── g1.csv
-    │   │   └── g1_meta.json                # Provenance: f per role, source paths, row counts
+    │   │   ├── g1_train.csv
+    │   │   └── g1_train_meta.json          # Provenance: f per role, source paths, row counts
     │   └── embeddings/                     # Organized by g model, not by subset
     │       ├── g_stock/
     │       │   ├── f_clue.npy              # Full wn_synset clues

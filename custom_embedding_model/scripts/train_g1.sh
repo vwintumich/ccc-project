@@ -17,7 +17,7 @@
 #
 # Before submitting:
 #   1. mkdir -p logs   (SLURM output directory must exist)
-#   2. Verify data/triplets/g1.csv has been uploaded from local
+#   2. Verify data/triplets/g1_train.csv has been uploaded from local
 #      (produced by notebooks/03_train_g1.ipynb — same file as g1_tokenspan).
 #
 # Submit:
@@ -45,7 +45,7 @@ source activate nlp_env
 export PYTHONUNBUFFERED=1
 
 python scripts/train_g1.py \
-    --input data/triplets/g1.csv \
+    --input data/triplets/g1_train.csv \
     --output-dir models/g1 \
     --epochs 3 \
     --batch-size 32 \

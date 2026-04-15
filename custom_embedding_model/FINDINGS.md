@@ -286,7 +286,7 @@ baseline, not against the canonical `g_stock`.
 
 | Metric | Value |
 |--------|-------|
-| Triplet file | data/triplets/g1.csv |
+| Triplet file | data/triplets/g1_train.csv |
 | Training rows | 69,921 |
 | Base model | gabrielloiseau/CALE-MBERT-en |
 | Margin α | 1.0 |
@@ -330,7 +330,7 @@ g_stock (mean pooling) for a fair baseline.
 
 | Metric | Value |
 |--------|-------|
-| Triplet file | data/triplets/g1.csv |
+| Triplet file | data/triplets/g1_train.csv |
 | Training rows | 69,921 |
 | Base model | gabrielloiseau/CALE-MBERT-en |
 | Margin α | 1.0 |

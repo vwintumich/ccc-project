@@ -10,14 +10,14 @@ states of tokens inside the `<t></t>` span.
 Note: This script uses token span extraction (non-standard). See Decision 20.
 Superseded by train_g1.py which uses CALE's canonical mean pooling.
 
-Reads one input: a committed triplet CSV (by default `data/triplets/g1.csv`)
+Reads one input: a committed triplet CSV (by default `data/triplets/g1_train.csv`)
 with columns (clue_id, definition, answer_wn, distractor_wn, anchor, positive,
 negative). The source phrase files and dataset_harder.parquet are NOT needed
 on Great Lakes — all phrase text is already materialized in the CSV.
 
 Usage (typical Great Lakes submission, via SLURM):
     python scripts/train_g1_tokenspan.py \
-        --input data/triplets/g1.csv \
+        --input data/triplets/g1_train.csv \
         --output-dir models/g1_tokenspan \
         --epochs 3 \
         --batch-size 32 \
@@ -26,7 +26,7 @@ Usage (typical Great Lakes submission, via SLURM):
 
 Smoke test on a small sample (~5 min on GPU, ~20 min on CPU):
     python scripts/train_g1_tokenspan.py \
-        --input data/triplets/g1.csv \
+        --input data/triplets/g1_train.csv \
         --output-dir models/g1_smoke \
         --epochs 1 --batch-size 8 --sample 200
 
@@ -92,7 +92,7 @@ def parse_args() -> argparse.Namespace:
         description="Fine-tune CALE with triplet margin loss (g1_tokenspan, token span extraction)"
     )
     parser.add_argument("--input", type=Path, required=True,
-                        help="Path to triplets/g1.csv")
+                        help="Path to triplets/g1_train.csv")
     parser.add_argument("--output-dir", type=Path, required=True,
                         help="Directory for model weights, checkpoints, training log")
     parser.add_argument("--epochs", type=int, default=3)
@@ -119,7 +119,7 @@ def parse_args() -> argparse.Namespace:
 # =============================================================================
 
 def load_triplets(args: argparse.Namespace) -> pd.DataFrame:
-    """Load g1.csv, validate schema, optionally sample for smoke testing."""
+    """Load g1_train.csv, validate schema, optionally sample for smoke testing."""
 
     # keep_default_na=False: "nan" (grandmother) is a valid crossword word;
     # without this flag pandas silently converts it to NaN and downstream

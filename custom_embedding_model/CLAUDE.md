@@ -78,8 +78,8 @@ ccc-project/
 │   │   │           ├── vocabulary_wnex_val.csv
 │   │   │           └── f_common_wnex.csv
 │   │   ├── triplets/                  # One file per g; spans subset conditions and f's
-│   │   │   ├── g1.csv
-│   │   │   └── g1_meta.json           # Provenance: which f for each triplet role, row counts
+│   │   │   ├── g1_train.csv
+│   │   │   └── g1_train_meta.json     # Provenance: which f for each triplet role, row counts
 │   │   └── embeddings/                # One subfolder per g model
 │   │       ├── g_stock/               # Stock CALE embeddings
 │   │       │   ├── f_clue.npy         # Full wn_synset clues
@@ -130,8 +130,8 @@ ccc-project/
 │   │   │           ├── vocabulary_wnex_val.csv
 │   │   │           └── f_common_wnex.csv
 │   │   ├── triplets/                  # One file per g; spans subset conditions and f's
-│   │   │   ├── g1.csv
-│   │   │   └── g1_meta.json           # Provenance: which f for each triplet role, row counts
+│   │   │   ├── g1_train.csv
+│   │   │   └── g1_train_meta.json     # Provenance: which f for each triplet role, row counts
 │   │   └── embeddings/                # One subfolder per g model
 │   │       ├── g_stock/               # Stock CALE embeddings
 │   │       │   ├── f_clue.npy         # Full wn_synset clues

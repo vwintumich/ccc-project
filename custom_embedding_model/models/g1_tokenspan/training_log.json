@@ -1,6 +1,6 @@
 {
   "model_name": "gabrielloiseau/CALE-MBERT-en",
-  "input": "data/triplets/g1.csv",
+  "input": "data/triplets/g1_train.csv",
   "output_dir": "models/g1",
   "n_training_rows": 69921,
   "hyperparameters": {

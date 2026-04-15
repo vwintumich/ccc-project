@@ -200,13 +200,13 @@ usage example where the target word appears exactly once)
 
 ## Triplet Files
 
-### `data/triplets/<g_name>.csv`
+### `data/triplets/<g_name>_train.csv`
 
-Examples: `triplets/g1.csv`
+Examples: `triplets/g1_train.csv`
 
 **Contains:** Training-split triplets used to fine-tune the named g model.
 Multiple models may share a triplet file if they differ only in extraction
-method (e.g., g1_tokenspan and g1 both train on `triplets/g1.csv`).
+method (e.g., g1_tokenspan and g1 both train on `triplets/g1_train.csv`).
 **Critical:** Contains training-split rows only. Validation and test rows
 must never appear in a triplet file.
 

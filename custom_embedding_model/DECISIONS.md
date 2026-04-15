@@ -140,14 +140,18 @@ credibility.
 
 ---
 
-## Decision 10: Triplet Files Share Their g Model's Name
+## Decision 10: Triplet Files Share Their g Model's Name, With Explicit Split Suffix
 
-**Choice:** The triplet CSV used to train g_i is named `triplets/<g_name>.csv`
-(e.g., `triplets/g1.csv` for g_1).
+**Choice:** Triplet CSVs are named by g model with an explicit split suffix:
+`triplets/<g_name>_train.csv` for training triplets and
+`triplets/<g_name>_val.csv` for validation triplets (e.g.,
+`triplets/g1_train.csv` and `triplets/g1_val.csv` for g_1).
 
-**Rationale:** The triplet design is inseparable from the model it produced.
-Naming them identically makes the relationship explicit and avoids ambiguity
-when multiple triplet designs exist.
+**Rationale:** The triplet design is inseparable from the model it produced,
+so the filename shares the g model's name. The `_train` / `_val` suffix is
+required because the file contains only rows from the named split — the
+otherwise-implicit convention (no suffix = full scope) would be misleading
+here. Making the split explicit in the filename eliminates ambiguity.
 
 ---
 

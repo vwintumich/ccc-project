@@ -38,7 +38,7 @@ pipeline's data. The table below summarizes what is the same and what differs:
 | **Training approach** | `AutoModel` + manual `extract_concept_embedding` | **Same**: `AutoModel` + manual concept-aligned extraction (required for gradient flow) |
 | **Hyperparameters** | lr=2e-5, margin=1.0, epochs=3, batch=32, AdamW(wd=0.01), linear warmup (10%), grad clip 1.0, mixed precision (fp16) | **Same** |
 | **Phrase files** | Constructed on-the-fly, not saved | Pre-built, committed artifacts in `data/filtered_split/` |
-| **Triplet file** | Not saved as a separate artifact | Saved as `data/triplets/g1.csv` + `g1_meta.json` (Decision 10) |
+| **Triplet file** | Not saved as a separate artifact | Saved as `data/triplets/g1_train.csv` + `g1_train_meta.json` (Decision 10) |
 
 ### Dataset size comparison
 
@@ -74,7 +74,7 @@ dataset size.
 
 | File | Path | Purpose |
 |------|------|---------|
-| `g1.csv` | `data/triplets/g1.csv` | Training triplets (anchor, positive, negative phrase text) |
+| `g1_train.csv` | `data/triplets/g1_train.csv` | Training triplets (anchor, positive, negative phrase text) |
 
 The training script reads only the triplet CSV. It does not need access to
 the source phrase files or `dataset_harder.parquet`.
@@ -85,8 +85,8 @@ the source phrase files or `dataset_harder.parquet`.
 
 | File | Path | Description |
 |------|------|-------------|
-| `g1.csv` | `data/triplets/g1.csv` | Training triplets; ~69,921 rows |
-| `g1_meta.json` | `data/triplets/g1_meta.json` | Provenance metadata |
+| `g1_train.csv` | `data/triplets/g1_train.csv` | Training triplets; ~69,921 rows |
+| `g1_train_meta.json` | `data/triplets/g1_train_meta.json` | Provenance metadata |
 | Results file | `outputs/03_train_g1-results.md` | Coverage statistics, comparison to NB 09, triplet examples |
 
 ### From train_g1.py (Great Lakes)
@@ -181,7 +181,7 @@ Drop rows where any phrase is missing. Report:
 
 #### §4 — Build and save triplet file
 
-Select output columns for `g1.csv`:
+Select output columns for `g1_train.csv`:
 
 | Column | Type | Source |
 |--------|------|--------|
@@ -193,7 +193,7 @@ Select output columns for `g1.csv`:
 | `positive` | str | f_common_wndef phrase for answer |
 | `negative` | str | f_common_wndef phrase for distractor |
 
-Save to `data/triplets/g1.csv` with `index=False`.
+Save to `data/triplets/g1_train.csv` with `index=False`.
 
 Assertions:
 - No null values in any column
@@ -205,7 +205,7 @@ Assertions:
 
 #### §5 — Save provenance metadata
 
-Build and save `data/triplets/g1_meta.json`:
+Build and save `data/triplets/g1_train_meta.json`:
 
 ```json
 {
@@ -280,7 +280,7 @@ It reproduces NB 09's training procedure (§4–§5).
 
 | Argument | Default | Description |
 |----------|---------|-------------|
-| `--input` | (required) | Path to `triplets/g1.csv` |
+| `--input` | (required) | Path to `triplets/g1_train.csv` |
 | `--output-dir` | (required) | Directory for model weights |
 | `--epochs` | `3` | Number of training epochs |
 | `--batch-size` | `32` | Training batch size |
@@ -309,7 +309,7 @@ Model identifier: `gabrielloiseau/CALE-MBERT-en`.
 
 #### §2 — Load triplet data
 
-Load `g1.csv` with `keep_default_na=False, na_values=[""]`.
+Load `g1_train.csv` with `keep_default_na=False, na_values=[""]`.
 
 Assert columns: `clue_id`, `definition`, `answer_wn`, `distractor_wn`,
 `anchor`, `positive`, `negative`.
@@ -474,7 +474,7 @@ information needed for `models/g1/README.md` and FINDINGS.md:
 conda activate nlp_env
 
 python scripts/train_g1.py \
-    --input data/triplets/g1.csv \
+    --input data/triplets/g1_train.csv \
     --output-dir models/g1 \
     --epochs 3 \
     --batch-size 32 \

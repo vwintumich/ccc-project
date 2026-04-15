@@ -53,7 +53,7 @@ Stage 2: Per-f phrase construction + coverage measurement
               ▼
     Stage 3: Triplet construction + model training (per g_i)
               │
-              ├── triplets/g1.csv + g1_meta.json
+              ├── triplets/g1_train.csv + g1_train_meta.json
               └── models/g1/ (weights → Google Drive)
                     │
                     ▼
