@@ -191,16 +191,19 @@ to confirm no accidental duplicates. Does not produce new data artifacts.
 
 | Notebook | Status | Environment | Reads | Writes |
 |----------|--------|-------------|-------|--------|
-| `05_hypothesis_testing.ipynb` | ❌ | Local | Embedding arrays, vocabulary files, clue data | FINDINGS.md entries, `outputs/figures/` |
+| `05_model_evaluation.ipynb` | ✅ | Local | Full-vocab and val-only embedding arrays, vocabulary files, clue data, validation triplets | `outputs/05_model_evaluation-results.md`, `outputs/figures/` |
 
-**Primary shared comparison notebook.** Accumulates ATE results and cross-f
-generalization tests across all trained g's. Add new sections for each new
-g_i — do not rerun from scratch.
+**Primary model evaluation notebook.** Completed 2026-04-14, revised
+2026-04-19 to add cross-f triplet accuracy (§3), wnex T=0/T=1 (§6), and
+full-vocab wndef triplet resolution (§2). Uses full-vocab embeddings for
+triplet accuracy, val-only for model diagnostics (Decision 23 / Decision 9).
 
-For each g_i computes:
-- ATE on validation set (mean delta, median, SE, 95% CI, % negative)
-- Cross-f generalization test (for g_1: do f_common_wnex similarities change?)
-- g_stock baseline for format sensitivity comparison
+For g_stock and g1, computes:
+- Validation triplet accuracy (wndef, full-vocab — 46,506 triplets, 100% resolved)
+- Cross-f triplet accuracy (matched wndef vs wnex on 2,985 triplets)
+- Collapse detection (pairwise cosine, effective dimensionality — val-only)
+- T=0 and T=1 distributions with ATE preview (wndef and wnex — val-only)
+- RSA (val-only)
 
 See DATA.md for the ATE computation formula and rowwise cosine implementation.
 

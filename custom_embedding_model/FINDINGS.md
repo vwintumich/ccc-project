@@ -570,24 +570,46 @@ Full pairwise matrices and per-pair detail tables in
 
 ## Stage 5: Model Evaluation (NB 05)
 
-**Notebook:** `05_model_evaluation.ipynb` — completed 2026-04-14
+**Notebook:** `05_model_evaluation.ipynb` — completed 2026-04-14,
+revised 2026-04-19
 **Environment:** Local (CPU)
 **Scope:** Canonical mean-pooling models only (g_stock and g1). Tokenspan
 variants are out of scope per Decision 20.
 
-### Validation triplet accuracy
+### Validation triplet accuracy (wndef, full-vocabulary)
 
 Validation triplet file: `data/triplets/g1_val.csv` (46,506 rows).
-27,348 triplets resolved (58.8%) — the remaining 41.2% had distractor
-words absent from `vocabulary_wndef_val.csv` (see Decision 21).
+Full-vocabulary wndef embeddings (Decision 23) resolved 100% of triplets,
+eliminating the ~41% dropout from the initial val-only run (Decision 21).
 
 | Metric | g_stock | g1 |
 |--------|---------|-----|
-| Triplet accuracy (% correct) | 39.6% | 88.5% |
-| Mean margin (cos_pos − cos_neg) | −0.051 | +0.116 |
-| Median margin | −0.042 | +0.113 |
+| Triplet accuracy (% correct) | 38.8% | 90.0% |
+| Mean margin (cos_pos − cos_neg) | −0.054 | +0.125 |
+| Median margin | −0.044 | +0.122 |
+| N triplets evaluated | 46,506 | 46,506 |
 
-### Collapse detection
+### Cross-f triplet accuracy (matched comparison)
+
+Matched subset: 2,985 triplets (6.4%) where both answer and distractor
+are in `vocabulary_wnex.csv`. The same triplets evaluated under wndef
+and wnex embeddings:
+
+| Metric | g_stock (wndef) | g1 (wndef) | g_stock (wnex) | g1 (wnex) |
+|--------|----------------|------------|----------------|-----------|
+| Triplet accuracy | 45.6% | 88.3% | 40.3% | 67.2% |
+| Mean margin | −0.023 | +0.109 | −0.052 | +0.041 |
+| Median margin | −0.017 | +0.110 | −0.042 | +0.041 |
+
+**Key finding:** g1's wnex triplet accuracy (67.2%) is well above g_stock's
+wnex baseline (40.3%), demonstrating that g1 learned discriminative
+structure that partially transfers to a phrase type it was never trained on.
+However, accuracy drops from 88.3% (wndef) to 67.2% (wnex), and mean
+margin drops from +0.109 to +0.041, indicating the transfer is partial —
+g1 learned more about wndef-specific structure than about general semantic
+discrimination.
+
+### Collapse detection (val-only)
 
 Random pairwise cosine among 50,000 random word pairs (random_state=42):
 
@@ -610,7 +632,7 @@ Total variance dropped ~35% on both phrase types. Effective dimensionality
 increased slightly, indicating uniform contraction rather than dimensional
 collapse.
 
-### T=0 and T=1 similarity distributions
+### T=0 and T=1 similarity distributions (wndef, val-only)
 
 47,933 evaluation pairs from clues_val.csv (100% resolved):
 
@@ -623,7 +645,36 @@ collapse.
 T=0 rose by +0.139 while T=1 rose by only +0.078. The ATE became more
 negative — the same pattern observed in the NB 09 prior work.
 
-### RSA (Spearman correlation of pairwise cosines)
+### T=0 and T=1 similarity distributions (wnex, val-only)
+
+4,825 evaluation pairs where both definition_wn and answer_wn are in the
+wnex validation vocabulary (10.1% of clues_val):
+
+| Metric | g_stock | g1 |
+|--------|---------|-----|
+| T=0 mean (def vs ans) | 0.495 | 0.590 |
+| T=1 mean (clue-def vs ans) | 0.486 | 0.547 |
+| ATE (mean of T=1 − T=0) | −0.009 | −0.043 |
+
+### Matched ATE comparison (wndef vs wnex on identical pairs)
+
+4,825 pairs resolving under both wndef_val and wnex_val:
+
+| Phrase format | g_stock ATE | g1 ATE |
+|---------------|-------------|--------|
+| wndef | −0.071 | −0.134 |
+| wnex | −0.009 | −0.043 |
+
+**Key finding:** The wnex ATE is much less negative than wndef under both
+models. g1 roughly doubles the ATE magnitude on both phrase types (wndef:
+−0.071 → −0.134; wnex: −0.009 → −0.043). The wndef format itself appears
+to carry format-specific signal that amplifies the measured misdirection
+effect — or the wnex subset of clues has inherently less misdirection.
+Either way, g1's core problem (making the ATE more negative) persists
+across phrase types, pointing to the triplet design (T_1) rather than
+the phrase format as the root cause.
+
+### RSA (Spearman correlation of pairwise cosines, val-only)
 
 1,000 words sampled per phrase type (random_state=42):
 
@@ -638,9 +689,11 @@ fundamentally reorganized by fine-tuning, not merely shifted.
 ### Figures
 
 - `outputs/figures/05_val_triplet_accuracy.png`
+- `outputs/figures/05_crossf_triplet_accuracy.png`
 - `outputs/figures/05_collapse_pairwise_cosine.png`
 - `outputs/figures/05_collapse_singular_values.png`
-- `outputs/figures/05_t0_t1_distributions.png`
+- `outputs/figures/05_t0_t1_wndef_distributions.png`
+- `outputs/figures/05_t0_t1_wnex_distributions.png`
 
 Full numerical results in `outputs/05_model_evaluation-results.md`.
 
