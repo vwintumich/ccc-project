@@ -244,17 +244,18 @@ Indexed by the corresponding vocabulary file. No separate index file needed.
 
 | File | Index file | Shape | Produced by |
 |------|-----------|-------|-------------|
-| `g_stock/f_common_wndef.npy` | `vocabulary_wndef.csv` | (N_wndef, 1024) | TBD |
+| `g_stock/f_common_wndef.npy` | `vocabulary_wndef.csv` | (53930, 1024) | `embed_vocab.py` via `embed_wndef_full_gstock.sh` |
 | `g_stock/f_common_wnex.npy` | `vocabulary_wnex.csv` | (8360, 1024) | `embed_vocab.py` via `embed_wnex_full_gstock.sh` |
-| `g_stock/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) | archived `embed_val.py` (reproducible via `embed_vocab.py`) |
-| `g_stock/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) | archived `embed_val.py` (reproducible via `embed_vocab.py`) |
-| `g_stock_tokenspan/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) | archived `embed_val.py` |
-| `g_stock_tokenspan/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) | archived `embed_val.py` |
-| `g1_tokenspan/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) | archived `embed_val.py` |
-| `g1_tokenspan/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) | archived `embed_val.py` |
-| `g1/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) | archived `embed_val.py` (reproducible via `embed_vocab.py`) |
-| `g1/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) | archived `embed_val.py` (reproducible via `embed_vocab.py`) |
+| `g1/f_common_wndef.npy` | `vocabulary_wndef.csv` | (53930, 1024) | `embed_vocab.py` via `embed_wndef_full_g1.sh` |
 | `g1/f_common_wnex.npy` | `vocabulary_wnex.csv` | (8360, 1024) | `embed_vocab.py` via `embed_wnex_full_g1.sh` |
+| `g_stock/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (26152, 1024) | archived `embed_val.py`; superseded by full-vocab (Decision 23), retained for backward compat |
+| `g_stock/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (3008, 1024) | archived `embed_val.py`; superseded by full-vocab (Decision 23), retained for backward compat |
+| `g1/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (26152, 1024) | archived `embed_val.py`; superseded by full-vocab (Decision 23), retained for backward compat |
+| `g1/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (3008, 1024) | archived `embed_val.py`; superseded by full-vocab (Decision 23), retained for backward compat |
+| `g_stock_tokenspan/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (26152, 1024) | archived `embed_val.py` |
+| `g_stock_tokenspan/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (3008, 1024) | archived `embed_val.py` |
+| `g1_tokenspan/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (26152, 1024) | archived `embed_val.py` |
+| `g1_tokenspan/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (3008, 1024) | archived `embed_val.py` |
 
 ### f_clue embedding files
 

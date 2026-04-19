@@ -416,3 +416,37 @@ Test-split words are included in the vocabulary because individual word
 embeddings carry no test-set evaluation signal (see Decision 9). Computing
 a test-set ATE would require assembling (clue_id, definition, answer)
 evaluation triples from test-split clues, which remains locked.
+
+---
+
+## Decision 23: Full-Vocabulary Embeddings for Vocabulary-Indexed Phrase Types
+
+**Choice:** For vocabulary-indexed phrase types (f_common_wndef, f_common_wnex,
+and any future f's indexed by a vocabulary file), always generate embeddings
+over the full vocabulary, not just the validation subset. This amends
+Decision 8, which now applies only to clue-indexed embeddings (f_clue).
+
+Specifically, f_common_wndef embeddings (53,930 words) were generated for
+both g_stock and g1, stored as:
+- `data/embeddings/g_stock/f_common_wndef.npy` — indexed by `vocabulary_wndef.csv`
+- `data/embeddings/g1/f_common_wndef.npy` — indexed by `vocabulary_wndef.csv`
+
+These supplement (do not replace) the existing val-only files
+(`f_common_wndef_val.npy`, 26,152 words). For future models (g2, etc.),
+generate only the full-vocabulary versions — no `_val` variants.
+
+**f_clue remains val-only during iteration.** Clue-indexed embeddings
+include the clue's surface text and are keyed by (clue_id, definition).
+Embedding test-split clues during iteration would violate the test-set
+lockout (Decision 9). Full f_clue embeddings are generated only for the
+final model (Stage 6).
+
+**Rationale:** Vocabulary-indexed embeddings are cheap (~3 minutes for
+53K words on a V100) and carry no test-set evaluation signal — they embed
+individual words, not (clue, definition, answer) evaluation triples.
+Val-only vocabulary embeddings created resolution gaps in triplet accuracy
+evaluation (Decision 21: ~41% of validation triplets dropped) and would
+have prevented fair cross-f comparisons. Generating full-vocabulary
+embeddings by default eliminates these gaps for all future models. The
+same reasoning as Decision 22 applies, generalized from wnex to all
+vocabulary-indexed phrase types.

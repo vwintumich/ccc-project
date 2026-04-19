@@ -479,7 +479,47 @@ Output: `data/embeddings/g_stock/f_common_wnex.npy` (32.7 MB), indexed by
 Output: `data/embeddings/g1/f_common_wnex.npy` (32.7 MB), indexed by
 `vocabulary_wnex.csv`.
 
-### Environment versions (all three jobs)
+### g_stock full-vocab wndef — completed 2026-04-19
+
+**Script:** `scripts/embed_vocab.py` via `scripts/embed_wndef_full_gstock.sh`
+**Environment:** Great Lakes, `nlp_env` conda environment
+
+| Metric | Value |
+|--------|-------|
+| Vocabulary size | 53,930 |
+| Embedding array shape | (53930, 1024) |
+| Embedding dtype | float32 |
+| L2 norm range | [23.5365, 33.6164] |
+| Encoding rate | 317 phrases/sec (batch_size=64) |
+| Encoding time | 170.1s |
+| Total runtime | 179.4s (3.0 min) |
+| Great Lakes partition | gpu (Tesla V100-PCIE-16GB) |
+| Date run | 2026-04-19 |
+
+Output: `data/embeddings/g_stock/f_common_wndef.npy` (210.7 MB), indexed by
+`vocabulary_wndef.csv`.
+
+### g1 full-vocab wndef — completed 2026-04-19
+
+**Script:** `scripts/embed_vocab.py` via `scripts/embed_wndef_full_g1.sh`
+**Environment:** Great Lakes, `nlp_env` conda environment
+
+| Metric | Value |
+|--------|-------|
+| Vocabulary size | 53,930 |
+| Embedding array shape | (53930, 1024) |
+| Embedding dtype | float32 |
+| L2 norm range | [24.0275, 30.6785] |
+| Encoding rate | 321 phrases/sec (batch_size=64) |
+| Encoding time | 167.8s |
+| Total runtime | 175.1s (2.9 min) |
+| Great Lakes partition | gpu (Tesla V100-PCIE-16GB) |
+| Date run | 2026-04-19 |
+
+Output: `data/embeddings/g1/f_common_wndef.npy` (210.7 MB), indexed by
+`vocabulary_wndef.csv`.
+
+### Environment versions (all five embedding jobs on 2026-04-19)
 
 | Package | Version |
 |---------|---------|
