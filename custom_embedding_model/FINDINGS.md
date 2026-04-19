@@ -423,6 +423,39 @@ verified against vocabulary/index files.
 Total runtime 2.9 min. Transferred to local machine 2026-04-14. All shapes
 verified against vocabulary/index files.
 
+### Embedding scripts refactor — 2026-04-19
+
+**Scripts:** `scripts/embedding_utils.py`, `scripts/embed_clue.py`,
+`scripts/embed_vocab.py` (replacing `embed_f_clue_gstock.py` and
+`embed_val.py`, archived to `scripts/archive/` after verification passes).
+
+**Motivation:** Produce full-vocabulary wnex embeddings for g_stock and g1
+(8,360 words each) and provide a cleaner two-script architecture for
+future models and phrase types.
+
+**Verification:** Seven runs (`verify_embedding_scripts.sh`) re-embed every
+existing committed artifact and compare rowwise cosine similarity with
+assertion threshold mean > 0.999. V1 compares
+`SentenceTransformer.encode()`-produced reference against the new
+`AutoModel + meanpool` extraction (expected mean cosine ~0.999+, see
+Decision 20 / Stage 4 extraction finding); V2–V7 compare AutoModel to
+AutoModel (expected mean cosine ~1.0). Results to be recorded here after
+the verification job runs.
+
+### g_stock full-vocab wnex — pending (job not yet run)
+
+**Script:** `scripts/embed_vocab.py` via `scripts/embed_wnex_full_gstock.sh`
+Output: `data/embeddings/g_stock/f_common_wnex.npy`, expected shape (8360,
+1024), indexed by `vocabulary_wnex.csv`. Runtime, L2 norm range, and
+environment versions to be recorded after job completes.
+
+### g1 full-vocab wnex — pending (job not yet run)
+
+**Script:** `scripts/embed_vocab.py` via `scripts/embed_wnex_full_g1.sh`
+Output: `data/embeddings/g1/f_common_wnex.npy`, expected shape (8360,
+1024), indexed by `vocabulary_wnex.csv`. Runtime, L2 norm range, and
+environment versions to be recorded after job completes.
+
 ### Stage 4 Verification (NB 04) — completed 2026-04-14
 
 **Notebook:** `04_embedding_verification.ipynb`
@@ -461,45 +494,81 @@ Full pairwise matrices and per-pair detail tables in
 
 ---
 
-## Stage 5: Hypothesis Testing
+## Stage 5: Model Evaluation (NB 05)
 
-*Not yet run.*
+**Notebook:** `05_model_evaluation.ipynb` — completed 2026-04-14
+**Environment:** Local (CPU)
+**Scope:** Canonical mean-pooling models only (g_stock and g1). Tokenspan
+variants are out of scope per Decision 20.
 
-### Tokenspan evaluation (g1_tokenspan vs g_stock_tokenspan)
+### Validation triplet accuracy
 
-| Metric | g_stock_tokenspan | g1_tokenspan |
-|--------|-------------------|--------------|
-| T=0 mean similarity | — | — |
-| T=1 mean similarity | — | — |
-| ATE (mean delta) | — | — |
-| ATE 95% CI | — | — |
-| % pairs with negative delta | — | — |
-
-### Mean pooling evaluation (g1 vs g_stock)
+Validation triplet file: `data/triplets/g1_val.csv` (46,506 rows).
+27,348 triplets resolved (58.8%) — the remaining 41.2% had distractor
+words absent from `vocabulary_wndef_val.csv` (see Decision 21).
 
 | Metric | g_stock | g1 |
 |--------|---------|-----|
-| T=0 mean similarity | — | — |
-| T=1 mean similarity | — | — |
-| ATE (mean delta) | — | — |
-| ATE 95% CI | — | — |
-| % pairs with negative delta | — | — |
+| Triplet accuracy (% correct) | 39.6% | 88.5% |
+| Mean margin (cos_pos − cos_neg) | −0.051 | +0.116 |
+| Median margin | −0.042 | +0.113 |
 
-### Step B — Formatting Hypothesis Test
+### Collapse detection
 
-**Hypothesis:** g1_tokenspan learned to compress f_common_wndef phrases
-(format-specific overfitting) rather than learning something semantically
-meaningful. The same test will be run for g1 (mean pooling).
+Random pairwise cosine among 50,000 random word pairs (random_state=42):
 
-**Test:** Compare cos_sim(g_i(f_common_wnex(word)), g_stock_i(f_common_wnex(word)))
-against the g_stock baseline for words in vocabulary_wnex_val.
+| Model | f_common_wndef_val mean | f_common_wnex_val mean |
+|-------|------------------------|------------------------|
+| g_stock | 0.398 | 0.299 |
+| g1 | 0.571 | 0.506 |
 
-| Metric | g_stock baseline | g1_tokenspan | g1 |
-|--------|-----------------|--------------|-----|
-| Mean cos_sim(f_common_wndef, f_common_wnex) for same word | — | — | — |
-| Fraction of wnex vocab tested | — | — | — |
-| wnex vocab words tested | — | — | — |
-| Interpretation | — | — | — |
+Embedding variance and effective dimensionality:
+
+| Model | Phrase type | Total variance | Eff. dim (participation ratio) |
+|-------|-------------|---------------|-------------------------------|
+| g_stock | f_common_wndef_val | 13,454,020 | 43.6 |
+| g1 | f_common_wndef_val | 8,720,421 | 48.7 |
+| g_stock | f_common_wnex_val | 1,943,473 | 47.7 |
+| g1 | f_common_wnex_val | 1,228,944 | 77.5 |
+
+Compression occurred on both wndef (trained on) and wnex (never trained on).
+Total variance dropped ~35% on both phrase types. Effective dimensionality
+increased slightly, indicating uniform contraction rather than dimensional
+collapse.
+
+### T=0 and T=1 similarity distributions
+
+47,933 evaluation pairs from clues_val.csv (100% resolved):
+
+| Metric | g_stock | g1 |
+|--------|---------|-----|
+| T=0 mean (def vs ans) | 0.576 | 0.715 |
+| T=1 mean (clue-def vs ans) | 0.513 | 0.591 |
+| ATE (mean of T=1 − T=0) | −0.063 | −0.124 |
+
+T=0 rose by +0.139 while T=1 rose by only +0.078. The ATE became more
+negative — the same pattern observed in the NB 09 prior work.
+
+### RSA (Spearman correlation of pairwise cosines)
+
+1,000 words sampled per phrase type (random_state=42):
+
+| Phrase type | Spearman ρ | p-value |
+|-------------|-----------|---------|
+| f_common_wndef_val | 0.112 | <0.001 |
+| f_common_wnex_val | 0.075 | <0.001 |
+
+The near-zero ρ values indicate the pairwise similarity structure was
+fundamentally reorganized by fine-tuning, not merely shifted.
+
+### Figures
+
+- `outputs/figures/05_val_triplet_accuracy.png`
+- `outputs/figures/05_collapse_pairwise_cosine.png`
+- `outputs/figures/05_collapse_singular_values.png`
+- `outputs/figures/05_t0_t1_distributions.png`
+
+Full numerical results in `outputs/05_model_evaluation-results.md`.
 
 ---
 

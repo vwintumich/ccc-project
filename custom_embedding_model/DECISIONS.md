@@ -354,3 +354,65 @@ resulting hidden states produces the concept-aligned embedding. The token
 span method bypasses this design. Since all prior work in this project
 (model selection, g_stock f_clue embeddings) used mean pooling, it must
 remain the standard for comparability.
+
+---
+
+## Decision 21: Validation Triplet Accuracy Uses Resolvable Subset
+
+**Choice:** Validation triplet accuracy in NB 05 is computed over the subset
+of `g1_val.csv` triplets where all three embedding lookups succeed (~27,348
+of 46,506 rows, ~58.8%). The ~41.2% of triplets with unresolvable negatives
+are dropped and the count is reported explicitly.
+
+**Why negatives are unresolvable:** Distractor words in `g1_val.csv` come
+from `dataset_harder.parquet` and are drawn from the full WordNet vocabulary.
+Validation-split embeddings (`f_common_wndef_val.npy`) cover only the 26,152
+words appearing as definitions or answers in validation-split clues (per
+Decision 8: validation-only embeddings during iteration). A distractor word
+that appears only in the training or test split has no g1 validation
+embedding.
+
+**Bias caveat:** The surviving triplets' negatives are words that also appear
+as definitions or answers in validation clues — i.e., common crossword words.
+Whether these are systematically easier or harder negatives than the dropped
+distractors is unknown. However, the comparison between g_stock and g1 is
+computed on the identical set of triplets, so any difficulty bias affects
+both models equally and does not compromise the g_stock-vs-g1 comparison.
+
+**Alternatives considered and rejected:**
+- Re-generate embeddings for the union of `vocabulary_wndef_val.csv` and all
+  distractor words (another GPU run, delays work, low payoff given 27K is
+  already well-powered for a diagnostic check)
+- Use g_stock full-dataset embeddings for unresolvable negatives
+  (methodologically unsound — breaks the clean g_stock-vs-g1 comparison)
+
+**Rationale:** 27,348 triplets is more than sufficient for a diagnostic
+check of whether the model generalizes the training objective. The primary
+research findings come from the ATE analysis (hypothesis testing), not from
+triplet accuracy. Spending GPU time to recover ~19,000 additional triplets
+for a diagnostic measure is not justified during iterative development.
+
+---
+
+## Decision 22: Full-Vocabulary wnex Embeddings for g_stock and g1
+
+**Choice:** Generate f_common_wnex embeddings over the full wnex vocabulary
+(8,360 words) for both g_stock and g1, stored as:
+- `data/embeddings/g_stock/f_common_wnex.npy` — indexed by `vocabulary_wnex.csv`
+- `data/embeddings/g1/f_common_wnex.npy` — indexed by `vocabulary_wnex.csv`
+
+These supplement (do not replace) the existing val-only files
+(`f_common_wnex_val.npy`, 3,008 words).
+
+**Rationale:** NB 05 showed that g1 compressed wnex embeddings even though
+it was never trained on wnex phrases. To investigate whether g1 also learned
+discriminative structure in wnex space (cross-f triplet accuracy), we need
+embeddings for more than just the 3,008 validation-split words — most triplet
+distractors fall outside that set. The full wnex vocabulary is only 8,360
+words (~12 seconds of GPU time), so Decision 8's compute-cost rationale for
+val-only embeddings does not apply at this scale.
+
+Test-split words are included in the vocabulary because individual word
+embeddings carry no test-set evaluation signal (see Decision 9). Computing
+a test-set ATE would require assembling (clue_id, definition, answer)
+evaluation triples from test-split clues, which remains locked.
