@@ -49,14 +49,14 @@ WordNet lookup logic, article stripping, underscore conversion)
 
 | Script | Status | Environment | Reads | Writes |
 |--------|--------|-------------|-------|--------|
-| `scripts/embed_f_clue_gstock.py` | ✅ | Great Lakes (GPU) | `filtered_split/wn_synset/clues_wn_filtered.csv`, `filtered_split/wn_synset/clue_phrases/f_clue.csv` | `data/embeddings/g_stock/f_clue.npy`, `data/embeddings/g_stock/f_clue_index.csv` |
-| `scripts/embed_f_clue_gstock.sh` | ✅ | Great Lakes (SLURM) | — | — |
+| `scripts/embed_clue.py` | ✅ | Great Lakes (GPU) | `filtered_split/wn_synset/clue_phrases/f_clue.csv` | `data/embeddings/<g_name>/f_clue[_train\|_val].npy`, `..._index.csv` |
+| `scripts/embed_f_clue_gstock.py` + `.sh` | 📋 Archived | Great Lakes (GPU) | — | — (superseded by `embed_clue.py`, kept in `scripts/archive/` for reference) |
 
-Encodes all f_clue phrases for the full `clues_wn_filtered.csv` dataset using
-g_stock. Computed once and reused by all f-specific analyses. Must be run
-after Stage 2 has produced `phrases/f_clue.csv`. If inclusion criteria are
-later expanded, append new rows rather than regenerating. Record runtime in
-FINDINGS.md.
+Encodes f_clue phrases for a given `(model, split, pooling)` combination.
+Driven by `--split` flag: `all` reproduces the full-dataset g_stock output
+(Decision 7), `validate` reproduces `embed_val.py`'s f_clue portion,
+`train` is available for completeness. Must be run after Stage 2 has
+produced `f_clue.csv`. Record runtime in FINDINGS.md.
 
 ---
 
@@ -148,26 +148,32 @@ or equivalent attention-masked mean pooling. Training completed 2026-04-14.
 
 | Script | Status | Environment | Reads | Writes |
 |--------|--------|-------------|-------|--------|
-| `scripts/embed_val.py` | ✅ | Great Lakes (GPU) | Model weights, phrase files, vocabulary_*_val.csv files | `data/embeddings/<g_name>/*_val.npy` files |
-| `scripts/embed_val_gstock.sh` | ✅ | Great Lakes (SLURM) | — | g_stock meanpool val embeddings |
-| `scripts/embed_val_gstock_tokenspan.sh` | ✅ | Great Lakes (SLURM) | — | g_stock tokenspan val embeddings |
-| `scripts/embed_val_g1_tokenspan.sh` | ✅ | Great Lakes (SLURM) | — | g1_tokenspan val embeddings |
-| `scripts/embed_val_g1.sh` | ✅ | Great Lakes (SLURM) | — | g1 meanpool val embeddings |
+| `scripts/embedding_utils.py` | ✅ | Great Lakes (GPU) | — (library) | — (library; shared by `embed_clue.py` and `embed_vocab.py`) |
+| `scripts/embed_clue.py` | ✅ | Great Lakes (GPU) | `filtered_split/wn_synset/clue_phrases/f_clue.csv` | `data/embeddings/<g_name>/f_clue[_train\|_val].npy` + `_index.csv` |
+| `scripts/embed_vocab.py` | ✅ | Great Lakes (GPU) | Any `(vocab, phrase)` pair | `data/embeddings/<g_name>/<phrase_name>.npy` |
+| `scripts/embed_wnex_full_gstock.sh` | ✅ | Great Lakes (SLURM) | — | `g_stock/f_common_wnex.npy` (8360 rows) |
+| `scripts/embed_wnex_full_g1.sh` | ✅ | Great Lakes (SLURM) | — | `g1/f_common_wnex.npy` (8360 rows) |
+| `scripts/verify_embedding_scripts.sh` | ✅ | Great Lakes (SLURM) | — | Seven verification passes comparing new scripts against committed artifacts |
+| `scripts/embed_val.py` + wrappers | 📋 Archived | Great Lakes (GPU) | — | — (superseded by `embed_clue.py` + `embed_vocab.py`, kept in `scripts/archive/` for reference) |
 
-Shared embedding generation script with `--pooling` flag (tokenspan or
-meanpool). Generates validation-split embeddings for any g model:
-- `embeddings/<g_name>/f_common_wndef_val.npy` (indexed by `wndef/vocabulary_wndef_val.csv`)
-- `embeddings/<g_name>/f_common_wnex_val.npy` (indexed by `wnex/vocabulary_wnex_val.csv`)
-- `embeddings/<g_name>/f_clue_val.npy` + `f_clue_val_index.csv`
+Stage 4 uses a two-script architecture with shared machinery in
+`embedding_utils.py`: `embed_clue.py` handles clue-contextualized (f_clue)
+phrases with a `--split` filter, and `embed_vocab.py` handles
+decontextualized vocabulary-indexed phrases with `--vocab-file` and
+`--phrase-file` passed as arguments. Both support `--pooling
+meanpool|tokenspan` (Decision 20 canonical is `meanpool`) and an optional
+`--verify-against` flag for rowwise consistency checks against existing
+`.npy` artifacts.
 
-Four embedding runs needed:
-1. g_stock_tokenspan (token span extraction, stock CALE weights) — ✅ generated, transferred locally
-2. g1_tokenspan (token span extraction, fine-tuned weights) — ✅ generated, transferred locally
-3. g_stock (mean pooling, stock CALE weights) — ✅ generated, transferred locally
-4. g1 (mean pooling, fine-tuned weights) — ✅ generated, transferred locally
+Existing embedding runs (committed artifacts):
+1. g_stock_tokenspan (token span extraction, stock CALE weights) — ✅ generated via archived `embed_val.py`
+2. g1_tokenspan (token span extraction, fine-tuned weights) — ✅ generated via archived `embed_val.py`
+3. g_stock (mean pooling, stock CALE weights) — ✅ generated via archived scripts; full-vocab wnex added by `embed_wnex_full_gstock.sh`
+4. g1 (mean pooling, fine-tuned weights) — ✅ generated via archived `embed_val.py`; full-vocab wnex added by `embed_wnex_full_g1.sh`
 
-After job completes, transfer output files back locally. Record runtime in
-FINDINGS.md alongside vocabulary size, clue count, and cluster partition.
+After each job completes, transfer output files back locally. Record
+runtime in FINDINGS.md alongside vocabulary size, clue count, and cluster
+partition.
 
 | Notebook | Status | Environment | Reads | Writes |
 |----------|--------|-------------|-------|--------|
@@ -228,17 +234,18 @@ complete. Name them `05_explore_<g_name>.ipynb` before archiving.
 
 | Script | Purpose | Environment |
 |--------|---------|-------------|
-| `embed_f_clue_gstock.py` | Encode f_clue phrases with g_stock over full wn_filtered dataset | Great Lakes (GPU) |
-| `embed_f_clue_gstock.sh` | SLURM submission for above | Great Lakes |
+| `embedding_utils.py` | Shared embedding machinery (model loading, extraction, save helpers) imported by `embed_clue.py` and `embed_vocab.py` | Great Lakes (library) |
+| `embed_clue.py` | Embed f_clue phrases for a given model, split (`train`/`validate`/`all`), and pooling method | Great Lakes (GPU) |
+| `embed_vocab.py` | Embed vocabulary-indexed phrases for a given model, `(vocab, phrase)` pair, and pooling method | Great Lakes (GPU) |
+| `embed_wnex_full_gstock.sh` | SLURM submission: g_stock full-vocab wnex (8,360 words) | Great Lakes |
+| `embed_wnex_full_g1.sh` | SLURM submission: g1 full-vocab wnex (8,360 words) | Great Lakes |
+| `verify_embedding_scripts.sh` | SLURM submission: seven verification passes reproducing every existing embedding artifact with the new scripts | Great Lakes |
 | `train_g1_tokenspan.py` | g1_tokenspan fine-tuning (token span extraction — historical, see Decision 20) | Great Lakes (GPU) |
 | `train_g1_tokenspan.sh` | SLURM submission for above | Great Lakes |
 | `train_g1.py` | g1 fine-tuning (mean pooling — canonical) | Great Lakes (GPU) |
 | `train_g1.sh` | SLURM submission for above | Great Lakes |
-| `embed_val.py` | Validation-split embedding generation for any g model (supports `--pooling meanpool\|tokenspan`) | Great Lakes (GPU) |
-| `embed_val_gstock.sh` | SLURM submission: g_stock meanpool val embeddings | Great Lakes |
-| `embed_val_gstock_tokenspan.sh` | SLURM submission: g_stock tokenspan val embeddings | Great Lakes |
-| `embed_val_g1_tokenspan.sh` | SLURM submission: g1_tokenspan val embeddings | Great Lakes |
-| `embed_val_g1.sh` | SLURM submission: g1 meanpool val embeddings | Great Lakes |
+| `archive/embed_f_clue_gstock.py` + `.sh` | 📋 Archived — superseded by `embed_clue.py` | Great Lakes |
+| `archive/embed_val.py` + four `.sh` wrappers | 📋 Archived — superseded by `embed_clue.py` + `embed_vocab.py` | Great Lakes |
 
 All GPU scripts should:
 - Accept command-line arguments for key parameters

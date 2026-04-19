@@ -242,18 +242,19 @@ embeddings/<g_name>/f_clue_val.npy                      # validation clues only
 
 Indexed by the corresponding vocabulary file. No separate index file needed.
 
-| File | Index file | Shape |
-|------|-----------|-------|
-| `g_stock/f_common_wndef.npy` | `vocabulary_wndef.csv` | (N_wndef, 1024) |
-| `g_stock/f_common_wnex.npy` | `vocabulary_wnex.csv` | (N_wnex, 1024) |
-| `g_stock/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) |
-| `g_stock/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) |
-| `g_stock_tokenspan/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) |
-| `g_stock_tokenspan/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) |
-| `g1_tokenspan/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) |
-| `g1_tokenspan/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) |
-| `g1/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) |
-| `g1/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) |
+| File | Index file | Shape | Produced by |
+|------|-----------|-------|-------------|
+| `g_stock/f_common_wndef.npy` | `vocabulary_wndef.csv` | (N_wndef, 1024) | TBD |
+| `g_stock/f_common_wnex.npy` | `vocabulary_wnex.csv` | (8360, 1024) | `embed_vocab.py` via `embed_wnex_full_gstock.sh` |
+| `g_stock/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) | archived `embed_val.py` (reproducible via `embed_vocab.py`) |
+| `g_stock/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) | archived `embed_val.py` (reproducible via `embed_vocab.py`) |
+| `g_stock_tokenspan/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) | archived `embed_val.py` |
+| `g_stock_tokenspan/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) | archived `embed_val.py` |
+| `g1_tokenspan/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) | archived `embed_val.py` |
+| `g1_tokenspan/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) | archived `embed_val.py` |
+| `g1/f_common_wndef_val.npy` | `vocabulary_wndef_val.csv` | (N_wndef_val, 1024) | archived `embed_val.py` (reproducible via `embed_vocab.py`) |
+| `g1/f_common_wnex_val.npy` | `vocabulary_wnex_val.csv` | (N_wnex_val, 1024) | archived `embed_val.py` (reproducible via `embed_vocab.py`) |
+| `g1/f_common_wnex.npy` | `vocabulary_wnex.csv` | (8360, 1024) | `embed_vocab.py` via `embed_wnex_full_g1.sh` |
 
 ### f_clue embedding files
 
@@ -267,13 +268,13 @@ Always accompanied by an explicit `_index.csv` file.
 | definition | str | Definition string (use keep_default_na=False) |
 | row | int | Row position in the corresponding .npy array |
 
-| File | Scope | Index file |
-|------|-------|-----------|
-| `g_stock/f_clue.npy` | Full clues_wn_filtered | `g_stock/f_clue_index.csv` |
-| `g_stock/f_clue_val.npy` | Validation clues only | `g_stock/f_clue_val_index.csv` |
-| `g_stock_tokenspan/f_clue_val.npy` | Validation clues only | `g_stock_tokenspan/f_clue_val_index.csv` |
-| `g1_tokenspan/f_clue_val.npy` | Validation clues only | `g1_tokenspan/f_clue_val_index.csv` |
-| `g1/f_clue_val.npy` | Validation clues only | `g1/f_clue_val_index.csv` |
+| File | Scope | Index file | Produced by |
+|------|-------|-----------|-------------|
+| `g_stock/f_clue.npy` | Full clues_wn_filtered | `g_stock/f_clue_index.csv` | archived `embed_f_clue_gstock.py` (reproducible via `embed_clue.py --split all`) |
+| `g_stock/f_clue_val.npy` | Validation clues only | `g_stock/f_clue_val_index.csv` | archived `embed_val.py` (reproducible via `embed_clue.py --split validate`) |
+| `g_stock_tokenspan/f_clue_val.npy` | Validation clues only | `g_stock_tokenspan/f_clue_val_index.csv` | archived `embed_val.py` |
+| `g1_tokenspan/f_clue_val.npy` | Validation clues only | `g1_tokenspan/f_clue_val_index.csv` | archived `embed_val.py` |
+| `g1/f_clue_val.npy` | Validation clues only | `g1/f_clue_val_index.csv` | archived `embed_val.py` (reproducible via `embed_clue.py --split validate`) |
 
 ---
 
