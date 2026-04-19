@@ -1,0 +1,708 @@
+############################################################
+# V1: g_stock f_clue all (meanpool)
+#    Compared against SentenceTransformer-produced reference
+#    Expected mean cosine ~0.999+ (not 1.0) due to different extraction
+############################################################
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loading model: gabrielloiseau/CALE-MBERT-en ...
+Model loaded in 8.0s
+Hidden dim: 1024
+
+Loading f_clue phrases from: data/filtered_split/wn_synset/clue_phrases/f_clue.csv
+  Total rows (all splits): 239,406
+  Using all rows: 239,406
+
+Encoding 239,406 f_clue phrases (batch_size=64, pooling=meanpool) ...
+    encoded 64 / 239,406
+    encoded 1,344 / 239,406
+    encoded 2,624 / 239,406
+    encoded 3,904 / 239,406
+    encoded 5,184 / 239,406
+    encoded 6,464 / 239,406
+    encoded 7,744 / 239,406
+    encoded 9,024 / 239,406
+    encoded 10,304 / 239,406
+    encoded 11,584 / 239,406
+    encoded 12,864 / 239,406
+    encoded 14,144 / 239,406
+    encoded 15,424 / 239,406
+    encoded 16,704 / 239,406
+    encoded 17,984 / 239,406
+    encoded 19,264 / 239,406
+    encoded 20,544 / 239,406
+    encoded 21,824 / 239,406
+    encoded 23,104 / 239,406
+    encoded 24,384 / 239,406
+    encoded 25,664 / 239,406
+    encoded 26,944 / 239,406
+    encoded 28,224 / 239,406
+    encoded 29,504 / 239,406
+    encoded 30,784 / 239,406
+    encoded 32,064 / 239,406
+    encoded 33,344 / 239,406
+    encoded 34,624 / 239,406
+    encoded 35,904 / 239,406
+    encoded 37,184 / 239,406
+    encoded 38,464 / 239,406
+    encoded 39,744 / 239,406
+    encoded 41,024 / 239,406
+    encoded 42,304 / 239,406
+    encoded 43,584 / 239,406
+    encoded 44,864 / 239,406
+    encoded 46,144 / 239,406
+    encoded 47,424 / 239,406
+    encoded 48,704 / 239,406
+    encoded 49,984 / 239,406
+    encoded 51,264 / 239,406
+    encoded 52,544 / 239,406
+    encoded 53,824 / 239,406
+    encoded 55,104 / 239,406
+    encoded 56,384 / 239,406
+    encoded 57,664 / 239,406
+    encoded 58,944 / 239,406
+    encoded 60,224 / 239,406
+    encoded 61,504 / 239,406
+    encoded 62,784 / 239,406
+    encoded 64,064 / 239,406
+    encoded 65,344 / 239,406
+    encoded 66,624 / 239,406
+    encoded 67,904 / 239,406
+    encoded 69,184 / 239,406
+    encoded 70,464 / 239,406
+    encoded 71,744 / 239,406
+    encoded 73,024 / 239,406
+    encoded 74,304 / 239,406
+    encoded 75,584 / 239,406
+    encoded 76,864 / 239,406
+    encoded 78,144 / 239,406
+    encoded 79,424 / 239,406
+    encoded 80,704 / 239,406
+    encoded 81,984 / 239,406
+    encoded 83,264 / 239,406
+    encoded 84,544 / 239,406
+    encoded 85,824 / 239,406
+    encoded 87,104 / 239,406
+    encoded 88,384 / 239,406
+    encoded 89,664 / 239,406
+    encoded 90,944 / 239,406
+    encoded 92,224 / 239,406
+    encoded 93,504 / 239,406
+    encoded 94,784 / 239,406
+    encoded 96,064 / 239,406
+    encoded 97,344 / 239,406
+    encoded 98,624 / 239,406
+    encoded 99,904 / 239,406
+    encoded 101,184 / 239,406
+    encoded 102,464 / 239,406
+    encoded 103,744 / 239,406
+    encoded 105,024 / 239,406
+    encoded 106,304 / 239,406
+    encoded 107,584 / 239,406
+    encoded 108,864 / 239,406
+    encoded 110,144 / 239,406
+    encoded 111,424 / 239,406
+    encoded 112,704 / 239,406
+    encoded 113,984 / 239,406
+    encoded 115,264 / 239,406
+    encoded 116,544 / 239,406
+    encoded 117,824 / 239,406
+    encoded 119,104 / 239,406
+    encoded 120,384 / 239,406
+    encoded 121,664 / 239,406
+    encoded 122,944 / 239,406
+    encoded 124,224 / 239,406
+    encoded 125,504 / 239,406
+    encoded 126,784 / 239,406
+    encoded 128,064 / 239,406
+    encoded 129,344 / 239,406
+    encoded 130,624 / 239,406
+    encoded 131,904 / 239,406
+    encoded 133,184 / 239,406
+    encoded 134,464 / 239,406
+    encoded 135,744 / 239,406
+    encoded 137,024 / 239,406
+    encoded 138,304 / 239,406
+    encoded 139,584 / 239,406
+    encoded 140,864 / 239,406
+    encoded 142,144 / 239,406
+    encoded 143,424 / 239,406
+    encoded 144,704 / 239,406
+    encoded 145,984 / 239,406
+    encoded 147,264 / 239,406
+    encoded 148,544 / 239,406
+    encoded 149,824 / 239,406
+    encoded 151,104 / 239,406
+    encoded 152,384 / 239,406
+    encoded 153,664 / 239,406
+    encoded 154,944 / 239,406
+    encoded 156,224 / 239,406
+    encoded 157,504 / 239,406
+    encoded 158,784 / 239,406
+    encoded 160,064 / 239,406
+    encoded 161,344 / 239,406
+    encoded 162,624 / 239,406
+    encoded 163,904 / 239,406
+    encoded 165,184 / 239,406
+    encoded 166,464 / 239,406
+    encoded 167,744 / 239,406
+    encoded 169,024 / 239,406
+    encoded 170,304 / 239,406
+    encoded 171,584 / 239,406
+    encoded 172,864 / 239,406
+    encoded 174,144 / 239,406
+    encoded 175,424 / 239,406
+    encoded 176,704 / 239,406
+    encoded 177,984 / 239,406
+    encoded 179,264 / 239,406
+    encoded 180,544 / 239,406
+    encoded 181,824 / 239,406
+    encoded 183,104 / 239,406
+    encoded 184,384 / 239,406
+    encoded 185,664 / 239,406
+    encoded 186,944 / 239,406
+    encoded 188,224 / 239,406
+    encoded 189,504 / 239,406
+    encoded 190,784 / 239,406
+    encoded 192,064 / 239,406
+    encoded 193,344 / 239,406
+    encoded 194,624 / 239,406
+    encoded 195,904 / 239,406
+    encoded 197,184 / 239,406
+    encoded 198,464 / 239,406
+    encoded 199,744 / 239,406
+    encoded 201,024 / 239,406
+    encoded 202,304 / 239,406
+    encoded 203,584 / 239,406
+    encoded 204,864 / 239,406
+    encoded 206,144 / 239,406
+    encoded 207,424 / 239,406
+    encoded 208,704 / 239,406
+    encoded 209,984 / 239,406
+    encoded 211,264 / 239,406
+    encoded 212,544 / 239,406
+    encoded 213,824 / 239,406
+    encoded 215,104 / 239,406
+    encoded 216,384 / 239,406
+    encoded 217,664 / 239,406
+    encoded 218,944 / 239,406
+    encoded 220,224 / 239,406
+    encoded 221,504 / 239,406
+    encoded 222,784 / 239,406
+    encoded 224,064 / 239,406
+    encoded 225,344 / 239,406
+    encoded 226,624 / 239,406
+    encoded 227,904 / 239,406
+    encoded 229,184 / 239,406
+    encoded 230,464 / 239,406
+    encoded 231,744 / 239,406
+    encoded 233,024 / 239,406
+    encoded 234,304 / 239,406
+    encoded 235,584 / 239,406
+    encoded 236,864 / 239,406
+    encoded 238,144 / 239,406
+    encoded 239,406 / 239,406
+  Encoded in 394.3s (607 phrases/sec)
+
+  [f_clue_all] shape=(239406, 1024), dtype=float32, L2 norm range=[24.4009, 34.1953]
+
+Saved: data/embeddings/g_stock_verify/f_clue.npy
+Saved: data/embeddings/g_stock_verify/f_clue_index.csv
+
+------------------------------------------------------------------------
+Consistency check: data/embeddings/g_stock/f_clue.npy ...
+------------------------------------------------------------------------
+Matched rows: 239,406 (new=239,406, ref=239,406)
+Comparing a sample of 500 rows
+Cosine similarity: min=1.000000, mean=1.000000, max=1.000000
+Consistency check PASSED (mean cosine 1.000000 > 0.999).
+
+========================================================================
+SUMMARY
+========================================================================
+Model path:        gabrielloiseau/CALE-MBERT-en
+Pooling method:    meanpool
+Split:             all
+Rows embedded:     239,406
+Encoding time:     394.3s
+  data/embeddings/g_stock_verify/f_clue.npy  (935.2 MB)
+  data/embeddings/g_stock_verify/f_clue_index.csv  (4.8 MB)
+Total runtime:     410.2s (6.8 min)
+GPU:               Tesla V100-PCIE-16GB
+========================================================================
+
+############################################################
+# V2: g_stock f_clue validate (meanpool)
+############################################################
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loading model: gabrielloiseau/CALE-MBERT-en ...
+Model loaded in 3.7s
+Hidden dim: 1024
+
+Loading f_clue phrases from: data/filtered_split/wn_synset/clue_phrases/f_clue.csv
+  Total rows (all splits): 239,406
+  Rows with split == 'validate': 47,933
+
+Encoding 47,933 f_clue phrases (batch_size=64, pooling=meanpool) ...
+    encoded 64 / 47,933
+    encoded 1,344 / 47,933
+    encoded 2,624 / 47,933
+    encoded 3,904 / 47,933
+    encoded 5,184 / 47,933
+    encoded 6,464 / 47,933
+    encoded 7,744 / 47,933
+    encoded 9,024 / 47,933
+    encoded 10,304 / 47,933
+    encoded 11,584 / 47,933
+    encoded 12,864 / 47,933
+    encoded 14,144 / 47,933
+    encoded 15,424 / 47,933
+    encoded 16,704 / 47,933
+    encoded 17,984 / 47,933
+    encoded 19,264 / 47,933
+    encoded 20,544 / 47,933
+    encoded 21,824 / 47,933
+    encoded 23,104 / 47,933
+    encoded 24,384 / 47,933
+    encoded 25,664 / 47,933
+    encoded 26,944 / 47,933
+    encoded 28,224 / 47,933
+    encoded 29,504 / 47,933
+    encoded 30,784 / 47,933
+    encoded 32,064 / 47,933
+    encoded 33,344 / 47,933
+    encoded 34,624 / 47,933
+    encoded 35,904 / 47,933
+    encoded 37,184 / 47,933
+    encoded 38,464 / 47,933
+    encoded 39,744 / 47,933
+    encoded 41,024 / 47,933
+    encoded 42,304 / 47,933
+    encoded 43,584 / 47,933
+    encoded 44,864 / 47,933
+    encoded 46,144 / 47,933
+    encoded 47,424 / 47,933
+  Encoded in 80.6s (595 phrases/sec)
+
+  [f_clue_validate] shape=(47933, 1024), dtype=float32, L2 norm range=[25.2485, 33.7204]
+
+Saved: data/embeddings/g_stock_verify/f_clue_val.npy
+Saved: data/embeddings/g_stock_verify/f_clue_val_index.csv
+
+------------------------------------------------------------------------
+Consistency check: data/embeddings/g_stock/f_clue_val.npy ...
+------------------------------------------------------------------------
+Matched rows: 47,933 (new=47,933, ref=47,933)
+Comparing a sample of 500 rows
+Cosine similarity: min=1.000000, mean=1.000000, max=1.000000
+Consistency check PASSED (mean cosine 1.000000 > 0.999).
+
+========================================================================
+SUMMARY
+========================================================================
+Model path:        gabrielloiseau/CALE-MBERT-en
+Pooling method:    meanpool
+Split:             validate
+Rows embedded:     47,933
+Encoding time:     80.6s
+  data/embeddings/g_stock_verify/f_clue_val.npy  (187.2 MB)
+  data/embeddings/g_stock_verify/f_clue_val_index.csv  (0.9 MB)
+Total runtime:     86.3s (1.4 min)
+GPU:               Tesla V100-PCIE-16GB
+========================================================================
+
+############################################################
+# V3: g1 f_clue validate (meanpool)
+############################################################
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loading model: models/g1/model ...
+Model loaded in 5.5s
+Hidden dim: 1024
+
+Loading f_clue phrases from: data/filtered_split/wn_synset/clue_phrases/f_clue.csv
+  Total rows (all splits): 239,406
+  Rows with split == 'validate': 47,933
+
+Encoding 47,933 f_clue phrases (batch_size=64, pooling=meanpool) ...
+    encoded 64 / 47,933
+    encoded 1,344 / 47,933
+    encoded 2,624 / 47,933
+    encoded 3,904 / 47,933
+    encoded 5,184 / 47,933
+    encoded 6,464 / 47,933
+    encoded 7,744 / 47,933
+    encoded 9,024 / 47,933
+    encoded 10,304 / 47,933
+    encoded 11,584 / 47,933
+    encoded 12,864 / 47,933
+    encoded 14,144 / 47,933
+    encoded 15,424 / 47,933
+    encoded 16,704 / 47,933
+    encoded 17,984 / 47,933
+    encoded 19,264 / 47,933
+    encoded 20,544 / 47,933
+    encoded 21,824 / 47,933
+    encoded 23,104 / 47,933
+    encoded 24,384 / 47,933
+    encoded 25,664 / 47,933
+    encoded 26,944 / 47,933
+    encoded 28,224 / 47,933
+    encoded 29,504 / 47,933
+    encoded 30,784 / 47,933
+    encoded 32,064 / 47,933
+    encoded 33,344 / 47,933
+    encoded 34,624 / 47,933
+    encoded 35,904 / 47,933
+    encoded 37,184 / 47,933
+    encoded 38,464 / 47,933
+    encoded 39,744 / 47,933
+    encoded 41,024 / 47,933
+    encoded 42,304 / 47,933
+    encoded 43,584 / 47,933
+    encoded 44,864 / 47,933
+    encoded 46,144 / 47,933
+    encoded 47,424 / 47,933
+  Encoded in 80.5s (595 phrases/sec)
+
+  [f_clue_validate] shape=(47933, 1024), dtype=float32, L2 norm range=[25.5613, 31.6818]
+
+Saved: data/embeddings/g1_verify/f_clue_val.npy
+Saved: data/embeddings/g1_verify/f_clue_val_index.csv
+
+------------------------------------------------------------------------
+Consistency check: data/embeddings/g1/f_clue_val.npy ...
+------------------------------------------------------------------------
+Matched rows: 47,933 (new=47,933, ref=47,933)
+Comparing a sample of 500 rows
+Cosine similarity: min=1.000000, mean=1.000000, max=1.000000
+Consistency check PASSED (mean cosine 1.000000 > 0.999).
+
+========================================================================
+SUMMARY
+========================================================================
+Model path:        models/g1/model
+Pooling method:    meanpool
+Split:             validate
+Rows embedded:     47,933
+Encoding time:     80.5s
+  data/embeddings/g1_verify/f_clue_val.npy  (187.2 MB)
+  data/embeddings/g1_verify/f_clue_val_index.csv  (0.9 MB)
+Total runtime:     88.1s (1.5 min)
+GPU:               Tesla V100-PCIE-16GB
+========================================================================
+
+############################################################
+# V4: g_stock wndef val (meanpool)
+############################################################
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loading model: gabrielloiseau/CALE-MBERT-en ...
+Model loaded in 3.6s
+Hidden dim: 1024
+
+Loading vocabulary: data/filtered_split/wn_synset/wndef/vocabulary_wndef_val.csv
+  Vocabulary size: 26,152
+Loading phrases:    data/filtered_split/wn_synset/wndef/f_common_wndef.csv
+
+Encoding 26,152 f_common_wndef_val phrases (batch_size=64, pooling=meanpool) ...
+    encoded 64 / 26,152
+    encoded 1,344 / 26,152
+    encoded 2,624 / 26,152
+    encoded 3,904 / 26,152
+    encoded 5,184 / 26,152
+    encoded 6,464 / 26,152
+    encoded 7,744 / 26,152
+    encoded 9,024 / 26,152
+    encoded 10,304 / 26,152
+    encoded 11,584 / 26,152
+    encoded 12,864 / 26,152
+    encoded 14,144 / 26,152
+    encoded 15,424 / 26,152
+    encoded 16,704 / 26,152
+    encoded 17,984 / 26,152
+    encoded 19,264 / 26,152
+    encoded 20,544 / 26,152
+    encoded 21,824 / 26,152
+    encoded 23,104 / 26,152
+    encoded 24,384 / 26,152
+    encoded 25,664 / 26,152
+  Encoded in 80.9s (323 phrases/sec)
+
+  [f_common_wndef_val] shape=(26152, 1024), dtype=float32, L2 norm range=[23.5365, 33.6164]
+
+Saved: data/embeddings/g_stock_verify/f_common_wndef_val.npy
+
+------------------------------------------------------------------------
+Consistency check: data/embeddings/g_stock/f_common_wndef_val.npy ...
+------------------------------------------------------------------------
+Comparing a sample of 500 rows (of 26,152 total)
+Cosine similarity: min=1.000000, mean=1.000000, max=1.000000
+Consistency check PASSED (mean cosine 1.000000 > 0.999).
+
+========================================================================
+SUMMARY
+========================================================================
+Model path:        gabrielloiseau/CALE-MBERT-en
+Pooling method:    meanpool
+Vocab file:        data/filtered_split/wn_synset/wndef/vocabulary_wndef_val.csv
+Phrase file:       data/filtered_split/wn_synset/wndef/f_common_wndef.csv
+Vocabulary size:   26,152
+Rows embedded:     26,152
+Encoding time:     80.9s
+  data/embeddings/g_stock_verify/f_common_wndef_val.npy  (102.2 MB)
+Total runtime:     85.5s (1.4 min)
+GPU:               Tesla V100-PCIE-16GB
+========================================================================
+
+############################################################
+# V5: g_stock wnex val (meanpool)
+############################################################
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loading model: gabrielloiseau/CALE-MBERT-en ...
+Model loaded in 3.7s
+Hidden dim: 1024
+
+Loading vocabulary: data/filtered_split/wn_synset/wnex/vocabulary_wnex_val.csv
+  Vocabulary size: 3,008
+Loading phrases:    data/filtered_split/wn_synset/wnex/f_common_wnex.csv
+
+Encoding 3,008 f_common_wnex_val phrases (batch_size=64, pooling=meanpool) ...
+    encoded 64 / 3,008
+    encoded 1,344 / 3,008
+    encoded 2,624 / 3,008
+  Encoded in 8.5s (352 phrases/sec)
+
+  [f_common_wnex_val] shape=(3008, 1024), dtype=float32, L2 norm range=[26.3180, 33.2035]
+
+Saved: data/embeddings/g_stock_verify/f_common_wnex_val.npy
+
+------------------------------------------------------------------------
+Consistency check: data/embeddings/g_stock/f_common_wnex_val.npy ...
+------------------------------------------------------------------------
+Comparing a sample of 500 rows (of 3,008 total)
+Cosine similarity: min=1.000000, mean=1.000000, max=1.000000
+Consistency check PASSED (mean cosine 1.000000 > 0.999).
+
+========================================================================
+SUMMARY
+========================================================================
+Model path:        gabrielloiseau/CALE-MBERT-en
+Pooling method:    meanpool
+Vocab file:        data/filtered_split/wn_synset/wnex/vocabulary_wnex_val.csv
+Phrase file:       data/filtered_split/wn_synset/wnex/f_common_wnex.csv
+Vocabulary size:   3,008
+Rows embedded:     3,008
+Encoding time:     8.5s
+  data/embeddings/g_stock_verify/f_common_wnex_val.npy  (11.8 MB)
+Total runtime:     12.5s (0.2 min)
+GPU:               Tesla V100-PCIE-16GB
+========================================================================
+
+############################################################
+# V6: g1 wndef val (meanpool)
+############################################################
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loading model: models/g1/model ...
+Model loaded in 3.3s
+Hidden dim: 1024
+
+Loading vocabulary: data/filtered_split/wn_synset/wndef/vocabulary_wndef_val.csv
+  Vocabulary size: 26,152
+Loading phrases:    data/filtered_split/wn_synset/wndef/f_common_wndef.csv
+
+Encoding 26,152 f_common_wndef_val phrases (batch_size=64, pooling=meanpool) ...
+    encoded 64 / 26,152
+    encoded 1,344 / 26,152
+    encoded 2,624 / 26,152
+    encoded 3,904 / 26,152
+    encoded 5,184 / 26,152
+    encoded 6,464 / 26,152
+    encoded 7,744 / 26,152
+    encoded 9,024 / 26,152
+    encoded 10,304 / 26,152
+    encoded 11,584 / 26,152
+    encoded 12,864 / 26,152
+    encoded 14,144 / 26,152
+    encoded 15,424 / 26,152
+    encoded 16,704 / 26,152
+    encoded 17,984 / 26,152
+    encoded 19,264 / 26,152
+    encoded 20,544 / 26,152
+    encoded 21,824 / 26,152
+    encoded 23,104 / 26,152
+    encoded 24,384 / 26,152
+    encoded 25,664 / 26,152
+  Encoded in 80.8s (324 phrases/sec)
+
+  [f_common_wndef_val] shape=(26152, 1024), dtype=float32, L2 norm range=[24.0279, 30.6785]
+
+Saved: data/embeddings/g1_verify/f_common_wndef_val.npy
+
+------------------------------------------------------------------------
+Consistency check: data/embeddings/g1/f_common_wndef_val.npy ...
+------------------------------------------------------------------------
+Comparing a sample of 500 rows (of 26,152 total)
+Cosine similarity: min=1.000000, mean=1.000000, max=1.000000
+Consistency check PASSED (mean cosine 1.000000 > 0.999).
+
+========================================================================
+SUMMARY
+========================================================================
+Model path:        models/g1/model
+Pooling method:    meanpool
+Vocab file:        data/filtered_split/wn_synset/wndef/vocabulary_wndef_val.csv
+Phrase file:       data/filtered_split/wn_synset/wndef/f_common_wndef.csv
+Vocabulary size:   26,152
+Rows embedded:     26,152
+Encoding time:     80.8s
+  data/embeddings/g1_verify/f_common_wndef_val.npy  (102.2 MB)
+Total runtime:     85.1s (1.4 min)
+GPU:               Tesla V100-PCIE-16GB
+========================================================================
+
+############################################################
+# V7: g1 wnex val (meanpool)
+############################################################
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loading model: models/g1/model ...
+Model loaded in 3.4s
+Hidden dim: 1024
+
+Loading vocabulary: data/filtered_split/wn_synset/wnex/vocabulary_wnex_val.csv
+  Vocabulary size: 3,008
+Loading phrases:    data/filtered_split/wn_synset/wnex/f_common_wnex.csv
+
+Encoding 3,008 f_common_wnex_val phrases (batch_size=64, pooling=meanpool) ...
+    encoded 64 / 3,008
+    encoded 1,344 / 3,008
+    encoded 2,624 / 3,008
+  Encoded in 8.6s (351 phrases/sec)
+
+  [f_common_wnex_val] shape=(3008, 1024), dtype=float32, L2 norm range=[25.5698, 31.0049]
+
+Saved: data/embeddings/g1_verify/f_common_wnex_val.npy
+
+------------------------------------------------------------------------
+Consistency check: data/embeddings/g1/f_common_wnex_val.npy ...
+------------------------------------------------------------------------
+Comparing a sample of 500 rows (of 3,008 total)
+Cosine similarity: min=1.000000, mean=1.000000, max=1.000000
+Consistency check PASSED (mean cosine 1.000000 > 0.999).
+
+========================================================================
+SUMMARY
+========================================================================
+Model path:        models/g1/model
+Pooling method:    meanpool
+Vocab file:        data/filtered_split/wn_synset/wnex/vocabulary_wnex_val.csv
+Phrase file:       data/filtered_split/wn_synset/wnex/f_common_wnex.csv
+Vocabulary size:   3,008
+Rows embedded:     3,008
+Encoding time:     8.6s
+  data/embeddings/g1_verify/f_common_wnex_val.npy  (11.8 MB)
+Total runtime:     12.2s (0.2 min)
+GPU:               Tesla V100-PCIE-16GB
+========================================================================
+
+############################################################
+# ALL SEVEN VERIFICATION RUNS COMPLETED SUCCESSFULLY
+############################################################
+After confirming this log shows PASS for V1–V7, the _verify
+directories can be deleted:
+  rm -rf data/embeddings/g_stock_verify data/embeddings/g1_verify

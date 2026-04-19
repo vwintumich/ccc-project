@@ -433,28 +433,62 @@ verified against vocabulary/index files.
 (8,360 words each) and provide a cleaner two-script architecture for
 future models and phrase types.
 
-**Verification:** Seven runs (`verify_embedding_scripts.sh`) re-embed every
-existing committed artifact and compare rowwise cosine similarity with
-assertion threshold mean > 0.999. V1 compares
-`SentenceTransformer.encode()`-produced reference against the new
-`AutoModel + meanpool` extraction (expected mean cosine ~0.999+, see
-Decision 20 / Stage 4 extraction finding); V2–V7 compare AutoModel to
-AutoModel (expected mean cosine ~1.0). Results to be recorded here after
-the verification job runs.
+**Verification:** Seven runs (`verify_embedding_scripts.sh`) completed
+2026-04-19 on Tesla V100-PCIE-16GB. All seven PASSED with mean cosine
+1.000000 — including V1 (AutoModel meanpool vs. SentenceTransformer.encode()
+reference), which matched perfectly rather than the ~0.999 expected. Total
+verification runtime ~13 min. Old scripts archived to `scripts/archive/`.
 
-### g_stock full-vocab wnex — pending (job not yet run)
+### g_stock full-vocab wnex — completed 2026-04-19
 
 **Script:** `scripts/embed_vocab.py` via `scripts/embed_wnex_full_gstock.sh`
-Output: `data/embeddings/g_stock/f_common_wnex.npy`, expected shape (8360,
-1024), indexed by `vocabulary_wnex.csv`. Runtime, L2 norm range, and
-environment versions to be recorded after job completes.
+**Environment:** Great Lakes, `nlp_env` conda environment
 
-### g1 full-vocab wnex — pending (job not yet run)
+| Metric | Value |
+|--------|-------|
+| Vocabulary size | 8,360 |
+| Embedding array shape | (8360, 1024) |
+| Embedding dtype | float32 |
+| L2 norm range | [26.3180, 33.4561] |
+| Encoding rate | 380 phrases/sec (batch_size=64) |
+| Encoding time | 22.0s |
+| Total runtime | 26.0s (0.4 min) |
+| Great Lakes partition | gpu (Tesla V100-PCIE-16GB) |
+| Date run | 2026-04-19 |
+
+Output: `data/embeddings/g_stock/f_common_wnex.npy` (32.7 MB), indexed by
+`vocabulary_wnex.csv`.
+
+### g1 full-vocab wnex — completed 2026-04-19
 
 **Script:** `scripts/embed_vocab.py` via `scripts/embed_wnex_full_g1.sh`
-Output: `data/embeddings/g1/f_common_wnex.npy`, expected shape (8360,
-1024), indexed by `vocabulary_wnex.csv`. Runtime, L2 norm range, and
-environment versions to be recorded after job completes.
+**Environment:** Great Lakes, `nlp_env` conda environment
+
+| Metric | Value |
+|--------|-------|
+| Vocabulary size | 8,360 |
+| Embedding array shape | (8360, 1024) |
+| Embedding dtype | float32 |
+| L2 norm range | [25.5698, 31.4078] |
+| Encoding rate | 379 phrases/sec (batch_size=64) |
+| Encoding time | 22.0s |
+| Total runtime | 25.8s (0.4 min) |
+| Great Lakes partition | gpu (Tesla V100-PCIE-16GB) |
+| Date run | 2026-04-19 |
+
+Output: `data/embeddings/g1/f_common_wnex.npy` (32.7 MB), indexed by
+`vocabulary_wnex.csv`.
+
+### Environment versions (all three jobs)
+
+| Package | Version |
+|---------|---------|
+| Python | 3.12.12 |
+| torch | 2.5.1+cu121 |
+| transformers | 4.57.6 |
+| numpy | 2.3.5 |
+| pandas | 3.0.0 |
+| conda environment | nlp_env |
 
 ### Stage 4 Verification (NB 04) — completed 2026-04-14
 
