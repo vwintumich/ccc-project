@@ -699,6 +699,78 @@ Full numerical results in `outputs/05_model_evaluation-results.md`.
 
 ---
 
+## Exploration: ATE Breakdown by Wordplay Type
+
+**Notebook:** `planning/exploration/wordplay_ate_breakdown.ipynb` — completed
+2026-04-20
+**Environment:** Local (CPU)
+**Scope:** Canonical mean-pooling models (g_stock and g1), wndef embeddings
+only, validation split.
+
+Advisor-requested investigation into whether different clue types show
+different misdirection patterns. Uses `wordplay_metadata.csv` (algorithmically
+detected letterplay types) joined to validation clues. Analysis organized
+around a two-level taxonomy: structural type (standard vs double-definition),
+then letterplay type within standard clues.
+
+### Structural comparison: standard vs double-def
+
+| Metric | g_stock (standard) | g_stock (double_def) | g1 (standard) | g1 (double_def) |
+|--------|-------------------|---------------------|--------------|----------------|
+| N | 43,403 | 4,530 | 43,403 | 4,530 |
+| Mean ATE | −0.068 | −0.021 | −0.127 | −0.095 |
+| Median ATE | −0.061 | −0.014 | −0.126 | −0.096 |
+| % negative | 72.9% | 56.0% | 94.1% | 86.5% |
+
+**Key finding:** Double-def clues show substantially less misdirection than
+standard clues under g_stock (mean ATE −0.021 vs −0.068). This is consistent
+with the structural difference: in a double-def clue, the context around the
+tagged definition is another definition of the answer (pointing to a different
+sense) rather than wordplay fodder. Under g1, both shift further negative but
+the gap persists.
+
+### Letterplay types within standard clues
+
+All letterplay categories intersected with `is_standard` (excludes
+double-def clues). Baseline: `no_letterplay` (standard clues with no
+detected letterplay, N=38,368).
+
+| Category | g_stock mean ATE | g1 mean ATE | g_stock→g1 shift |
+|----------|-----------------|-------------|-----------------|
+| no_letterplay | −0.068 | −0.131 | −0.063 |
+| anagram_consec (N=2,101) | −0.071 | −0.092 | −0.021 |
+| hidden_fwd (N=1,494) | −0.060 | −0.102 | −0.042 |
+| anagram_single (N=557) | −0.067 | −0.102 | −0.035 |
+| any_anagram (N=2,658) | −0.070 | −0.094 | −0.024 |
+| any_hidden (N=1,902) | −0.060 | −0.103 | −0.043 |
+| any_letterplay (N=5,035) | −0.065 | −0.099 | −0.034 |
+
+**Key finding:** Under g_stock, all well-powered letterplay types have mean
+ATEs in a narrow band (−0.057 to −0.071) around the no_letterplay baseline
+(−0.068), with no strong evidence that any individual letterplay mechanism
+produces meaningfully different misdirection.
+
+Under g1, every category's mean ATE shifts further negative, but the
+magnitude of the shift varies (no_letterplay shifts by −0.063 while
+anagram_consec shifts by only −0.021). This differential may reflect
+compositional differences in the definition-answer word pairs across clue
+types rather than a genuine interaction between g1 and the wordplay
+mechanism — decomposing the ATE shift into T=0 and T=1 components shows
+that T=0 (decontextualized, no access to the clue surface) accounts for
+most of the between-category variation.
+
+### Figures
+
+- `outputs/figures/wp_cooccurrence_heatmap.png`
+- `outputs/figures/wp_ate_structural.png`
+- `outputs/figures/wp_ate_individual_letterplay.png`
+- `outputs/figures/wp_ate_grouped_letterplay.png`
+- `outputs/figures/wp_double_def_comparison.png`
+
+Full numerical results in `outputs/wordplay_ate_breakdown-results.md`.
+
+---
+
 ## Stage 6: Final Evaluation
 
 *Locked — do not populate until final g is chosen and documented in DECISIONS.md.*
