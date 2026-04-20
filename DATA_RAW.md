@@ -71,6 +71,7 @@ assert df[df['source'].isin(['cru_cryptics', 'nytimes', 'leoedit'])]['definition
 | `clues_filtered.csv` | `row_id` | ✅ | `structural_filtering.ipynb` (last step before write) | one row per (clue, definition) pair; `clue_id` retained as FK |
 | `id_map.csv` | `clue_id` | ✅ | `assign_ids.py` | maps `clue_id` → `puzzle_id`; committed to repo; do not manually edit |
 | `puzzle_metadata.csv` | `puzzle_id` | ✅ | `puzzle_metadata.ipynb` | one row per puzzle |
+| `wordplay_metadata.csv` | `clue_id` | ✅ | `wordplay_metadata.ipynb` | one row per original clue; boolean wordplay type columns |
 | `clue_metadata.csv` | `clue_id` | ✅ | future notebook | one row per original clue |
 
 ### 4.2 Why `clue_id` is not unique in `clues_filtered.csv`
@@ -90,6 +91,9 @@ primary key.
   this is correct and expected.
 - **Clue metadata → clues_filtered:** join directly on `clue_id`. Clue
   metadata will also repeat across double-definition rows — also correct.
+- **Wordplay metadata → clues_filtered:** join directly on `clue_id`.
+  Wordplay metadata will repeat across double-definition rows — correct and
+  expected (wordplay type is a property of the clue, not the definition).
 
 ```python
 # Standard join: add puzzle metadata to clues_filtered
@@ -102,6 +106,10 @@ clues = clues.merge(id_map, on="clue_id", how="left")
 
 # Step 2: join puzzle metadata on puzzle_id
 clues = clues.merge(puzzle_meta, on="puzzle_id", how="left")
+
+# Standard join: add wordplay metadata to clues_filtered
+wp_meta = pd.read_csv("data/wordplay_metadata.csv")
+clues = clues.merge(wp_meta, on="clue_id", how="left")
 
 # Standard join: add clue metadata to clues_filtered (future)
 clue_meta = pd.read_csv("data/clue_metadata.csv")

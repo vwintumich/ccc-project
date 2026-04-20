@@ -1,9 +1,9 @@
 # Workflow — ccc-project (Shared Pipeline)
 
-This document describes the two shared notebooks that sit upstream of all
-project components. Their outputs — `puzzle_metadata.csv` and
-`clues_filtered.csv` — are shared artifacts in `ccc-project/data/` and should
-not be regenerated without a documented reason.
+This document describes the shared notebooks that sit upstream of all
+project components. Their outputs — `puzzle_metadata.csv`,
+`clues_filtered.csv`, and `wordplay_metadata.csv` — are shared artifacts in
+`ccc-project/data/` and should not be regenerated without a documented reason.
 
 Component-specific workflows (WordNet filtering, phrase construction, model
 training) are documented in their respective `WORKFLOW.md` files.
@@ -19,10 +19,12 @@ ccc-project/
 │   ├── clues_raw.csv                  # Extracted from sqlite; shared input
 │   ├── puzzle_metadata.csv            # Produced by puzzle_metadata.ipynb
 │   ├── clues_filtered.csv             # Produced by structural_filtering.ipynb
+│   ├── wordplay_metadata.csv          # Produced by wordplay_metadata.ipynb
 │   └── publisher_lookup.csv           # Lookup table for metadata extraction
 ├── notebooks/
 │   ├── puzzle_metadata.ipynb          # Extracts publisher, series, setter, puzzle_no, clue_direction
-│   └── structural_filtering.ipynb     # Filters clues_raw.csv to valid CCC clues
+│   ├── structural_filtering.ipynb     # Filters clues_raw.csv to valid CCC clues
+│   └── wordplay_metadata.ipynb        # Algorithmically verifies wordplay types from surface + answer
 ├── DATA_RAW.md                        # Raw data schema and metadata extraction logic
 ├── custom_embedding_model/            # Active component
 ├── clue_misdirection/                 # Complete — do not modify
@@ -117,6 +119,49 @@ splits, or join puzzle metadata here. Do not output `clue`, `surface_normalized`
 these are either derivable on demand, belong in `puzzle_metadata.csv`, or are
 intermediate artifacts not needed downstream.
 
+## `wordplay_metadata.ipynb`
+
+**Notebook:** `notebooks/wordplay_metadata.ipynb`
+**Environment:** Local (CPU)
+**Inputs:** `data/clues_filtered.csv`
+**Output:** `data/wordplay_metadata.csv`
+
+Algorithmically verifies which wordplay types are structurally consistent with
+each clue's surface text and answer. This notebook is independent of
+`puzzle_metadata.ipynb` and `structural_filtering.ipynb` (though it reads the
+latter's output). Its output is a standalone file keyed on `clue_id` —
+downstream notebooks join it in when needed.
+
+These are *verifications*, not classifications: a `True` value means the
+structural pattern is detectable, not that the setter intended that wordplay
+type. A clue may match multiple types. All wordplay checks (except
+`double_def`) require `len(answer) >= 4` after stripping spaces and hyphens;
+shorter answers receive `False` to avoid false positives.
+
+Columns (all boolean except `clue_id`):
+
+| Column | Description |
+|--------|-------------|
+| `clue_id` | Join key — unique in this file; not unique in `clues_filtered.csv` |
+| `anagram_single_word` | Answer is an anagram (not reversed) of exactly one surface word |
+| `anagram_consec_words` | Answer is an anagram (not reversed) of 2+ consecutive surface words |
+| `hidden_fwd` | Answer appears as a forward substring in the concatenated surface (not as an exact standalone word) |
+| `hidden_rev` | Answer reversed appears as a substring in the concatenated surface (no exclusions) |
+| `selection_alt` | Alternating letters of some span in the surface spell the answer |
+| `selection_alt_rev` | Alternating letters of some span spell the answer reversed |
+| `selection_firsts` | First letters of consecutive surface words spell the answer |
+| `selection_firsts_rev` | First letters of consecutive words spell the answer reversed |
+| `selection_lasts` | Last letters of consecutive surface words spell the answer |
+| `selection_lasts_rev` | Last letters of consecutive words spell the answer reversed |
+| `double_def` | `clue_id` appears more than once in `clues_filtered.csv` |
+
+**Critical:** `clue_id` is unique in `wordplay_metadata.csv` (one row per
+original clue) but is not unique in `clues_filtered.csv`. When joining, expect
+wordplay metadata to repeat across double-definition rows — this is correct
+and expected, same as `puzzle_metadata.csv`.
+
+---
+
 ## `clue_utils.py`
 
 **File:** `notebooks/clue_utils.py` (importable from shared notebooks and
@@ -154,6 +199,7 @@ Document any changes in `DECISIONS.md`.
 |----------|----------|----------|
 | `puzzle_metadata.csv` | `puzzle_metadata.ipynb` | `ccc-project/data/` |
 | `clues_filtered.csv` | `structural_filtering.ipynb` | `ccc-project/data/` |
+| `wordplay_metadata.csv` | `wordplay_metadata.ipynb` | `ccc-project/data/` |
 | WordNet filtering, split assignment | Component notebooks | `<component>/data/` |
 | Phrase construction, embeddings, model training | Component notebooks | `<component>/data/` |
 
@@ -162,8 +208,8 @@ Document any changes in `DECISIONS.md`.
 ## Critical Rules
 
 - **Do not modify** `clues_raw.csv`, `data.sqlite3`, or `publisher_lookup.csv`.
-- **Do not regenerate** `puzzle_metadata.csv` or `clues_filtered.csv` without
-  a documented reason agreed on by the team.
+- **Do not regenerate** `puzzle_metadata.csv`, `clues_filtered.csv`, or
+  `wordplay_metadata.csv` without a documented reason agreed on by the team.
 - **Do not join** puzzle metadata into `clues_filtered.csv` at this stage.
   Downstream components join it in when and if needed.
 - **Do not modify** `clue_misdirection/` or `indicator_clustering/` — both
