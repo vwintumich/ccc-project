@@ -17,6 +17,7 @@ clue_misdirection/data/*
 data/*
 !data/id_map.csv
 !data/publisher_lookup.csv
+!data/wordplay_metadata.csv
 prompt_materials/
 
 # Python bytecode cache
