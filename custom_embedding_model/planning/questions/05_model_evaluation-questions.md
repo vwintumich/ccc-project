@@ -25,7 +25,7 @@ embedding) but **not** in `vocabulary_wndef_val.csv` (so it has no
 `g_stock/f_common_wndef_val.npy` or `g1/f_common_wndef_val.npy` row).
 
 Per Decision 8, `g1` embeddings cover the validation split only during
-iteration; full-dataset `g1` embeddings are deferred to Stage 6. So for
+iteration; full-dataset `g1` embeddings are deferred to Stage 7. So for
 ~41% of validation triplets, the negative cannot be resolved to a `g1`
 embedding at all.
 

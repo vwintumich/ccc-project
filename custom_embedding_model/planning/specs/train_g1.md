@@ -24,7 +24,7 @@ substantive change is the extraction method used in the training loop:
 
 Everything else must remain identical: CLI arguments, data loading, Dataset
 class, optimizer, scheduler, loss function, checkpointing, logging. This
-ensures the two models differ ONLY in extraction method, making the Stage 5
+ensures the two models differ ONLY in extraction method, making the Stage 5/6
 comparison clean.
 
 ## Inputs

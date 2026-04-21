@@ -93,7 +93,7 @@ Evaluation pairs assembled from clues_val.csv (47,933 rows):
 | g1 T=0 | 0.7146 | 0.7162 | 0.0698 | 0.5964 | 0.8265 |
 | g1 T=1 | 0.5906 | 0.5933 | 0.0707 | 0.4704 | 0.7020 |
 
-ATE preview (deferred to Stage 6):
+ATE preview (deferred to Stage 7):
 - g_stock ATE (mean of T=1 - T=0): -0.0632
 - g1 ATE      (mean of T=1 - T=0): -0.1240
 
@@ -113,7 +113,7 @@ Evaluation pairs assembled from clues_val.csv (47,933 rows):
 | g1 T=0 | 0.5901 | 0.5901 | 0.0807 | 0.4598 | 0.7230 |
 | g1 T=1 | 0.5474 | 0.5481 | 0.0708 | 0.4319 | 0.6625 |
 
-ATE preview (deferred to Stage 6):
+ATE preview (deferred to Stage 7):
 - g_stock ATE (mean of T=1 - T=0): -0.0091
 - g1 ATE      (mean of T=1 - T=0): -0.0427
 

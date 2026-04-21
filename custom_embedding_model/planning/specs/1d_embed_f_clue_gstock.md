@@ -10,7 +10,7 @@
 Encode all f_clue phrases from the full `clues_wn_filtered.csv` dataset using
 g_stock (unmodified CALE). This produces the f_clue embedding array and its
 companion index file, which are used by all downstream hypothesis testing
-(Stage 5). Computed once for g_stock and never regenerated unless the phrase
+(Stages 5 and 6). Computed once for g_stock and never regenerated unless the phrase
 file changes.
 
 ## Inputs

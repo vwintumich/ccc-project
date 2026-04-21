@@ -1,6 +1,6 @@
 # Spec: Stage 4 Embedding Verification
 
-**Stage:** 4 (verification, pre-Stage-5 gate)
+**Stage:** 4 (verification, pre-Stage-5/6 gate)
 **Notebook:** `notebooks/04_embedding_verification.ipynb`
 **Date:** 2026-04-14
 **Status:** Draft
@@ -9,7 +9,7 @@
 
 Verify that all four sets of validation embeddings (g_stock, g_stock_tokenspan,
 g1, g1_tokenspan) are correctly named and contain what they claim to contain,
-before proceeding to Stage 5 hypothesis testing.
+before proceeding to Stage 5 model evaluation.
 
 ### Background
 
@@ -146,8 +146,8 @@ This is the cross-f generalization question: the model was trained on wndef
 phrases, not wnex phrases. If g1 changes wnex embeddings substantially (low
 cosine vs g_stock), that hints at semantic generalization. If wnex embeddings
 barely move (high cosine vs g_stock), that hints at format-specific learning.
-This is a preview of the Step B analysis in Stage 5 — the notebook should
-note the observation but defer the full interpretation to Stage 5.
+This is a preview of the Step B analysis in Stages 5/6 — the notebook should
+note the observation but defer the full interpretation to Stages 5 and 6.
 
 ### §6 — Overall verdict
 

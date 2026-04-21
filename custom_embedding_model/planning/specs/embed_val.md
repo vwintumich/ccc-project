@@ -1,6 +1,6 @@
 # Spec: Validation-split embedding generation script
 
-**Stage:** 4 (also covers g_stock vocabulary embeddings needed for Stage 5)
+**Stage:** 4 (also covers g_stock vocabulary embeddings needed for Stages 5/6)
 **Script:** `scripts/embed_val.py` + `scripts/embed_val_gstock.sh` + `scripts/embed_val_g1.sh`
 **Date:** 2026-04-13
 **Status:** Draft
@@ -10,7 +10,7 @@
 Generate validation-split embeddings for a given model (g_stock or g_1) across
 all three phrase types: f_clue, f_common_wndef, and f_common_wnex. This is a
 single reusable script, run once per model, that produces the embedding arrays
-Stage 5 needs for ATE computation and cross-f generalization testing.
+Stages 5 and 6 need for ATE computation and cross-f generalization testing.
 
 ## Inputs
 

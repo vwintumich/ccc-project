@@ -61,11 +61,15 @@ Stage 2: Per-f phrase construction + coverage measurement
               └── embeddings/g1/f_<n>_val.npy
                     │
                     ▼
-    Stage 5: Hypothesis testing (shared comparison notebook)
+    Stage 5: Model evaluation (shared comparison notebook)
               └── FINDINGS.md entries
                     │
                     ▼
-    Stage 6: Final evaluation (locked — test split only)
+    Stage 6: Hypothesis testing (per-g investigation notebooks)
+              └── FINDINGS.md entries
+                    │
+                    ▼
+    Stage 7: Final evaluation (locked — test split only)
               └── FINDINGS.md entries
 ```
 
@@ -269,7 +273,7 @@ triplet dataset. Key parameters:
 - Log training loss at regular intervals
 
 Monitor training loss as a sanity check only — it does not tell you what the
-model learned. Scientific evaluation happens in Stage 5.
+model learned. Scientific evaluation happens in Stages 5 and 6.
 
 Save model weights to Google Drive ("Research Project - NLP CCC's", owned by
 Nathan). Commit `models/<g_name>/README.md` to the repo containing:
@@ -306,17 +310,16 @@ For f_clue:
 - Save `data/embeddings/<g_i>/f_clue_val_index.csv` (clue_id, definition, row)
 
 After the job completes, scp output files back to local machine before
-proceeding to Stage 5.
+proceeding to Stage 5 and Stage 6.
 
 Record runtime in FINDINGS.md alongside the vocabulary size, clue count, and
 Great Lakes partition used.
 
 ---
 
-## Stage 5: Hypothesis Testing
+## Stage 5: Model Evaluation
 
-**Primary notebook:** `notebooks/05_hypothesis_testing.ipynb`
-**Per-g exploration notebooks (optional):** `notebooks/05_explore_<g_name>.ipynb`
+**Primary notebook:** `notebooks/05_model_evaluation.ipynb`
 **Environment:** Local (CPU)
 **Inputs:** Embedding arrays from `data/embeddings/`
 **Outputs:** FINDINGS.md entries, figures in `outputs/figures/`
@@ -329,41 +332,66 @@ new sections for each new g_i.
 
 For each g_i, compute and record:
 
-**ATE on validation set:**
-For each (clue, definition, answer) pair in the validation split:
-- delta = cos_sim(g(f_clue(def)), g(f(ans))) − cos_sim(g(f(def)), g(f(ans)))
-- Report: mean delta, median delta, % pairs with negative delta, 95% CI
+**Validation triplet accuracy:**
+Using the g_i validation triplet file and full-vocabulary embeddings, compute
+the fraction of triplets where cos(anchor, positive) > cos(anchor, negative).
 
-Compare g_i against g_stock. A less negative ATE under g_i indicates the
-model is partially counteracting misdirection.
+**Collapse detection:**
+Random pairwise cosine similarity, embedding variance, and effective
+dimensionality (participation ratio) to characterize whether fine-tuning
+compressed the embedding space.
 
-**Cross-f generalization test (for g_1 specifically):**
-Compute cos_sim(g_1(f_common_wnex(word)), g_stock(f_common_wnex(word))) for
-validation-split wnex vocabulary words. Compare against g_stock baseline.
-If g_1 compresses f_common_wnex phrases (even though it was trained on
-f_common_wndef), that is evidence of semantic generalization. If not, that is
-evidence of format-specific overfitting.
+**T=0 and T=1 similarity distributions:**
+For each (clue, definition, answer) pair in the validation split, compute
+T=0 = cos_sim(g(f(def)), g(f(ans))) and T=1 = cos_sim(g(f_clue(def)),
+g(f(ans))). Report means, medians, and distributions. Decompose ATE into
+its T=0 and T=1 components — ATE changing confirms the model learned
+something; the components reveal what it learned.
 
-Report the size of the wnex subset alongside results.
+**Cross-f generalization test:**
+Compute triplet accuracy and T=0/T=1 distributions using wnex embeddings
+for words with valid f_common_wnex phrases. Compare against wndef results
+to assess whether the model learned format-specific or generalizable
+structure.
+
+**RSA (Representational Similarity Analysis):**
+Spearman correlation of pairwise cosine matrices between g_stock and g_i
+to measure how much fine-tuning reorganized the similarity structure.
 
 Record all numerical results in FINDINGS.md.
 
-### Per-g exploration notebooks
+---
 
-For deeper investigation of a specific g_i (neighborhood structure, which
+## Stage 6: Hypothesis Testing
+
+**Per-g investigation notebooks:** `notebooks/06_<g_name>_hypothesis_testing.ipynb`
+**Per-g exploration notebooks (optional):** `notebooks/06_explore_<g_name>.ipynb`
+**Environment:** Local (CPU)
+**Inputs:** Embedding arrays from `data/embeddings/`, design issue
+  documentation from `planning/`
+**Outputs:** FINDINGS.md entries, figures in `outputs/figures/`
+
+Stage 5 characterizes *what* a fine-tuned model did to the embedding space.
+Stage 6 investigates *why* — systematically testing whether identified design
+issues (in phrase construction, sense selection, triplet design, etc.)
+account for the observed empirical findings. Each investigation notebook
+is guided by a design document in `planning/` that maps specific design
+issues to specific empirical findings and proposes tests to connect them.
+
+For deeper exploration of a specific g_i (neighborhood structure, which
 words moved most, failure cases), create a separate notebook named
-`05_explore_<g_name>.ipynb`. Move to `notebooks/archive/` when done with
+`06_explore_<g_name>.ipynb`. Move to `notebooks/archive/` when done with
 that model.
 
 ---
 
-## Stage 6: Final Evaluation (Locked)
+## Stage 7: Final Evaluation (Locked)
 
 **Trigger:** A final g has been chosen and the decision documented in
 DECISIONS.md.
 
 **Script:** `scripts/embed_final_<g_name>.py` + corresponding `.sh`
-**Notebook:** `notebooks/06_final_evaluation.ipynb`
+**Notebook:** `notebooks/07_final_evaluation.ipynb`
 **Environment:** Embedding generation on Great Lakes (GPU); evaluation locally
 
 **Do not begin this stage until the final g is documented in DECISIONS.md.**
@@ -393,16 +421,17 @@ in FINDINGS.md.
 | `triplets/<g_name>.csv` + `_meta.json` | `triplets/` | 3 | Local |
 | Model weights | Google Drive | 3 | Great Lakes |
 | `embeddings/<g_i>/f_<n>_val.npy` | `embeddings/<g_i>/` | 4 | Great Lakes |
-| ATE results, figures | `outputs/` | 5 | Local |
-| Full-dataset embeddings for final g | `embeddings/<g_name>/` | 6 | Great Lakes |
-| Test-set evaluation | — | 6 | Local |
+| Model evaluation results, figures | `outputs/` | 5 | Local |
+| Hypothesis testing results, figures | `outputs/` | 6 | Local |
+| Full-dataset embeddings for final g | `embeddings/<g_name>/` | 7 | Great Lakes |
+| Test-set evaluation | — | 7 | Local |
 
 ---
 
 ## Critical Rules
 
 - **The test set is locked.** Do not load, inspect, or embed test-split data
-  until Stage 6, after the final g is chosen and documented in DECISIONS.md.
+  until Stage 7, after the final g is chosen and documented in DECISIONS.md.
 - **One split.** The 30/20/50 split is assigned once in Stage 1 on
   `clues_wn_filtered.csv`. All downstream datasets inherit it. Do not reassign.
 - **No fallbacks in f functions.** A word either has a valid phrase for a

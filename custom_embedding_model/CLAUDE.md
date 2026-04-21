@@ -203,10 +203,13 @@ work in this component.
   Negative), where the Anchor is always g_stock(f_clue(definition)). `T_1`
   denotes the initial triplet design from NB 09.
 
-- **ATE (Average Treatment Effect)** — the primary evaluation measure:
-  mean(cos_sim(g(f_clue(def)), g(f(ans))) − cos_sim(g(f(def)), g(f(ans))))
-  across validation pairs. A negative ATE indicates misdirection. We want the
-  ATE to become *less negative* under a well-trained g.
+- **ATE (Average Treatment Effect)** — a diagnostic measure decomposable into
+  T=0 (decontextualized similarity) and T=1 (clue-contextualized similarity):
+  ATE = mean(T=1 − T=0) = mean(cos_sim(g(f_clue(def)), g(f(ans))) −
+  cos_sim(g(f(def)), g(f(ans)))). A negative ATE indicates misdirection. ATE
+  changing under a fine-tuned g confirms the model learned something; the T=0
+  and T=1 components reveal *what* it learned. Always interpret ATE through
+  its components, not as a standalone optimization target.
 
 - **`clue`** — the raw clue text including the answer format in parentheses,
   e.g., "Plant in a garden party (5)"

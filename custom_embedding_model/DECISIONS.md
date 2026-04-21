@@ -117,7 +117,7 @@ to the existing `.npy` and index files. Do not regenerate existing rows.
 **Choice:** During the iterative model development phase, embedding generation
 for fine-tuned models (g_1, g_2, etc.) covers the validation split only. Full-
 dataset embeddings for a fine-tuned model are generated only after it is
-selected as the final model (Stage 6).
+selected as the final model (Stage 7).
 
 **Rationale:** Embedding generation takes 6–8 hours on Great Lakes. Generating
 only validation-split embeddings during iteration avoids spending GPU time on
@@ -439,7 +439,7 @@ generate only the full-vocabulary versions — no `_val` variants.
 include the clue's surface text and are keyed by (clue_id, definition).
 Embedding test-split clues during iteration would violate the test-set
 lockout (Decision 9). Full f_clue embeddings are generated only for the
-final model (Stage 6).
+final model (Stage 7).
 
 **Rationale:** Vocabulary-indexed embeddings are cheap (~3 minutes for
 53K words on a V100) and carry no test-set evaluation signal — they embed

@@ -42,8 +42,12 @@ Margin: α = 1.0. Mixed precision, gradient accumulation.
 The ATE is defined as:
 mean(cos_sim(g(f_clue(def)), g(f(ans))) − cos_sim(g(f(def)), g(f(ans))))
 
-A negative ATE indicates misdirection. The hypothesis was that g_1 would show
-a *less negative* ATE than g_stock. The opposite occurred.
+A negative ATE indicates misdirection. The original NB 09 analysis (Nathan)
+framed the hypothesis as expecting g_1 to show a less negative ATE than
+g_stock. In retrospect, ATE is better understood as a decomposable diagnostic:
+changes in ATE confirm the model learned something, but the T=0 and T=1
+components reveal what it learned. The results below are most informative
+when read through the T=0/T=1 breakdown.
 
 | Metric | g_stock | g_1 |
 |--------|---------|-----|
@@ -561,7 +565,7 @@ Max off-diagonal mean cosine across all three matrices: 0.9212
 Fine-tuning moved embeddings dramatically across all three phrase types, not
 just the wndef phrases the model was trained on. Whether this reflects
 compression (format-specific overfitting) or semantic reorganization is
-deferred to Stage 5.
+deferred to Stage 5 and Stage 6.
 
 Full pairwise matrices and per-pair detail tables in
 `outputs/04_embedding_verification-results.md`.
@@ -702,7 +706,8 @@ Full numerical results in `outputs/05_model_evaluation-results.md`.
 ## Exploration: ATE Breakdown by Wordplay Type
 
 **Notebook:** `planning/exploration/wordplay_ate_breakdown.ipynb` — completed
-2026-04-20
+2026-04-20, revised 2026-04-20 to add T=0/T=1 component decomposition with
+Welch CIs
 **Environment:** Local (CPU)
 **Scope:** Canonical mean-pooling models (g_stock and g1), wndef embeddings
 only, validation split.
@@ -759,6 +764,43 @@ mechanism — decomposing the ATE shift into T=0 and T=1 components shows
 that T=0 (decontextualized, no access to the clue surface) accounts for
 most of the between-category variation.
 
+### T=0 and T=1 component decomposition (revision)
+
+Added 2026-04-20. Welch-style 95% CIs on the difference of component
+means between categories, testing whether T=0 and T=1 differences are
+statistically significant.
+
+**Structural (double_def − standard):**
+
+| Component | g_stock diff [95% CI] | g1 diff [95% CI] |
+|-----------|----------------------|-----------------|
+| T=0 | −0.120 [−0.125, −0.114] | −0.018 [−0.020, −0.016] |
+| T=1 | −0.073 [−0.078, −0.068] | +0.014 [+0.012, +0.017] |
+
+All four CIs exclude zero. Under g_stock, double-def clues have
+significantly lower T=0 and T=1 than standard clues. Under g1, the T=0
+gap nearly vanishes (compression), and the T=1 difference flips:
+double-def clues show significantly *higher* clue-contextualized
+similarity than standard clues.
+
+**Letterplay (each type − no_letterplay, T=1 only, well-powered types):**
+
+| Category | N | g_stock T=1 diff [95% CI] | excludes 0? | g1 T=1 diff [95% CI] | excludes 0? |
+|----------|---|--------------------------|-------------|---------------------|-------------|
+| anagram_consec | 2,101 | +0.035 [+0.028, +0.042] | yes | +0.035 [+0.032, +0.038] | yes |
+| hidden_fwd | 1,494 | −0.003 [−0.012, +0.005] | no | +0.032 [+0.029, +0.035] | yes |
+| anagram_single | 557 | +0.007 [−0.006, +0.021] | no | +0.036 [+0.030, +0.042] | yes |
+| hidden_rev | 412 | +0.003 [−0.014, +0.019] | no | +0.015 [+0.009, +0.022] | yes |
+| selection_firsts | 237 | +0.011 [−0.010, +0.032] | no | +0.019 [+0.010, +0.029] | yes |
+| selection_alt | 189 | +0.001 [−0.024, +0.027] | no | +0.027 [+0.017, +0.036] | yes |
+
+Under g_stock, most letterplay types show no significant T=1 difference
+from no_letterplay (exception: anagram_consec). Under g1, every
+well-powered letterplay type shows significantly higher T=1 than
+no_letterplay. T=0 differences mostly converge under g1 due to
+compression, so this pattern is driven by the clue-contextualized
+component.
+
 ### Figures
 
 - `outputs/figures/wp_cooccurrence_heatmap.png`
@@ -766,11 +808,20 @@ most of the between-category variation.
 - `outputs/figures/wp_ate_individual_letterplay.png`
 - `outputs/figures/wp_ate_grouped_letterplay.png`
 - `outputs/figures/wp_double_def_comparison.png`
+- `outputs/figures/wp_t0_t1_structural.png`
+- `outputs/figures/wp_t0_t1_individual_letterplay.png`
 
 Full numerical results in `outputs/wordplay_ate_breakdown-results.md`.
 
 ---
 
-## Stage 6: Final Evaluation
+## Stage 6: Hypothesis Testing (NB 06)
+
+*Not yet begun. See `planning/g1_investigation_design.md` for the
+investigation plan.*
+
+---
+
+## Stage 7: Final Evaluation
 
 *Locked — do not populate until final g is chosen and documented in DECISIONS.md.*

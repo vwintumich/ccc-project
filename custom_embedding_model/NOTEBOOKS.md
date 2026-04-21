@@ -187,7 +187,7 @@ to confirm no accidental duplicates. Does not produce new data artifacts.
 
 ---
 
-### Stage 5
+### Stage 5: Model Evaluation
 
 | Notebook | Status | Environment | Reads | Writes |
 |----------|--------|-------------|-------|--------|
@@ -209,11 +209,23 @@ See DATA.md for the ATE computation formula and rowwise cosine implementation.
 
 ---
 
-### Stage 6 (Locked)
+### Stage 6: Hypothesis Testing
 
 | Notebook | Status | Environment | Reads | Writes |
 |----------|--------|-------------|-------|--------|
-| `06_final_evaluation.ipynb` | ❌ | Local | Full-dataset embeddings for final g | FINDINGS.md entries |
+| `06_g1_hypothesis_testing.ipynb` | ❌ | Local | Embedding arrays, phrase files, vocabulary files, clue data | `outputs/06_g1_hypothesis_testing-results.md`, `outputs/figures/` |
+
+Guided by `planning/g1_investigation_design.md`. Systematically tests whether
+identified design issues in g1's phrase construction, sense selection, and
+triplet design account for the empirical findings from Stage 5.
+
+---
+
+### Stage 7: Final Evaluation (Locked)
+
+| Notebook | Status | Environment | Reads | Writes |
+|----------|--------|-------------|-------|--------|
+| `07_final_evaluation.ipynb` | ❌ | Local | Full-dataset embeddings for final g | FINDINGS.md entries |
 | `scripts/embed_final_<g_name>.py` | ❌ | Great Lakes (GPU) | Model weights, all phrase files | Full-dataset embedding arrays |
 
 **Do not create or run until final g is chosen and documented in DECISIONS.md.**

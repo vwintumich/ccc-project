@@ -11,7 +11,7 @@
 Revise `embed_val.py` to support two embedding extraction methods via a
 `--pooling` flag: `meanpool` (canonical CALE usage per Decision 20) and
 `tokenspan` (NB 09 historical method). This single script serves all four
-embedding runs needed for Stage 5 hypothesis testing.
+embedding runs needed for Stage 5 model evaluation.
 
 ## Context
 
