@@ -1,6 +1,6 @@
 # Wordplay ATE Breakdown — Results
 
-Generated: 2026-04-19  
+Generated: 2026-04-20  
 Notebook: `planning/exploration/wordplay_ate_breakdown.ipynb`  
 Random seed: 42  
 Bootstrap samples: 1000  
@@ -97,6 +97,64 @@ CI = 95% bootstrap CI on mean Δ. `small_n` marks categories with fewer than 50 
 
 - standard   (n=43,403): mean Δ = -0.1271, median Δ = -0.1260, % Δ<0 = 94.1%
 - double_def (n=4,530): mean Δ = -0.0948, median Δ = -0.0959, % Δ<0 = 86.5%
+
+## T=0 and T=1 component differences: structural
+
+95% Welch CI on the difference of component means: `double_def − standard`. `excludes_zero` = yes when the CI does not contain 0.
+
+| component | model | n_dd | n_std | mean_dd | mean_std | diff | ci_lo | ci_hi | excludes_zero |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| t0 | g_stock | 4,530 | 43,403 | +0.4680 | +0.5875 | -0.1195 | -0.1247 | -0.1144 | yes |
+| t0 | g1 | 4,530 | 43,403 | +0.6984 | +0.7163 | -0.0179 | -0.0201 | -0.0157 | yes |
+| t1 | g_stock | 4,530 | 43,403 | +0.4467 | +0.5199 | -0.0732 | -0.0780 | -0.0684 | yes |
+| t1 | g1 | 4,530 | 43,403 | +0.6036 | +0.5892 | +0.0144 | +0.0123 | +0.0165 | yes |
+
+## T=0 and T=1 component differences: individual letterplay
+
+95% Welch CI on the difference of component means: each letterplay type − `no_letterplay` (standard clues only). Rows ordered by descending N_type. `small_n` marks categories with fewer than 50 rows.
+
+| category | component | model | n_type | n_baseline | mean_type | mean_baseline | diff | ci_lo | ci_hi | excludes_zero | small_n |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| anagram_consec | t0 | g1 | 2,101 | 38,368 | +0.7119 | +0.7163 | -0.0045 | -0.0076 | -0.0013 | yes |  |
+| anagram_consec | t0 | g_stock | 2,101 | 38,368 | +0.6238 | +0.5861 | +0.0377 | +0.0304 | +0.0449 | yes |  |
+| anagram_consec | t1 | g1 | 2,101 | 38,368 | +0.6202 | +0.5856 | +0.0346 | +0.0318 | +0.0375 | yes |  |
+| anagram_consec | t1 | g_stock | 2,101 | 38,368 | +0.5531 | +0.5182 | +0.0348 | +0.0282 | +0.0415 | yes |  |
+| hidden_fwd | t0 | g1 | 1,494 | 38,368 | +0.7195 | +0.7163 | +0.0031 | -0.0004 | +0.0067 |  |  |
+| hidden_fwd | t0 | g_stock | 1,494 | 38,368 | +0.5745 | +0.5861 | -0.0116 | -0.0206 | -0.0025 | yes |  |
+| hidden_fwd | t1 | g1 | 1,494 | 38,368 | +0.6176 | +0.5856 | +0.0320 | +0.0287 | +0.0353 | yes |  |
+| hidden_fwd | t1 | g_stock | 1,494 | 38,368 | +0.5150 | +0.5182 | -0.0032 | -0.0117 | +0.0053 |  |  |
+| anagram_single | t0 | g1 | 557 | 38,368 | +0.7238 | +0.7163 | +0.0074 | +0.0012 | +0.0136 | yes |  |
+| anagram_single | t0 | g_stock | 557 | 38,368 | +0.5923 | +0.5861 | +0.0062 | -0.0081 | +0.0204 |  |  |
+| anagram_single | t1 | g1 | 557 | 38,368 | +0.6217 | +0.5856 | +0.0361 | +0.0303 | +0.0419 | yes |  |
+| anagram_single | t1 | g_stock | 557 | 38,368 | +0.5255 | +0.5182 | +0.0072 | -0.0061 | +0.0206 |  |  |
+| hidden_rev | t0 | g1 | 412 | 38,368 | +0.7099 | +0.7163 | -0.0064 | -0.0126 | -0.0002 | yes |  |
+| hidden_rev | t0 | g_stock | 412 | 38,368 | +0.5810 | +0.5861 | -0.0051 | -0.0222 | +0.0120 |  |  |
+| hidden_rev | t1 | g1 | 412 | 38,368 | +0.6010 | +0.5856 | +0.0154 | +0.0087 | +0.0220 | yes |  |
+| hidden_rev | t1 | g_stock | 412 | 38,368 | +0.5209 | +0.5182 | +0.0027 | -0.0135 | +0.0189 |  |  |
+| selection_firsts | t0 | g1 | 237 | 38,368 | +0.7194 | +0.7163 | +0.0031 | -0.0046 | +0.0108 |  |  |
+| selection_firsts | t0 | g_stock | 237 | 38,368 | +0.5868 | +0.5861 | +0.0007 | -0.0208 | +0.0222 |  |  |
+| selection_firsts | t1 | g1 | 237 | 38,368 | +0.6051 | +0.5856 | +0.0194 | +0.0104 | +0.0285 | yes |  |
+| selection_firsts | t1 | g_stock | 237 | 38,368 | +0.5291 | +0.5182 | +0.0109 | -0.0096 | +0.0315 |  |  |
+| selection_alt | t0 | g1 | 189 | 38,368 | +0.7197 | +0.7163 | +0.0034 | -0.0060 | +0.0127 |  |  |
+| selection_alt | t0 | g_stock | 189 | 38,368 | +0.5740 | +0.5861 | -0.0121 | -0.0391 | +0.0149 |  |  |
+| selection_alt | t1 | g1 | 189 | 38,368 | +0.6123 | +0.5856 | +0.0267 | +0.0172 | +0.0362 | yes |  |
+| selection_alt | t1 | g_stock | 189 | 38,368 | +0.5194 | +0.5182 | +0.0012 | -0.0244 | +0.0269 |  |  |
+| selection_lasts | t0 | g1 | 29 | 38,368 | +0.7049 | +0.7163 | -0.0115 | -0.0361 | +0.0131 |  | yes |
+| selection_lasts | t0 | g_stock | 29 | 38,368 | +0.5717 | +0.5861 | -0.0144 | -0.0640 | +0.0351 |  | yes |
+| selection_lasts | t1 | g1 | 29 | 38,368 | +0.5733 | +0.5856 | -0.0123 | -0.0332 | +0.0087 |  | yes |
+| selection_lasts | t1 | g_stock | 29 | 38,368 | +0.5045 | +0.5182 | -0.0137 | -0.0643 | +0.0369 |  | yes |
+| selection_alt_rev | t0 | g1 | 25 | 38,368 | +0.7382 | +0.7163 | +0.0218 | -0.0028 | +0.0465 |  | yes |
+| selection_alt_rev | t0 | g_stock | 25 | 38,368 | +0.5712 | +0.5861 | -0.0149 | -0.0748 | +0.0450 |  | yes |
+| selection_alt_rev | t1 | g1 | 25 | 38,368 | +0.5990 | +0.5856 | +0.0134 | -0.0150 | +0.0417 |  | yes |
+| selection_alt_rev | t1 | g_stock | 25 | 38,368 | +0.5124 | +0.5182 | -0.0058 | -0.0727 | +0.0611 |  | yes |
+| selection_firsts_rev | t0 | g1 | 5 | 38,368 | +0.6663 | +0.7163 | -0.0501 | -0.1218 | +0.0217 |  | yes |
+| selection_firsts_rev | t0 | g_stock | 5 | 38,368 | +0.4653 | +0.5861 | -0.1208 | -0.3001 | +0.0585 |  | yes |
+| selection_firsts_rev | t1 | g1 | 5 | 38,368 | +0.5726 | +0.5856 | -0.0130 | -0.0955 | +0.0694 |  | yes |
+| selection_firsts_rev | t1 | g_stock | 5 | 38,368 | +0.4686 | +0.5182 | -0.0497 | -0.2083 | +0.1089 |  | yes |
+| selection_lasts_rev | t0 | g1 | 4 | 38,368 | +0.7483 | +0.7163 | +0.0319 | +0.0149 | +0.0489 | yes | yes |
+| selection_lasts_rev | t0 | g_stock | 4 | 38,368 | +0.4528 | +0.5861 | -0.1333 | -0.3175 | +0.0508 |  | yes |
+| selection_lasts_rev | t1 | g1 | 4 | 38,368 | +0.5355 | +0.5856 | -0.0501 | -0.0828 | -0.0175 | yes | yes |
+| selection_lasts_rev | t1 | g_stock | 4 | 38,368 | +0.3751 | +0.5182 | -0.1431 | -0.2348 | -0.0515 | yes | yes |
 
 ## Version stamps
 
