@@ -1,0 +1,51 @@
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loading model: models/g1/model ...
+Model loaded in 3.4s
+Hidden dim: 1024
+
+Loading vocabulary: data/filtered_split/wn_synset/wnex/vocabulary_wnex.csv
+  Vocabulary size: 8,360
+Loading phrases:    data/filtered_split/wn_synset/wnex/f_common_wnex.csv
+
+Encoding 8,360 f_common_wnex phrases (batch_size=64, pooling=meanpool) ...
+    encoded 64 / 8,360
+    encoded 1,344 / 8,360
+    encoded 2,624 / 8,360
+    encoded 3,904 / 8,360
+    encoded 5,184 / 8,360
+    encoded 6,464 / 8,360
+    encoded 7,744 / 8,360
+  Encoded in 22.0s (379 phrases/sec)
+
+  [f_common_wnex] shape=(8360, 1024), dtype=float32, L2 norm range=[25.5698, 31.4078]
+
+Saved: data/embeddings/g1/f_common_wnex.npy
+
+========================================================================
+SUMMARY
+========================================================================
+Model path:        models/g1/model
+Pooling method:    meanpool
+Vocab file:        data/filtered_split/wn_synset/wnex/vocabulary_wnex.csv
+Phrase file:       data/filtered_split/wn_synset/wnex/f_common_wnex.csv
+Vocabulary size:   8,360
+Rows embedded:     8,360
+Encoding time:     22.0s
+  data/embeddings/g1/f_common_wnex.npy  (32.7 MB)
+Total runtime:     25.8s (0.4 min)
+GPU:               Tesla V100-PCIE-16GB
+========================================================================

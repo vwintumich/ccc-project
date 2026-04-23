@@ -1,0 +1,58 @@
+{
+  "checkpoint_dir": "models/g1",
+  "val_triplets": "data/triplets/g1_val.csv",
+  "model_name": "gabrielloiseau/CALE-MBERT-en",
+  "batch_size": 32,
+  "margin": 1.0,
+  "max_length": 128,
+  "n_val_triplets": 46506,
+  "per_epoch": [
+    {
+      "checkpoint": "model_epoch1.pt",
+      "n_triplets": 46506,
+      "val_loss": 0.30456369082058,
+      "val_accuracy": 0.8721240270072679,
+      "val_mean_margin": 0.053396204774781554,
+      "val_median_margin": 0.050326377153396606,
+      "eval_seconds": 384.4679560661316,
+      "epoch": 1,
+      "train_loss": 0.4703312352265592
+    },
+    {
+      "checkpoint": "model_epoch2.pt",
+      "n_triplets": 46506,
+      "val_loss": 0.25206568057374923,
+      "val_accuracy": 0.8965939878725325,
+      "val_mean_margin": 0.08839714140775244,
+      "val_median_margin": 0.08457115292549133,
+      "eval_seconds": 370.728298664093,
+      "epoch": 2,
+      "train_loss": 0.1114161485256265
+    },
+    {
+      "checkpoint": "model_epoch3.pt",
+      "n_triplets": 46506,
+      "val_loss": 0.2642481838389145,
+      "val_accuracy": 0.8995828495247925,
+      "val_mean_margin": 0.12485626256957298,
+      "val_median_margin": 0.12152674794197083,
+      "eval_seconds": 370.62835216522217,
+      "epoch": 3,
+      "train_loss": 0.013655800486593006
+    }
+  ],
+  "per_epoch_train_loss": [
+    0.4703312352265592,
+    0.1114161485256265,
+    0.013655800486593006
+  ],
+  "total_runtime_seconds": 1126.1605503559113,
+  "versions": {
+    "python": "3.12.12",
+    "torch": "2.5.1+cu121",
+    "transformers": "4.57.6",
+    "numpy": "2.3.5",
+    "pandas": "3.0.0",
+    "cuda": "12.1"
+  }
+}

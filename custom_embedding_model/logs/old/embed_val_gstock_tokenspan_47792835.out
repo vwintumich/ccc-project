@@ -1,0 +1,146 @@
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loading model: gabrielloiseau/CALE-MBERT-en ...
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: 3b9cec9b-f7d3-4686-b5f2-4d27e8d364cc)')' thrown while requesting HEAD https://huggingface.co/gabrielloiseau/CALE-MBERT-en/resolve/main/config.json
+Retrying in 1s [Retry 1/5].
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: dfaf9d7f-ff6d-4e31-aef3-8d0c81689f39)')' thrown while requesting HEAD https://huggingface.co/gabrielloiseau/CALE-MBERT-en/resolve/main/config.json
+Retrying in 2s [Retry 2/5].
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: ba6b0f45-05ca-4b58-8c31-949588f12082)')' thrown while requesting HEAD https://huggingface.co/gabrielloiseau/CALE-MBERT-en/resolve/main/config.json
+Retrying in 4s [Retry 3/5].
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: fdbc9b5a-02b5-46dc-9b15-4eda81892b25)')' thrown while requesting HEAD https://huggingface.co/gabrielloiseau/CALE-MBERT-en/resolve/main/config.json
+Retrying in 8s [Retry 4/5].
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: dd0e8698-48f7-4e1e-b80d-e2f39ac1b84c)')' thrown while requesting HEAD https://huggingface.co/gabrielloiseau/CALE-MBERT-en/resolve/main/config.json
+Retrying in 8s [Retry 5/5].
+Model loaded in 82.9s
+Hidden dim: 1024
+
+Consistency check skipped: tokenspan extraction is expected to differ from g_stock/f_clue.npy (produced with mean pooling).
+
+========================================================================
+(1/3) f_clue_val
+========================================================================
+Loading f_clue phrases from: data/filtered_split/wn_synset/clue_phrases/f_clue.csv
+  Total rows: 239,406; validation rows: 47,933
+Encoding 47,933 f_clue_val phrases (batch_size=64, pooling=tokenspan) ...
+    encoded 64 / 47,933
+    encoded 1,344 / 47,933
+    encoded 2,624 / 47,933
+    encoded 3,904 / 47,933
+    encoded 5,184 / 47,933
+    encoded 6,464 / 47,933
+    encoded 7,744 / 47,933
+    encoded 9,024 / 47,933
+    encoded 10,304 / 47,933
+    encoded 11,584 / 47,933
+    encoded 12,864 / 47,933
+    encoded 14,144 / 47,933
+    encoded 15,424 / 47,933
+    encoded 16,704 / 47,933
+    encoded 17,984 / 47,933
+    encoded 19,264 / 47,933
+    encoded 20,544 / 47,933
+    encoded 21,824 / 47,933
+    encoded 23,104 / 47,933
+    encoded 24,384 / 47,933
+    encoded 25,664 / 47,933
+    encoded 26,944 / 47,933
+    encoded 28,224 / 47,933
+    encoded 29,504 / 47,933
+    encoded 30,784 / 47,933
+    encoded 32,064 / 47,933
+    encoded 33,344 / 47,933
+    encoded 34,624 / 47,933
+    encoded 35,904 / 47,933
+    encoded 37,184 / 47,933
+    encoded 38,464 / 47,933
+    encoded 39,744 / 47,933
+    encoded 41,024 / 47,933
+    encoded 42,304 / 47,933
+    encoded 43,584 / 47,933
+    encoded 44,864 / 47,933
+    encoded 46,144 / 47,933
+    encoded 47,424 / 47,933
+  Encoded in 90.6s (529 phrases/sec)
+  [f_clue_val] shape=(47933, 1024), dtype=float32, L2 norm range=[23.9008, 38.1381]
+Saved: data/embeddings/g_stock_tokenspan/f_clue_val.npy
+Saved: data/embeddings/g_stock_tokenspan/f_clue_val_index.csv
+
+========================================================================
+(2/3) f_common_wndef_val
+========================================================================
+Loading vocabulary: data/filtered_split/wn_synset/wndef/vocabulary_wndef_val.csv
+  Vocabulary size: 26,152
+Loading phrases: data/filtered_split/wn_synset/wndef/f_common_wndef.csv
+Encoding 26,152 f_common_wndef_val phrases (batch_size=64, pooling=tokenspan) ...
+    encoded 64 / 26,152
+    encoded 1,344 / 26,152
+    encoded 2,624 / 26,152
+    encoded 3,904 / 26,152
+    encoded 5,184 / 26,152
+    encoded 6,464 / 26,152
+    encoded 7,744 / 26,152
+    encoded 9,024 / 26,152
+    encoded 10,304 / 26,152
+    encoded 11,584 / 26,152
+    encoded 12,864 / 26,152
+    encoded 14,144 / 26,152
+    encoded 15,424 / 26,152
+    encoded 16,704 / 26,152
+    encoded 17,984 / 26,152
+    encoded 19,264 / 26,152
+    encoded 20,544 / 26,152
+    encoded 21,824 / 26,152
+    encoded 23,104 / 26,152
+    encoded 24,384 / 26,152
+    encoded 25,664 / 26,152
+  Encoded in 80.8s (323 phrases/sec)
+  [f_common_wndef_val] shape=(26152, 1024), dtype=float32, L2 norm range=[23.8445, 37.8931]
+Saved: data/embeddings/g_stock_tokenspan/f_common_wndef_val.npy
+
+========================================================================
+(3/3) f_common_wnex_val
+========================================================================
+Loading vocabulary: data/filtered_split/wn_synset/wnex/vocabulary_wnex_val.csv
+  Vocabulary size: 3,008
+Loading phrases: data/filtered_split/wn_synset/wnex/f_common_wnex.csv
+Encoding 3,008 f_common_wnex_val phrases (batch_size=64, pooling=tokenspan) ...
+    encoded 64 / 3,008
+    encoded 1,344 / 3,008
+    encoded 2,624 / 3,008
+  Encoded in 5.6s (536 phrases/sec)
+  [f_common_wnex_val] shape=(3008, 1024), dtype=float32, L2 norm range=[24.1150, 37.9414]
+Saved: data/embeddings/g_stock_tokenspan/f_common_wnex_val.npy
+
+========================================================================
+SUMMARY
+========================================================================
+Model path:        gabrielloiseau/CALE-MBERT-en
+Output directory:  data/embeddings/g_stock_tokenspan
+Pooling method:    tokenspan
+Model load time:   82.9s
+f_clue_val:        (47933, 1024), encode 90.6s
+f_common_wndef_val:(26152, 1024), encode 80.8s
+f_common_wnex_val: (3008, 1024), encode 5.6s
+  f_clue_val.npy  (187.2 MB)
+  f_clue_val_index.csv  (0.9 MB)
+  f_common_wndef_val.npy  (102.2 MB)
+  f_common_wnex_val.npy  (11.8 MB)
+Total runtime:     262.3s (4.4 min)
+GPU:               Tesla V100-PCIE-16GB
+Python:            3.12.12
+torch:             2.5.1+cu121
+transformers:      4.57.6
+========================================================================

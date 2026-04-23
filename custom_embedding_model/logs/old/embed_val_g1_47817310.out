@@ -1,0 +1,35 @@
+/var/spool/slurmd.spool/job47817310/slurm_script: line 59: activate: No such file or directory
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loading model: models/g1/model ...
+Model loaded in 5.1s
+Hidden dim: 1024
+
+------------------------------------------------------------------------
+Consistency check: verifying meanpool extraction matches existing g_stock/f_clue.npy ...
+------------------------------------------------------------------------
+Sampling 200 phrases from g_stock/f_clue.npy for verification ...
+    encoded 64 / 200
+Re-embedded 200 phrases in 6.4s
+Cosine similarity: min=0.132770, mean=0.293917, max=0.450935
+Traceback (most recent call last):
+  File "/home/vwinters/ccc-project/custom_embedding_model/scripts/embed_val.py", line 699, in <module>
+    main()
+  File "/home/vwinters/ccc-project/custom_embedding_model/scripts/embed_val.py", line 621, in main
+    verify_consistency_with_gstock(model, tokenizer, device, args)
+  File "/home/vwinters/ccc-project/custom_embedding_model/scripts/embed_val.py", line 445, in verify_consistency_with_gstock
+    raise AssertionError(
+AssertionError: Consistency check FAILED: mean cosine similarity 0.293917 <= 0.999. Meanpool extraction does not match SentenceTransformer.encode() output for g_stock. This is a blocking issue — do not proceed.

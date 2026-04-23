@@ -1,0 +1,158 @@
+/var/spool/slurmd.spool/job47798929/slurm_script: line 44: activate: No such file or directory
+========================================================================
+Environment versions
+========================================================================
+Python:        3.12.12
+torch:         2.5.1+cu121
+transformers:  4.57.6
+numpy:         2.3.5
+pandas:        3.0.0
+CUDA build:    12.1
+CUDA runtime:  True
+========================================================================
+
+Device: cuda
+GPU:    Tesla V100-PCIE-16GB (15.8 GB VRAM)
+
+Loaded triplet file: data/triplets/g1.csv
+  Total rows: 69,921
+Triplet dataset: 69,921 rows
+Batches per epoch: 2,185 (batch size = 32)
+
+Loading model: gabrielloiseau/CALE-MBERT-en ...
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: cbfa6692-706a-4862-b8bb-0081d265d55a)')' thrown while requesting HEAD https://huggingface.co/gabrielloiseau/CALE-MBERT-en/resolve/main/tokenizer_config.json
+Retrying in 1s [Retry 1/5].
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: 779c8f64-93ec-4bd5-a5ab-1107a6cb6ee7)')' thrown while requesting HEAD https://huggingface.co/gabrielloiseau/CALE-MBERT-en/resolve/main/tokenizer_config.json
+Retrying in 2s [Retry 2/5].
+HTTP Error 503 thrown while requesting HEAD https://huggingface.co/gabrielloiseau/CALE-MBERT-en/resolve/main/tokenizer_config.json
+Retrying in 4s [Retry 3/5].
+HTTP Error 503 thrown while requesting HEAD https://huggingface.co/gabrielloiseau/CALE-MBERT-en/resolve/main/tokenizer_config.json
+Retrying in 8s [Retry 4/5].
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: faf3fe8c-231d-4992-a782-e6f7bfaf53d9)')' thrown while requesting HEAD https://huggingface.co/gabrielloiseau/CALE-MBERT-en/resolve/main/tokenizer_config.json
+Retrying in 8s [Retry 5/5].
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: 76772e7a-8d67-4bbf-a334-1f5688829bcc)')' thrown while requesting HEAD https://huggingface.co/gabrielloiseau/CALE-MBERT-en/resolve/main/tokenizer_config.json
+Model loaded in 69.1s
+Parameters:      394,781,696 total, 394,781,696 trainable
+Hidden dim:      1024
+
+Training configuration:
+  Learning rate:   2e-05
+  Weight decay:    0.01
+  Margin:          1.0
+  Epochs:          3
+  Grad accum:      1
+  Total steps:     6,555
+  Warmup steps:    655
+  Max length:      128
+  Seed:            42
+
+/home/vwinters/.conda/envs/nlp_env/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:224: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn(
+  Epoch 1 | Step   100 | Loss: 2.1157 | LR: 3.05e-06
+  Epoch 1 | Step   200 | Loss: 0.8244 | LR: 6.11e-06
+  Epoch 1 | Step   300 | Loss: 0.6961 | LR: 9.16e-06
+  Epoch 1 | Step   400 | Loss: 0.6005 | LR: 1.22e-05
+  Epoch 1 | Step   500 | Loss: 0.5006 | LR: 1.53e-05
+  Epoch 1 | Step   600 | Loss: 0.4625 | LR: 1.83e-05
+  Epoch 1 | Step   700 | Loss: 0.4192 | LR: 1.98e-05
+  Epoch 1 | Step   800 | Loss: 0.4014 | LR: 1.95e-05
+  Epoch 1 | Step   900 | Loss: 0.3771 | LR: 1.92e-05
+  Epoch 1 | Step  1000 | Loss: 0.3596 | LR: 1.88e-05
+  Epoch 1 | Step  1100 | Loss: 0.3305 | LR: 1.85e-05
+  Epoch 1 | Step  1200 | Loss: 0.3586 | LR: 1.82e-05
+  Epoch 1 | Step  1300 | Loss: 0.3169 | LR: 1.78e-05
+  Epoch 1 | Step  1400 | Loss: 0.3198 | LR: 1.75e-05
+  Epoch 1 | Step  1500 | Loss: 0.3047 | LR: 1.71e-05
+  Epoch 1 | Step  1600 | Loss: 0.3016 | LR: 1.68e-05
+  Epoch 1 | Step  1700 | Loss: 0.2882 | LR: 1.65e-05
+  Epoch 1 | Step  1800 | Loss: 0.2734 | LR: 1.61e-05
+  Epoch 1 | Step  1900 | Loss: 0.2855 | LR: 1.58e-05
+  Epoch 1 | Step  2000 | Loss: 0.2631 | LR: 1.54e-05
+  Epoch 1 | Step  2100 | Loss: 0.2640 | LR: 1.51e-05
+
+Epoch 1 complete: avg loss = 0.4703, time = 860s
+Saved checkpoint: models/g1/model_epoch1.pt
+  Epoch 2 | Step   100 | Loss: 0.1256 | LR: 1.45e-05
+  Epoch 2 | Step   200 | Loss: 0.1272 | LR: 1.41e-05
+  Epoch 2 | Step   300 | Loss: 0.1203 | LR: 1.38e-05
+  Epoch 2 | Step   400 | Loss: 0.1155 | LR: 1.35e-05
+  Epoch 2 | Step   500 | Loss: 0.1039 | LR: 1.31e-05
+  Epoch 2 | Step   600 | Loss: 0.1198 | LR: 1.28e-05
+  Epoch 2 | Step   700 | Loss: 0.1153 | LR: 1.24e-05
+  Epoch 2 | Step   800 | Loss: 0.1294 | LR: 1.21e-05
+  Epoch 2 | Step   900 | Loss: 0.1176 | LR: 1.18e-05
+  Epoch 2 | Step  1000 | Loss: 0.1211 | LR: 1.14e-05
+  Epoch 2 | Step  1100 | Loss: 0.1110 | LR: 1.11e-05
+  Epoch 2 | Step  1200 | Loss: 0.1111 | LR: 1.07e-05
+  Epoch 2 | Step  1300 | Loss: 0.1002 | LR: 1.04e-05
+  Epoch 2 | Step  1400 | Loss: 0.1002 | LR: 1.01e-05
+  Epoch 2 | Step  1500 | Loss: 0.1018 | LR: 9.73e-06
+  Epoch 2 | Step  1600 | Loss: 0.1022 | LR: 9.39e-06
+  Epoch 2 | Step  1700 | Loss: 0.0988 | LR: 9.05e-06
+  Epoch 2 | Step  1800 | Loss: 0.1128 | LR: 8.71e-06
+  Epoch 2 | Step  1900 | Loss: 0.1054 | LR: 8.37e-06
+  Epoch 2 | Step  2000 | Loss: 0.1000 | LR: 8.03e-06
+  Epoch 2 | Step  2100 | Loss: 0.1078 | LR: 7.69e-06
+
+Epoch 2 complete: avg loss = 0.1114, time = 869s
+Saved checkpoint: models/g1/model_epoch2.pt
+  Epoch 3 | Step   100 | Loss: 0.0179 | LR: 7.07e-06
+  Epoch 3 | Step   200 | Loss: 0.0199 | LR: 6.73e-06
+  Epoch 3 | Step   300 | Loss: 0.0152 | LR: 6.39e-06
+  Epoch 3 | Step   400 | Loss: 0.0138 | LR: 6.05e-06
+  Epoch 3 | Step   500 | Loss: 0.0160 | LR: 5.71e-06
+  Epoch 3 | Step   600 | Loss: 0.0146 | LR: 5.37e-06
+  Epoch 3 | Step   700 | Loss: 0.0109 | LR: 5.03e-06
+  Epoch 3 | Step   800 | Loss: 0.0129 | LR: 4.69e-06
+  Epoch 3 | Step   900 | Loss: 0.0156 | LR: 4.36e-06
+  Epoch 3 | Step  1000 | Loss: 0.0187 | LR: 4.02e-06
+  Epoch 3 | Step  1100 | Loss: 0.0145 | LR: 3.68e-06
+  Epoch 3 | Step  1200 | Loss: 0.0104 | LR: 3.34e-06
+  Epoch 3 | Step  1300 | Loss: 0.0117 | LR: 3.00e-06
+  Epoch 3 | Step  1400 | Loss: 0.0119 | LR: 2.66e-06
+  Epoch 3 | Step  1500 | Loss: 0.0117 | LR: 2.32e-06
+  Epoch 3 | Step  1600 | Loss: 0.0112 | LR: 1.98e-06
+  Epoch 3 | Step  1700 | Loss: 0.0140 | LR: 1.64e-06
+  Epoch 3 | Step  1800 | Loss: 0.0119 | LR: 1.31e-06
+  Epoch 3 | Step  1900 | Loss: 0.0139 | LR: 9.66e-07
+  Epoch 3 | Step  2000 | Loss: 0.0127 | LR: 6.27e-07
+  Epoch 3 | Step  2100 | Loss: 0.0097 | LR: 2.88e-07
+
+Epoch 3 complete: avg loss = 0.0137, time = 838s
+Saved checkpoint: models/g1/model_epoch3.pt
+
+Final model saved to: models/g1/model
+Training log saved to: models/g1/training_log.json
+
+========================================================================
+SUMMARY (copy into models/g1/README.md and FINDINGS.md)
+========================================================================
+Base model:      gabrielloiseau/CALE-MBERT-en
+Pooling method:  meanpool
+Triplet input:   data/triplets/g1.csv
+Training rows:   69,921
+Epochs:          3
+Batch size:      32
+Learning rate:   2e-05
+Margin:          1.0
+Weight decay:    0.01
+Grad accum:      1
+Warmup fraction: 0.1
+Seed:            42
+Per-epoch loss:  [0.4703312352265592, 0.1114161485256265, 0.013655800486593006]
+Total runtime:   2610s (43.5 min, 0.72 h)
+GPU:             Tesla V100-PCIE-16GB
+Python:          3.12.12
+torch:           2.5.1+cu121
+transformers:    4.57.6
+Output dir:      models/g1
+  model/config.json  (0.0 MB)
+  model/model.safetensors  (1506.0 MB)
+  model/special_tokens_map.json  (0.0 MB)
+  model/tokenizer.json  (3.4 MB)
+  model/tokenizer_config.json  (0.0 MB)
+  model_epoch1.pt  (4518.1 MB)
+  model_epoch2.pt  (4518.1 MB)
+  model_epoch3.pt  (4518.1 MB)
+  training_log.json  (0.0 MB)
+========================================================================
