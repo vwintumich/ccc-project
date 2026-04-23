@@ -209,13 +209,26 @@ See DATA.md for the ATE computation formula and rowwise cosine implementation.
 
 ---
 
+### Exploration (not part of numbered pipeline)
+
+| Notebook | Status | Environment | Reads | Writes |
+|----------|--------|-------------|-------|--------|
+| `planning/exploration/pos_wordnet_census.ipynb` | ✅ | Local | `vocabulary.csv`, `clues_wn_filtered.csv`, `clues_val.csv`, `g1_train.csv`, WordNet, spaCy | `outputs/pos_wordnet_census-results.md`, `outputs/pos_mismatch_examples.md`, 6 figures |
+| `planning/exploration/wordplay_ate_breakdown.ipynb` | ✅ | Local | `clues_val.csv`, `wordplay_metadata.csv`, val-only embeddings | `outputs/wordplay_ate_breakdown-results.md`, 7 figures |
+
+POS census characterizes sense selection reliability and noun dominance across
+vocabulary, training, and validation data. Wordplay ATE breakdown decomposes
+misdirection patterns by clue type (structural and letterplay).
+
+---
+
 ### Stage 6: Hypothesis Testing
 
 | Notebook | Status | Environment | Reads | Writes |
 |----------|--------|-------------|-------|--------|
 | `06_g1_hypothesis_testing.ipynb` | ❌ | Local | Embedding arrays, phrase files, vocabulary files, clue data | `outputs/06_g1_hypothesis_testing-results.md`, `outputs/figures/` |
 
-Guided by `planning/g1_investigation_design.md`. Systematically tests whether
+Guided by `planning/g1_investigation_design_v1.md` (v2 in progress). Systematically tests whether
 identified design issues in g1's phrase construction, sense selection, and
 triplet design account for the empirical findings from Stage 5.
 
@@ -259,6 +272,8 @@ complete. Name them `05_explore_<g_name>.ipynb` before archiving.
 | `train_g1_tokenspan.sh` | SLURM submission for above | Great Lakes |
 | `train_g1.py` | g1 fine-tuning (mean pooling — canonical) | Great Lakes (GPU) |
 | `train_g1.sh` | SLURM submission for above | Great Lakes |
+| `val_loss_from_checkpoints.py` | ✅ Compute validation loss from saved g1 epoch checkpoints (Decision 24) | Great Lakes (GPU) |
+| `val_loss_from_checkpoints.sh` | ✅ SLURM submission for above | Great Lakes |
 | `archive/embed_f_clue_gstock.py` + `.sh` | 📋 Archived — superseded by `embed_clue.py` | Great Lakes |
 | `archive/embed_val.py` + four `.sh` wrappers | 📋 Archived — superseded by `embed_clue.py` + `embed_vocab.py` | Great Lakes |
 

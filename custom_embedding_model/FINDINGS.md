@@ -341,11 +341,30 @@ g_stock (mean pooling) for a fair baseline.
 | Learning rate | 2e-5 |
 | Epochs | 3 |
 | Batch size | 32 |
-| Per-epoch loss | [0.470, 0.111, 0.014] |
+| Per-epoch training loss | [0.470, 0.111, 0.014] |
 | Great Lakes partition | gpu (Tesla V100-PCIE-16GB) |
 | Wall-clock runtime | 43.5 min (0.72 h) |
 | Date trained | 2026-04-14 |
 | Great Lakes path | models/g1/model/ |
+
+### Validation loss (retroactive, from epoch checkpoints)
+
+**Script:** `scripts/val_loss_from_checkpoints.py` — completed 2026-04-22
+**Validation triplets:** `data/triplets/g1_val.csv` (46,506 rows)
+
+| Epoch | Train Loss | Val Loss | Val Accuracy | Val Mean Margin |
+|-------|-----------|----------|--------------|-----------------|
+| 1 | 0.470 | 0.305 | 87.2% | 0.053 |
+| 2 | 0.111 | 0.252 | 89.7% | 0.088 |
+| 3 | 0.014 | 0.264 | 90.0% | 0.125 |
+
+**Key finding:** Classic overfitting pattern. Validation loss improved from
+epoch 1 to 2 (0.305 → 0.252) then increased at epoch 3 (0.264). Training
+loss dropped 19× below validation loss by epoch 3 (0.014 vs 0.264). The
+best-generalizing checkpoint was epoch 2. Validation accuracy gains from
+epoch 2 to 3 were minimal (+0.3 pp). Wall-clock runtime: 18.8 min.
+
+Results stored in `models/g1/val_loss_results.json`.
 
 ### Environment versions
 
@@ -815,10 +834,87 @@ Full numerical results in `outputs/wordplay_ate_breakdown-results.md`.
 
 ---
 
+## Exploration: POS and WordNet Sense Census
+
+**Notebook:** `planning/exploration/pos_wordnet_census.ipynb` — completed
+2026-04-21
+**Environment:** Local (CPU)
+
+Descriptive census of part-of-speech distributions and WordNet sense properties
+across the vocabulary, training triplets, and validation pairs. Establishes
+facts about the scale of design issues DI-2 (POS-biased sense selection) and
+DI-3 (unreliable frequency ordering).
+
+### Vocabulary POS and sense availability
+
+| Metric | Value |
+|--------|-------|
+| sense[0] POS: noun | 37,672 (69.9%) |
+| sense[0] POS: verb | 9,734 (18.0%) |
+| sense[0] POS: adj (a+s) | 5,262 (9.8%) |
+| sense[0] POS: adv | 1,262 (2.3%) |
+| Words with synsets in ≥2 POS categories | 11,311 (21.0%) |
+| Only-noun words | 28,525 (52.9%) |
+
+### Three-way sense reliability
+
+Replaces the binary reliable/arbitrary classification with a three-way
+scheme that correctly handles single-synset words:
+
+| Category | Count | Fraction |
+|----------|-------|----------|
+| Unambiguous (n_synsets == 1) | 25,258 | 46.8% |
+| Frequency-confirmed (multi-synset, sense[0] is max) | 10,733 | 19.9% |
+| Arbitrary (multi-synset, no frequency evidence) | 17,939 | 33.3% |
+
+**Key finding:** Nearly half the vocabulary (46.8%) has only one synset,
+making sense selection trivially correct. The scale of DI-2 and DI-3 is
+smaller than the binary classification suggested — only 33.3% of the
+vocabulary has genuinely arbitrary sense selection, not 72.6%.
+
+### Contextual POS tagging
+
+spaCy POS tagging of definitions within clue surfaces succeeded on 96.2–96.3%
+of rows. Contextual POS agreement with WordNet sense[0] POS: 77.7% (training),
+73.8% (validation). The gap reflects cases where the definition functions as
+a different part of speech in the clue surface than WordNet sense[0] assumes.
+
+### Training triplet composition
+
+| Metric | Value |
+|--------|-------|
+| Both positive and negative are nouns (sense[0]) | 43,147 (61.7%) |
+| All three wndef roles unambiguous or frequency-confirmed | 28,118 (40.2%) |
+| At least one role arbitrary | 41,803 (59.8%) |
+| Anchor contextual POS = noun | 62.0% |
+| Anchor WordNet sense[0] POS = noun | 79.2% |
+
+### Validation pair composition
+
+| Metric | Value |
+|--------|-------|
+| Noun-noun pairs (T=0, def sense[0] × ans sense[0]) | 32,477 (67.8%) |
+| Both roles unambiguous or frequency-confirmed | 31,452 (65.6%) |
+| Contextual def POS = noun | 61.5% |
+| WordNet def sense[0] POS = noun | 78.7% |
+
+### Figures
+
+- `outputs/figures/pos_vocab_distribution.png`
+- `outputs/figures/pos_triplet_composition.png`
+- `outputs/figures/pos_validation_composition.png`
+- `outputs/figures/pos_reliability_stacked.png`
+- `outputs/figures/sense_reliability_bars.png`
+- `outputs/figures/sense_disambiguation_potential.png`
+
+Full numerical results in `outputs/pos_wordnet_census-results.md`.
+
+---
+
 ## Stage 6: Hypothesis Testing (NB 06)
 
-*Not yet begun. See `planning/g1_investigation_design.md` for the
-investigation plan.*
+*Not yet begun. See `planning/g1_investigation_design_v1.md` for the current
+investigation plan (v2 in progress).*
 
 ---
 
