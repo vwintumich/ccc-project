@@ -3,7 +3,7 @@
 **Stage:** Exploration (not part of the numbered pipeline)
 **Notebook:** `planning/exploration/pos_wordnet_census.ipynb`
 **Date:** 2026-04-20
-**Status:** Draft
+**Status:** Approved
 
 ## Purpose
 
@@ -40,9 +40,11 @@ All paths relative to `custom_embedding_model/`.
 - `outputs/figures/pos_vocab_distribution.png` — vocabulary POS breakdown
   and sense reliability
 - `outputs/figures/pos_triplet_composition.png` — training triplet POS
-  composition by role
-- `outputs/figures/pos_mismatch_examples.md` — collected examples where
-  multi-word contextual POS could not be determined (for review)
+  composition by role (includes confusion-matrix heatmap for POS mismatch)
+- `outputs/figures/pos_validation_composition.png` — validation pair POS
+  composition and T=0/T=1 POS alignment
+- `outputs/pos_mismatch_examples.md` — collected examples where multi-word
+  contextual POS could not be determined (for review)
 
 ## Implementation Details
 
@@ -125,11 +127,12 @@ c) **Lemma count reliability:**
 d) **Visualization:**
    - Bar chart of sense[0] POS distribution (noun, verb, adj, adverb)
    - Histogram or CDF of `n_synsets` per word
-   - Stacked bar or crosstab heatmap: sense[0] POS × reliability
-     (reliable / arbitrary)
+   - Annotated heatmap: sense[0] POS (rows) × reliability category
+     (columns: reliable / arbitrary), cells annotated with counts and
+     colored by magnitude
 
    Save primary figure to `outputs/figures/pos_vocab_distribution.png`
-   (300 dpi).
+   (300 dpi). Use a multi-panel layout combining all three visualizations.
 
 ### §3 — Contextual POS of definitions in clue surfaces
 
@@ -186,8 +189,12 @@ stripping as NB 01, increasing the number of single-word definitions.
 
 Store the contextual POS assignments as a column that can be joined
 into both training triplet and validation pair analyses. Save the
-undetermined examples to `outputs/figures/pos_mismatch_examples.md`
-(despite the path — this is a text file for review, not a figure).
+undetermined examples to `outputs/pos_mismatch_examples.md`.
+
+**Runtime note:** POS-tagging all clue surfaces (~240K rows for the full
+dataset, or ~70K training + ~48K validation if done per-split) with spaCy
+may take several minutes. Use `nlp.pipe(surfaces, batch_size=1000)` for
+efficiency and time this step.
 
 ### §4 — POS of training triplets
 
@@ -245,7 +252,12 @@ d) **Sense reliability in training:**
 e) **Visualization:**
    - Grouped bar chart: POS distribution by triplet role
      (anchor-contextual, anchor-WordNet, positive, negative)
-   - Save to `outputs/figures/pos_triplet_composition.png` (300 dpi)
+   - Confusion-matrix heatmap for §4b: contextual POS (rows) × WordNet
+     sense[0] POS (columns), cells annotated with counts, colored by
+     magnitude. The diagonal represents agreement; off-diagonal cells
+     show the scale and direction of POS mismatches.
+   - Save to `outputs/figures/pos_triplet_composition.png` (300 dpi).
+     Use a multi-panel layout combining both visualizations.
 
 ### §5 — POS of validation pairs
 
@@ -286,6 +298,16 @@ d) **Sense reliability in evaluation:**
    - What fraction of pairs have both definition_wn and answer_wn with
      `has_nonzero_count == True`?
    - What fraction have at least one arbitrary-ordering word?
+
+e) **Visualization:**
+   - Annotated 2×2 heatmap for §5b: definition sense[0] POS (noun /
+     not-noun, rows) × answer sense[0] POS (noun / not-noun, columns),
+     cells annotated with counts and percentages of total pairs. This
+     communicates the noun-noun dominance pattern at a glance.
+   - Grouped bar chart: POS distribution by evaluation component
+     (contextualized definition, decontextualized definition, answer)
+   - Save to `outputs/figures/pos_validation_composition.png` (300 dpi).
+     Use a multi-panel layout combining both visualizations.
 
 ### §6 — Summary cell
 
