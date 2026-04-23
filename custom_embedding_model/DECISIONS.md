@@ -450,3 +450,33 @@ have prevented fair cross-f comparisons. Generating full-vocabulary
 embeddings by default eliminates these gaps for all future models. The
 same reasoning as Decision 22 applies, generalized from wnex to all
 vocabulary-indexed phrase types.
+
+---
+
+## Decision 24: Training Scripts Must Track Validation Loss
+
+**Choice:** Every model training script must compute and log validation
+loss at the end of each epoch. Specifically, the script must:
+
+1. Accept a `--val-input` argument pointing to the validation triplet file
+   (e.g., `g1_val.csv`)
+2. After each epoch, run a forward pass on the full validation set with
+   `model.eval()` and `torch.no_grad()` — same loss function, same margin,
+   same extraction method as training
+3. Log per-epoch validation loss alongside training loss to stdout and to
+   the structured training log (e.g., `training_log.json`)
+4. Save per-epoch model checkpoints (already standard — see `train_g1.py`)
+
+The summary table printed at the end of training must include both
+training and validation loss for each epoch, enabling immediate visual
+inspection for overfitting (validation loss plateauing or increasing while
+training loss decreases).
+
+**Rationale:** The g1 training script tracked training loss per epoch
+([0.470, 0.111, 0.014]) but did not compute validation loss, making it
+impossible to diagnose overfitting during or after training. This omission
+was identified during the g1 investigation design phase. Validation loss
+tracking is standard practice in supervised learning and must not be
+omitted in future training runs. For g1, validation loss was computed
+retroactively from saved epoch checkpoints
+(`scripts/val_loss_from_checkpoints.py`).

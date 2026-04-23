@@ -366,6 +366,14 @@ notebooks. Each script should:
 - Save outputs atomically (write to a temp path, then rename) to avoid
   partial files if a job is killed
 
+**Training scripts** must additionally (per Decision 24):
+- Accept a `--val-input` argument for the validation triplet file
+- Compute validation loss at the end of each epoch (same loss function,
+  `model.eval()`, `torch.no_grad()`)
+- Log both training and validation loss per epoch to stdout and to the
+  structured training log
+- Save per-epoch model checkpoints
+
 After a GPU job completes, scp the output files back locally before proceeding
 with analysis notebooks.
 
