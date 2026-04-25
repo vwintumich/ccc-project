@@ -231,11 +231,11 @@ cover the validation split only. Embedding dimension is always 1024.
 ### Naming Convention
 
 ```
-embeddings/<g_name>/f_<sense>_<construction>.npy        # full scope
-embeddings/<g_name>/f_<sense>_<construction>_val.npy    # validation only
-embeddings/<g_name>/f_clue.npy                          # full clues_wn scope
-embeddings/<g_name>/f_clue.npy                          # same
-embeddings/<g_name>/f_clue_val.npy                      # validation clues only
+embeddings/<g_name>/f_<sense>_<construction>.npy        # full vocabulary
+embeddings/<g_name>/f_<sense>_<construction>_val.npy    # validation vocab only (legacy)
+embeddings/<g_name>/f_clue.npy                          # full clues_wn scope (final model only)
+embeddings/<g_name>/f_clue_train.npy                    # training-split clues (Decision 25)
+embeddings/<g_name>/f_clue_val.npy                      # validation-split clues
 ```
 
 ### Vocabulary-based embedding files
@@ -275,6 +275,7 @@ Always accompanied by an explicit `_index.csv` file.
 | `g_stock/f_clue_val.npy` | Validation clues only | `g_stock/f_clue_val_index.csv` | archived `embed_val.py` (reproducible via `embed_clue.py --split validate`) |
 | `g_stock_tokenspan/f_clue_val.npy` | Validation clues only | `g_stock_tokenspan/f_clue_val_index.csv` | archived `embed_val.py` |
 | `g1_tokenspan/f_clue_val.npy` | Validation clues only | `g1_tokenspan/f_clue_val_index.csv` | archived `embed_val.py` |
+| `g1/f_clue_train.npy` | Training clues only | `g1/f_clue_train_index.csv` | `embed_clue.py --split train` (Decision 25; not yet generated for g1) |
 | `g1/f_clue_val.npy` | Validation clues only | `g1/f_clue_val_index.csv` | archived `embed_val.py` (reproducible via `embed_clue.py --split validate`) |
 
 ---

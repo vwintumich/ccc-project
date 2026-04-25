@@ -259,9 +259,13 @@ not use an `nb_` prefix.
 - **No suffix** = full dataset scope (e.g., `f_clue.npy`, `f_common_wndef.npy`)
 - **`_val` suffix** = validation split only (e.g., `f_clue_val.npy`,
   `f_common_wndef_val.npy`)
+- **`_train` suffix** = training split only (e.g., `f_clue_train.npy`).
+  Required for f_clue embeddings of fine-tuned models per Decision 25, to
+  enable training vs. validation accuracy comparison in Stage 5.
 
 This applies to both phrase files and embedding files. Phrase files are always
-generated for the full dataset; the `_val` suffix is used only for embeddings.
+generated for the full dataset; the `_val` and `_train` suffixes are used
+only for embeddings.
 
 ### Vocabulary files as indexes
 
@@ -351,6 +355,8 @@ for an example of a well-executed notebook in this project.
   time for any step taking more than a few seconds. Print and include in the
   summary cell.
 - **Figures:** Save all figures to `outputs/figures/` as PNG (300 dpi).
+  Follow the visual encoding conventions in `FIGURE_STANDARDS.md` for color,
+  saturation, and fill pattern assignments.
 - **Test set is locked.** Never load, inspect, or embed test-set data until a
   final model has been chosen and that decision is documented in DECISIONS.md.
 
@@ -366,13 +372,20 @@ notebooks. Each script should:
 - Save outputs atomically (write to a temp path, then rename) to avoid
   partial files if a job is killed
 
-**Training scripts** must additionally (per Decision 24):
+**Training scripts** must additionally (per Decision 24 and Decision 27):
 - Accept a `--val-input` argument for the validation triplet file
 - Compute validation loss at the end of each epoch (same loss function,
   `model.eval()`, `torch.no_grad()`)
 - Log both training and validation loss per epoch to stdout and to the
   structured training log
 - Save per-epoch model checkpoints
+- Accept a `--subset-fraction` argument (default 1.0) for learning curve
+  runs. When set to less than 1.0, sample that fraction of the training
+  triplets (using `random_state=42`) before training. This enables learning
+  curve generation by running the same script multiple times with different
+  fractions.
+- Print estimated and actual wall-clock time for each component (training,
+  validation loss computation) to stdout
 
 After a GPU job completes, scp the output files back locally before proceeding
 with analysis notebooks.

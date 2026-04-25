@@ -275,6 +275,32 @@ triplet dataset. Key parameters:
 Monitor training loss as a sanity check only — it does not tell you what the
 model learned. Scientific evaluation happens in Stages 5 and 6.
 
+### Learning curves (Decision 27)
+
+After the full model is trained, train additional models on subsets of the
+training data (e.g., 10%, 25%, 50%, 75%) using the same hyperparameters.
+Evaluate each on the full validation set (same metrics as Decision 24:
+val loss, val accuracy, val margin). Save results to
+`models/<g_name>/learning_curve_results.json`.
+
+This answers "how much training data is necessary?" and reveals whether
+problems are driven by data quantity vs. data quality. Since learning curves
+are specific to a triplet design and phrase construction, each g_i needs its
+own.
+
+### Runtime tracking (Decision 27)
+
+Before submitting GPU jobs, estimate wall-clock time for each component in
+FINDINGS.md:
+- Base model training (full triplet set, all epochs)
+- Each learning curve subset run
+- Validation loss computation per epoch
+
+After each job completes, record actual runtime alongside the estimate. These
+records build a reference for planning future jobs.
+
+### Outputs and documentation
+
 Save model weights to Google Drive ("Research Project - NLP CCC's", owned by
 Nathan). Commit `models/<g_name>/README.md` to the repo containing:
 - Google Drive path to weights
@@ -282,7 +308,7 @@ Nathan). Commit `models/<g_name>/README.md` to the repo containing:
 - Training script name and all hyperparameters
 - Triplet file used
 - Date trained
-- Wall-clock runtime
+- Wall-clock runtime (estimated and actual)
 
 Record runtime in FINDINGS.md.
 
@@ -293,21 +319,26 @@ Record runtime in FINDINGS.md.
 **Script:** `scripts/embed_<g_name>.py` + `scripts/embed_<g_name>.sh`
 **Environment:** Great Lakes (GPU)
 **Inputs:** Model weights (from Google Drive), phrase files, vocabulary files
-**Outputs:** Validation-split embedding arrays under `data/embeddings/<g_name>/`
+**Outputs:** Embedding arrays under `data/embeddings/<g_name>/`
 
-For each g_i being evaluated, generate embeddings for the validation split
-only. Full-dataset embeddings are generated only for the final chosen g (Stage
-6).
+For each g_i being evaluated, generate the following embeddings:
 
-For each f used in the current experiments:
-- Encode phrases for `vocabulary_<f>_val.csv` words using g_i
-- Save as `data/embeddings/<g_i>/f_<n>_val.npy`
-- The index is `vocabulary_<f>_val.csv` itself — no separate index file needed
+**Vocabulary-indexed embeddings (full vocabulary, per Decision 23):**
+- Encode phrases for `vocabulary_<f>.csv` words using g_i
+- Save as `data/embeddings/<g_i>/f_<sense>_<construction>.npy`
+- The index is `vocabulary_<f>.csv` itself — no separate index file needed
 
-For f_clue:
+**f_clue embeddings (training and validation splits, per Decision 25):**
+- Encode f_clue phrases for training-split clues using g_i
+- Save as `data/embeddings/<g_i>/f_clue_train.npy`
+- Save `data/embeddings/<g_i>/f_clue_train_index.csv` (clue_id, definition, row)
 - Encode f_clue phrases for validation-split clues using g_i
 - Save as `data/embeddings/<g_i>/f_clue_val.npy`
 - Save `data/embeddings/<g_i>/f_clue_val_index.csv` (clue_id, definition, row)
+- Test-split f_clue embeddings are NOT generated until Stage 7 (Decision 9)
+
+Full-dataset f_clue embeddings (covering all splits) are generated only for
+the final chosen g (Stage 7).
 
 After the job completes, scp output files back to local machine before
 proceeding to Stage 5 and Stage 6.
@@ -321,42 +352,70 @@ Great Lakes partition used.
 
 **Primary notebook:** `notebooks/05_model_evaluation.ipynb`
 **Environment:** Local (CPU)
-**Inputs:** Embedding arrays from `data/embeddings/`
+**Inputs:** Embedding arrays from `data/embeddings/`, training log and
+  validation loss results from `models/<g_name>/`
 **Outputs:** FINDINGS.md entries, figures in `outputs/figures/`
 
-### Shared comparison notebook
+For each g_i, evaluate in the following order. The progression moves from
+basic model health to intrinsic task performance to comparative analysis
+to the research question. Earlier sections should be satisfactory before
+interpreting later sections. Evaluate on the training phrase type (e.g.
+wndef for g1) — cross-format generalization (e.g. wnex) is a hypothesis
+testing question for Stage 6.
 
-This notebook accumulates results across all trained g's and is added to as
-new models are trained. It should not be rerun from scratch each time — add
-new sections for each new g_i.
+### §1: Training dynamics and overfitting
 
-For each g_i, compute and record:
+Using `training_log.json` and `val_loss_results.json` from the model
+directory, report training loss and validation loss per epoch, the
+train/val loss ratio, validation accuracy, and validation mean margin
+across epochs. Identify the best-generalizing checkpoint (lowest
+validation loss). Note whether the deployed model is the best checkpoint
+or a later, more overfit epoch.
 
-**Validation triplet accuracy:**
-Using the g_i validation triplet file and full-vocabulary embeddings, compute
-the fraction of triplets where cos(anchor, positive) > cos(anchor, negative).
+### §2: Task performance in training and research metrics
 
-**Collapse detection:**
-Random pairwise cosine similarity, embedding variance, and effective
-dimensionality (participation ratio) to characterize whether fine-tuning
-compressed the embedding space.
+**Triplet accuracy in both metrics (Decision 26):** Compute triplet
+accuracy on both training and validation triplets using L2 distance (the
+training metric) and cosine similarity (the research metric). This
+requires f_clue_train embeddings (Decision 25) for training triplet
+accuracy and f_clue_val embeddings for validation triplet accuracy, plus
+full-vocabulary embeddings for the positive/negative lookups. Report:
+- Training vs validation accuracy gap (overfitting diagnostic)
+- L2 vs cosine accuracy gap (metric mismatch diagnostic)
 
-**T=0 and T=1 similarity distributions:**
+If training accuracy is not directly computable (e.g. f_clue_train
+embeddings were not generated for a legacy model), note this gap and
+infer training accuracy from the training loss where possible.
+
+### §3: Embedding space geometry
+
+Characterize how g_i uses the embedding space, for both vocabulary-
+indexed (e.g. wndef) and f_clue embedding populations:
+- **Norm distributions:** L2 norm histograms, means, standard deviations
+  for g_i and g_stock (overlay). Tests whether the model exploited the
+  magnitude degree of freedom in L2 training.
+- **Pairwise cosine among random pairs:** Mean, median, and distribution.
+  High values indicate loss of discriminability.
+- **Effective dimensionality:** Participation ratio of singular values.
+  Low values indicate dimensional collapse.
+- **Compression relative to g_stock:** The delta in pairwise cosine,
+  total variance, and effective dimensionality between g_stock and g_i.
+
+### §4: Structural comparison to g_stock
+
+**RSA (Representational Similarity Analysis):** Spearman correlation of
+pairwise cosine matrices between g_stock and g_i to measure how much
+fine-tuning reorganized the similarity structure (as opposed to merely
+compressing it).
+
+### §5: Misdirection (ATE decomposition)
+
 For each (clue, definition, answer) pair in the validation split, compute
 T=0 = cos_sim(g(f(def)), g(f(ans))) and T=1 = cos_sim(g(f_clue(def)),
 g(f(ans))). Report means, medians, and distributions. Decompose ATE into
 its T=0 and T=1 components — ATE changing confirms the model learned
-something; the components reveal what it learned.
-
-**Cross-f generalization test:**
-Compute triplet accuracy and T=0/T=1 distributions using wnex embeddings
-for words with valid f_common_wnex phrases. Compare against wndef results
-to assess whether the model learned format-specific or generalizable
-structure.
-
-**RSA (Representational Similarity Analysis):**
-Spearman correlation of pairwise cosine matrices between g_stock and g_i
-to measure how much fine-tuning reorganized the similarity structure.
+something; the components reveal *what* it learned. Always interpret ATE
+through its components, not as a standalone optimization target.
 
 Record all numerical results in FINDINGS.md.
 
@@ -420,6 +479,7 @@ in FINDINGS.md.
 | `clues_<f>_filtered.csv` + vocab + phrase | `filtered_split/wn_synset/<f>/` | 2 (WN) | Local |
 | `triplets/<g_name>.csv` + `_meta.json` | `triplets/` | 3 | Local |
 | Model weights | Google Drive | 3 | Great Lakes |
+| `embeddings/<g_i>/f_clue_train.npy` + index | `embeddings/<g_i>/` | 4 | Great Lakes |
 | `embeddings/<g_i>/f_<n>_val.npy` | `embeddings/<g_i>/` | 4 | Great Lakes |
 | Model evaluation results, figures | `outputs/` | 5 | Local |
 | Hypothesis testing results, figures | `outputs/` | 6 | Local |

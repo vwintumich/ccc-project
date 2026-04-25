@@ -3,3 +3,10 @@ notebooks/.pre-refactor/
 
 # Embedding arrays (too large for git; stored on Great Lakes / Google Drive)
 data/embeddings/**/*.npy
+
+# LaTeX build artifacts (only .tex and .pdf are committed)
+outputs/*.aux
+outputs/*.fdb_latexmk
+outputs/*.fls
+outputs/*.log
+outputs/*.synctex.gz

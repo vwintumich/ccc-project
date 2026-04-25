@@ -480,3 +480,96 @@ tracking is standard practice in supervised learning and must not be
 omitted in future training runs. For g1, validation loss was computed
 retroactively from saved epoch checkpoints
 (`scripts/val_loss_from_checkpoints.py`).
+
+---
+
+## Decision 25: Training-Split f_clue Embeddings Required for Model Evaluation
+
+**Choice:** For each fine-tuned g_i, Stage 4 must generate training-split
+f_clue embeddings (`f_clue_train.npy` + `f_clue_train_index.csv`) in
+addition to validation-split f_clue embeddings. This amends Decision 8,
+which previously limited fine-tuned model f_clue embeddings to the
+validation split only.
+
+Test-split f_clue embeddings remain locked until the final model is chosen
+(Decision 9). Training-split vocabulary-indexed embeddings are not needed
+because full-vocabulary embeddings (Decision 23) already cover all words
+appearing in training-split clues.
+
+**Rationale:** Standard model evaluation requires comparing performance on
+training data versus validation data to diagnose overfitting. Training
+triplet accuracy requires the anchor embeddings — g_i(f_clue(definition)) —
+for training-split clues. Without these, overfitting can only be assessed
+through training loss curves, which conflate the margin penalty with
+classification performance. Decision 24 established that validation loss
+must be tracked during training; this decision extends overfitting
+diagnostics to the embedding evaluation stage, enabling direct comparison
+of training versus validation triplet accuracy.
+
+For g_stock, training-split f_clue embeddings can be extracted from the
+existing full-dataset `f_clue.npy` by filtering the index file — no new
+generation is needed.
+
+---
+
+## Decision 26: Evaluate Models Using Both Training and Research Metrics
+
+**Choice:** Stage 5 model evaluation must report triplet accuracy and
+distance/similarity distributions using both the training metric and the
+research metric. For models trained with `nn.TripletMarginLoss(p=2)`, the
+training metric is L2 (Euclidean) distance; the research metric is cosine
+similarity. The gap between L2 and cosine triplet accuracy quantifies how
+much of the model's learning is magnitude-based versus angular.
+
+Additionally, Stage 5 must include embedding norm analysis (L2 norm
+distributions, means, and standard deviations) for both vocabulary-indexed
+and f_clue embeddings, comparing the fine-tuned model against g_stock.
+
+**Rationale:** g1 was trained with `nn.TripletMarginLoss(margin=1.0, p=2)`
+on unnormalized embeddings — optimizing Euclidean distance — but all
+Stage 5 evaluation metrics used cosine similarity exclusively. This
+train-eval metric mismatch meant that any magnitude-based discrimination
+learned by the model was invisible to evaluation. Euclidean distance on
+unnormalized vectors gives the model a degree of freedom (embedding
+magnitude) that cosine similarity cannot detect. Evaluating in both
+metrics reveals whether the model exploited this shortcut (reducing L2
+distances via magnitude shrinkage rather than learning angular/semantic
+structure). Norm analysis directly tests for this magnitude exploitation.
+
+For g1, L2-based evaluation and norm analysis can be computed from existing
+embedding artifacts — no new GPU work is needed.
+
+---
+
+## Decision 27: Training Must Include Learning Curves and Runtime Tracking
+
+**Choice:** Every model training run must include:
+
+1. **Learning curves.** Train multiple models on increasing subsets of the
+   training data (e.g., 10%, 25%, 50%, 75%, 100%) and evaluate each on the
+   full validation set. This answers "how much training data is necessary?"
+   and reveals whether problems are driven by data quantity vs. data quality.
+
+2. **Runtime estimates and actuals.** Before submitting GPU jobs, estimate
+   the wall-clock time for each component in FINDINGS.md:
+   - Base model training (full triplet set, all epochs)
+   - Each learning curve subset training run
+   - Validation loss computation per epoch (already required by Decision 24)
+   - Per-epoch embedding generation if applicable
+
+   After each job completes, record the actual runtime alongside the estimate.
+   Over time, these records build a reference for planning future jobs.
+
+3. **Structured output.** Learning curve results (subset size, train loss,
+   val loss, val accuracy, val margin for each subset) must be saved to
+   `models/<g_name>/learning_curve_results.json` and logged to stdout.
+
+**Rationale:** g1's basic evaluation could not distinguish whether the model's
+problems (compression, amplified context effects) were caused by training on
+too much data of the wrong kind, or whether the same problems would appear
+with less data. Learning curves are the standard diagnostic for data quantity
+questions. They are expensive (one full training run per subset), but
+planning ahead and tracking runtimes makes the compute cost predictable and
+budgetable. Since learning curves are specific to a given triplet design and
+phrase construction, they do not transfer across models — each g_i needs its
+own. Runtime tracking ensures we can estimate costs for future models.
