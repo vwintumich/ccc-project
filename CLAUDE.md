@@ -42,7 +42,7 @@ ccc-project/
 ├── CLAUDE.md                          # This file
 ├── WORKFLOW.md                        # Shared pipeline documentation
 ├── DATA_RAW.md                        # Raw data schema and metadata extraction logic
-├── custom_embedding_model/            # Active — fine-tuning CALE with triplet loss
+├── custom_embedding_model/            # Set aside — see Decision 28
 │   └── CLAUDE.md                      # Component-specific configuration
 ├── clue_misdirection/                 # Complete — do not modify
 └── indicator_clustering/              # Complete — do not modify

@@ -1,13 +1,18 @@
 # Workflow — custom_embedding_model
 
+> **Status:** This component was set aside after completing Stage 5 (g1
+> evaluation) and supporting explorations. Stages 6 and 7 were not pursued.
+> See Decision 28 for rationale. The stage descriptions below document what
+> was completed (Stages 1–5) and what was planned (Stages 6–7).
+
 This document describes the stage-by-stage workflow for the custom embedding
 model project. Unlike the linear pipeline in `clue_misdirection`, this project
 has a branching structure: one upstream dataset feeds multiple phrase
 construction strategies (f's), each of which feeds its own triplet and
 embedding pipeline. Reading this document before writing any code is essential.
 
-The authoritative design document is `custom_embedding_model_design_v5.md`
-(in `planning/`). This file summarizes the workflow decisions derived from it.
+The authoritative design document is `planning/design/custom_embedding_model_design_v5.md`.
+This file summarizes the workflow decisions derived from it.
 
 **Upstream dependency:** This component reads from two shared artifacts
 produced by `ccc-project/notebooks/`:

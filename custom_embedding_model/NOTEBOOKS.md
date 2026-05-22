@@ -215,33 +215,31 @@ See DATA.md for the ATE computation formula and rowwise cosine implementation.
 |----------|--------|-------------|-------|--------|
 | `planning/exploration/pos_wordnet_census.ipynb` | ✅ | Local | `vocabulary.csv`, `clues_wn_filtered.csv`, `clues_val.csv`, `g1_train.csv`, WordNet, spaCy | `outputs/pos_wordnet_census-results.md`, `outputs/pos_mismatch_examples.md`, 6 figures |
 | `planning/exploration/wordplay_ate_breakdown.ipynb` | ✅ | Local | `clues_val.csv`, `wordplay_metadata.csv`, val-only embeddings | `outputs/wordplay_ate_breakdown-results.md`, 7 figures |
+| `planning/exploration/cale_fclue_norm_bimodality.ipynb` | ✅ | Local | g_stock and g1 f_clue and vocabulary embeddings, `clues_val.csv`, `wordplay_metadata.csv`, `puzzle_metadata.csv` | `outputs/cale_fclue_norm_bimodality-results.md`, 12 figures |
+| `planning/exploration/cale_norm_bimodality.ipynb` | ✅ | Local | All g_stock embedding arrays, vocabulary files, `f_clue.csv`, `wordplay_metadata.csv` | `outputs/cale_norm_bimodality-results.md`, 8 figures |
 
 POS census characterizes sense selection reliability and noun dominance across
 vocabulary, training, and validation data. Wordplay ATE breakdown decomposes
 misdirection patterns by clue type (structural and letterplay).
+`cale_fclue_norm_bimodality` is the initial characterization of the L2 norm
+bimodality in g_stock f_clue embeddings: definition position effects, wordplay
+stratification, dimension-level analysis, propagation to cosine/ATE, and g1
+comparison. `cale_norm_bimodality` extends the investigation with formal
+bimodality testing (ΔBIC + Ashman's D) across all g_stock embedding
+populations, ICC analysis of word-level vs context-level variance, cross-format
+norm correlations, and surface-feature regression.
 
 ---
 
 ### Stage 6: Hypothesis Testing
 
-| Notebook | Status | Environment | Reads | Writes |
-|----------|--------|-------------|-------|--------|
-| `06_g1_hypothesis_testing.ipynb` | ❌ | Local | Embedding arrays, phrase files, vocabulary files, clue data | `outputs/06_g1_hypothesis_testing-results.md`, `outputs/figures/` |
-
-Guided by `planning/g1_investigation_design_v1.md` (v2 in progress). Systematically tests whether
-identified design issues in g1's phrase construction, sense selection, and
-triplet design account for the empirical findings from Stage 5.
+*Not pursued. See Decision 28.*
 
 ---
 
-### Stage 7: Final Evaluation (Locked)
+### Stage 7: Final Evaluation
 
-| Notebook | Status | Environment | Reads | Writes |
-|----------|--------|-------------|-------|--------|
-| `07_final_evaluation.ipynb` | ❌ | Local | Full-dataset embeddings for final g | FINDINGS.md entries |
-| `scripts/embed_final_<g_name>.py` | ❌ | Great Lakes (GPU) | Model weights, all phrase files | Full-dataset embedding arrays |
-
-**Do not create or run until final g is chosen and documented in DECISIONS.md.**
+*Not pursued. See Decision 28.*
 
 ---
 
@@ -253,8 +251,7 @@ These notebooks are reference only. Do not run or modify them.
 |----------|--------|--------|-------------|
 | `09_learned_g_misdirection.ipynb` | Nathan | 📋 Reference | Initial g_1 training and evaluation. Constructs triplets from `dataset_harder.parquet`, fine-tunes g_stock with triplet margin loss (α=1.0, 80/20 train/test split), compares g_stock vs. g_1 on ATE. Key finding: g_1 ATE = −0.282 vs. g_stock ATE = −0.072 (more negative, not less). T=0 similarity jumped from 0.548 to 0.758 while T=1 stayed flat at 0.476 — evidence g_1 compressed f_common_wndef phrases rather than learning to counteract misdirection. Ran on Great Lakes (GPU). See FINDINGS.md for full results. |
 
-Per-g exploration notebooks will be moved here when work on that model is
-complete. Name them `05_explore_<g_name>.ipynb` before archiving.
+This component was set aside after the g1 evaluation (Decision 28).
 
 ---
 

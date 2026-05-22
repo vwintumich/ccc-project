@@ -911,13 +911,83 @@ Full numerical results in `outputs/pos_wordnet_census-results.md`.
 
 ---
 
+## Exploration: L2 Norm Bimodality in CALE Embeddings
+
+**Notebooks:** `planning/exploration/cale_fclue_norm_bimodality.ipynb` —
+completed 2026-04-27; `planning/exploration/cale_norm_bimodality.ipynb` —
+completed 2026-04-30
+**Environment:** Local (CPU)
+**Scope:** All g_stock embedding populations; g1 f_clue for comparison.
+
+### Bimodality classification (two-criterion test: ΔBIC > 10 AND Ashman's D > 2)
+
+| Population | N | Ashman's D | Bimodal? |
+|---|---|---|---|
+| f_clue (full) | 239,406 | 2.88 | Yes |
+| f_clue (val) | 47,933 | 2.88 | Yes |
+| f_wndef (full) | 53,930 | 1.88 | No |
+| f_wnex (full) | 8,360 | 2.11 | Yes |
+| f_wndef, wnex words | 8,360 | 2.12 | Yes |
+
+The f_clue bimodality has GMM components at μ₁≈29.6, μ₂≈31.6 (σ≈0.7 each,
+roughly equal weights). These peak locations are stable across every slicing
+tested: full vs validation, start-defs vs end-defs, 1-token vs 2-token
+definitions, all three top publishers, and all wordplay types. Only the
+mixture weights change.
+
+### Key findings
+
+- **Bimodality is specific to clue context.** f_wndef (same words,
+  decontextualized) is unimodal. The bimodality arises from the interaction
+  between CALE's attention mechanism and the clue surface text.
+
+- **Definition position modulates mode balance.** Start-of-surface definitions
+  favor the upper mode (π_upper=0.57); end-of-surface definitions favor the
+  lower mode (π_lower=0.59). The modes themselves sit at the same locations
+  regardless of position.
+
+- **L2 norm is not a property of the word.** ICC(1,1)=0.14 on per-word
+  f_clue norms; the same word receives different norms in different clues.
+  Cross-format Spearman ρ between mean f_clue norm and f_wndef norm is 0.26.
+
+- **Surface features explain very little.** A 15-feature regression
+  (token counts, definition position, punctuation, nine wordplay flags)
+  achieves R²=0.041 — 96% of the variance is unexplained.
+
+- **Magnitude only, not direction.** Pairwise cosine on unit-normalized
+  f_clue embeddings is unimodal (mean=0.318). The centroid-direction cosine
+  between upper and lower norm halves is 0.978.
+
+- **No propagation to cosine-based ATE.** T=1 cosine similarity is nearly
+  identical across norm groups (lower: 0.523, upper: 0.519). Spearman ρ
+  between f_clue norm and ATE cosine is 0.019. The bimodality and
+  misdirection are independent phenomena.
+
+- **g1 eliminates the bimodality.** Fine-tuning's global compression
+  collapses both modes (Δμ≈0.9 under g1 vs ≈2.0 under g_stock).
+
+### Implication
+
+Cosine-based ATE analyses are unaffected by the bimodality. L2-based analyses
+involving g_stock f_clue embeddings should be interpreted with caution. Under
+g1 or any similarly compressed fine-tuned model, the bimodality does not arise.
+
+### Figures
+
+See `outputs/cale_fclue_norm_bimodality-results.md` (12 figures) and
+`outputs/cale_norm_bimodality-results.md` (8 figures) for full listings.
+
+Full numerical results in `outputs/cale_fclue_norm_bimodality-results.md`
+and `outputs/cale_norm_bimodality-results.md`.
+
+---
+
 ## Stage 6: Hypothesis Testing (NB 06)
 
-*Not yet begun. See `planning/g1_investigation_design_v1.md` for the current
-investigation plan (v2 in progress).*
+*Not pursued. See Decision 28.*
 
 ---
 
 ## Stage 7: Final Evaluation
 
-*Locked — do not populate until final g is chosen and documented in DECISIONS.md.*
+*Not pursued. See Decision 28.*

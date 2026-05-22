@@ -9,21 +9,20 @@ we found that embedding a definition word in the context of its cryptic clue
 roughly doubles its median retrieval rank among candidate answer words —
 evidence that the clue's surface text misleads the embedding.
 
-The current phase investigates whether we can fine-tune our embedding model
-(CALE) using triplet margin loss so that it becomes more adept at embedding
-a clue-contextualized definition as a sense more aligned with the clue's
-answer. The workflow is experimental rather than a linear pipeline: we try
-different phrase construction strategies (**f functions**) and different
-triplet designs, training multiple candidate models (**g models**), then
-evaluate them on a held-out validation set before finally evaluating the
-chosen model on a locked test set.
-
-The longer-term goal — building a model that measures misdirection directly
-using embeddings from the fine-tuned CALE — will live in a separate directory.
-This component focuses entirely on the fine-tuning step.
+This component investigated whether fine-tuning CALE using triplet margin
+loss could produce a model more adept at embedding a clue-contextualized
+definition as a sense aligned with the clue's answer. We trained one model
+(g1) and evaluated it thoroughly. The g1 evaluation showed that the
+distractor design in the triplet training data caused the model to compress
+the embedding space uniformly rather than learn cryptic-crossword-specific
+semantic structure, amplifying misdirection rather than reducing it. The
+component was set aside after completing the evaluation and supporting
+explorations (Decision 28). The data pipeline, evaluation framework, and
+documented findings remain available if this line of investigation is
+revisited with a revised triplet design.
 
 **The authoritative design document** for this component is
-`custom_embedding_model_design_v5.md` (in the project Google Drive). Read it
+`planning/design/custom_embedding_model_design_v5.md`. Read it
 before making any significant decisions about data, phrase construction,
 triplet design, or file organization.
 
@@ -456,5 +455,5 @@ George Ho's cryptic crossword clue dataset (660,613 clues).
   experimental findings as the project progresses.
 - `ccc-project/DATA_RAW.md` — raw data schema and puzzle metadata extraction
   logic. Shared across all components.
-- `custom_embedding_model_design_v5.md` (in planning/)— the authoritative
-  design document. All `.md` files in this directory are derived from it.
+- `planning/design/custom_embedding_model_design_v5.md` — the authoritative
+  design document.

@@ -573,3 +573,42 @@ planning ahead and tracking runtimes makes the compute cost predictable and
 budgetable. Since learning curves are specific to a given triplet design and
 phrase construction, they do not transfer across models — each g_i needs its
 own. Runtime tracking ensures we can estimate costs for future models.
+
+---
+
+## Decision 28: Set Aside Fine-Tuning After g1 Evaluation
+
+**Date:** 2026-05-22
+
+**Choice:** The custom embedding model component is set aside after completing
+the g1 evaluation (Stage 5) and supporting explorations. No further models
+(g2, etc.) will be trained, and Stages 6 (hypothesis testing) and 7 (final
+evaluation) will not be pursued.
+
+**What we found:** g1 achieved 90.0% validation triplet accuracy — it clearly
+learned the triplet discrimination task. However, the g1 evaluation showed
+that fine-tuning amplified misdirection rather than reducing it: the ATE
+doubled in magnitude (g_stock: −0.063 → g1: −0.124), and the fraction of
+clues where context is misleading rose from 71% to 93%. g1 compressed the
+embedding space uniformly (−31% total variance for wndef, −28% for f_clue),
+made unrelated words more similar to each other (+0.15 mean pairwise cosine),
+and essentially discarded g_stock's pretrained similarity structure
+(RSA ρ = 0.14 for wndef, 0.07 for f_clue). The decontextualized T=0
+component improved much more than the clue-contextualized T=1 component,
+meaning the model learned to bring definitions and answers closer together
+in general but did not learn to extract useful signal from clue context.
+
+**Why the distractors were the problem:** The T₁ triplet design drew
+distractors from the full WordNet vocabulary. These distractors were typically
+unrelated to either the definition or the answer, making the discrimination
+task solvable by general-purpose compression rather than by learning
+cryptic-crossword-specific semantic structure. The model found a shortcut:
+shrink the space so that everything is closer to everything, which
+incidentally makes anchors closer to positives without requiring any
+understanding of clue context.
+
+**What remains valuable:** The data pipeline (Stages 1–2), the evaluation
+framework (Stage 5), the exploration notebooks (bimodality, wordplay ATE
+breakdown, POS census), and the documented findings all inform future work.
+The infrastructure for training a new model with a revised triplet design
+is in place if this line of investigation is revisited.
