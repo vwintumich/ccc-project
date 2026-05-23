@@ -103,7 +103,7 @@ file should be manually edited; any regeneration requires a documented
 reason recorded in this file first.
 
 **Rationale:** `id_map.csv` is small, fully deterministic, and derived from
-fixed raw data (`clues_raw.csv`) by `notebooks/assign_ids.py`. Committing it
+fixed raw data (`clues_raw.csv`) by `data_preparation/assign_ids.py`. Committing it
 eliminates the run-order dependency between `assign_ids.py` and
 `puzzle_metadata.ipynb`: contributors can open and run
 `puzzle_metadata.ipynb` directly without first executing a separate script.

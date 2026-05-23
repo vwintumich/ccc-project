@@ -73,7 +73,7 @@ assert embeddings.shape[1] == 1024, \
 
 ### `../../data/clues_filtered.csv`
 
-**Produced by:** Shared upstream pipeline (`notebooks/structural_filtering.ipynb`)
+**Produced by:** Shared upstream pipeline (`data_preparation/structural_filtering.ipynb`)
 **Contains:** All clues passing CCC structural constraints
 **Does not contain:** Split column, WordNet constraints
 

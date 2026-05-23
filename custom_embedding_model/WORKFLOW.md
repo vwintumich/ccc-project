@@ -15,12 +15,12 @@ The authoritative design document is `planning/design/custom_embedding_model_des
 This file summarizes the workflow decisions derived from it.
 
 **Upstream dependency:** This component reads from two shared artifacts
-produced by `ccc-project/notebooks/`:
+produced by `ccc-project/data_preparation/`:
 - `ccc-project/data/clues_filtered.csv` — columns: `clue_id`, `surface`,
   `definition`, `answer`
 - `ccc-project/data/puzzle_metadata.csv` — joined in when needed
 
-It also imports `ccc-project/notebooks/clue_utils.py` for definition-finding
+It also imports `ccc-project/data_preparation/clue_utils.py` for definition-finding
 and delimiter-placement logic used in f_clue phrase construction.
 
 Do not regenerate these files from within this component.
