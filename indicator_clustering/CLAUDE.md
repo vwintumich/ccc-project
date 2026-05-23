@@ -4,6 +4,27 @@ This file is read automatically by Claude Code at the start of every session. Re
 
 ---
 
+## Post-Deadline Reorganization Note (May 2026)
+
+After this component's deadline (March 3, 2026), the repo-wide raw data
+artifacts were consolidated at the project root. Specifically:
+
+- `data.sqlite3` and the six `*_raw.csv` files (`clues_raw.csv`,
+  `indicators_raw.csv`, `indicators_by_clue_raw.csv`,
+  `indicators_consolidated_raw.csv`, `charades_raw.csv`,
+  `charades_by_clue_raw.csv`) now live in repo-root `data/`, not in
+  `indicator_clustering/data/`.
+- `00_data_extraction.ipynb` was moved to repo-root `data_preparation/`,
+  since its outputs are shared across components.
+- `01_data_cleaning.ipynb` and `07_definitions_control.ipynb` were given
+  a `RAW_DATA_DIR` constant pointing at repo-root `data/` for their raw
+  reads. `DATA_DIR` continues to point at `indicator_clustering/data/`
+  for component-internal writes (e.g. `verified_*.csv`).
+
+No analytic logic in any indicator_clustering notebook was changed.
+
+---
+
 ## Project Identity
 
 This is a MADS (University of Michigan) graduate student project on clustering cryptic crossword clue (CCC) indicator words/phrases to see if they group into interpretable wordplay categories. This file covers conventions that apply to all notebooks.

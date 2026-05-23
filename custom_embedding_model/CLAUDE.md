@@ -1,5 +1,17 @@
 # Claude Code Configuration — custom_embedding_model
 
+## Reorganization Note (May 2026)
+
+After this component was set aside (Decision 28), the shared upstream
+notebooks at the repo root were moved from `notebooks/` to
+`data_preparation/`. As part of that move, `02_phrase_construction_wn.ipynb`
+had its one `sys.path.insert` line updated to import `clue_utils` from
+`data_preparation/` instead of `notebooks/`. No analytic logic was changed.
+
+If this component is ever revived, expect to find `clue_utils.py` and all
+shared upstream artifacts under repo-root `data_preparation/` and `data/`
+respectively.
+
 ## Project Summary
 
 This is the **custom embedding model component** of an ongoing NLP research
