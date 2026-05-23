@@ -10,8 +10,12 @@ Claude Code when building or editing any notebook or script in this project.
 ## 1. Source File
 
 **File:** `../data/clues_raw.csv`
-**Origin:** Extracted from George Ho's CCC dataset (`data.sqlite3`) by
-`indicator_clustering/NB00`. Do not go back to the sqlite directly.
+**Origin:** Extracted from George Ho's CCC dataset (`../data/data.sqlite3`)
+by `data_preparation/00_data_extraction.ipynb`. Both the SQLite source and
+the extracted CSV live at repo root. Re-extraction produces a byte-identical
+file (verified May 2026), so the CSV is treated as a fixed input and the
+notebook is provenance documentation. Do not go back to the sqlite directly
+for downstream work.
 **Size:** 660,613 rows
 **Loading:** `clue_id` is kept as a regular column, not set as the pandas
 index. It is unique in this file and serves as the primary key.
@@ -128,8 +132,8 @@ of each other.
 
 ## 5. `assign_ids.py`
 
-**Location:** `notebooks/assign_ids.py`
-**Run:** `cd notebooks && python assign_ids.py`
+**Location:** `data_preparation/assign_ids.py`
+**Run:** `cd data_preparation && python assign_ids.py`
 **Input:** `../data/clues_raw.csv` — loads `clue_id`, `source`, `puzzle_name`,
 `source_url`.
 **Output:** `../data/id_map.csv` — columns `clue_id` (int), `puzzle_id` (int);

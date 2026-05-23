@@ -9,12 +9,15 @@ to connect the definition word to the correct answer.
 
 The project is structured as a collection of components, each in its own
 subdirectory. Two components are complete and must not be modified. One
-component is actively under development. The shared `data/` directory and
-shared `notebooks/` directory at the root level serve all components.
+component is set aside. The shared `data/` directory and shared
+`data_preparation/` directory at the root level serve all components.
 
 **Raw data source:** George Ho's cryptic crossword clue dataset (660,613
-clues), available at https://cryptics.georgeho.org/data.db, previously
-extracted to `clues_raw.csv`.
+clues), available at https://cryptics.georgeho.org/data.db. The downloaded
+`data.sqlite3` is treated as a fixed input; `data_preparation/00_data_extraction.ipynb`
+extracts the six tables (`clues_raw.csv`, `indicators_raw.csv`,
+`indicators_by_clue_raw.csv`, `indicators_consolidated_raw.csv`,
+`charades_raw.csv`, `charades_by_clue_raw.csv`) used by downstream notebooks.
 
 ## Team
 
@@ -29,15 +32,25 @@ Faculty Advisor: Dr. Kevyn Collins-Thompson (University of Michigan)
 
 ```
 ccc-project/
-├── data/                              # SHARED — do not modify
-│   ├── data.sqlite3                   # George Ho source DB (660,613 clues)
-│   ├── clues_raw.csv                  # Extracted from sqlite; do not re-extract
-│   ├── publisher_lookup.csv           # Lookup table for metadata extraction
+├── data/                              # SHARED — do not modify raw or lookup inputs
+│   ├── data.sqlite3                   # George Ho source DB (660,613 clues) — fixed input
+│   ├── clues_raw.csv                  # Extracted from sqlite; fixed input
+│   ├── indicators_raw.csv             # Extracted from sqlite; fixed input
+│   ├── indicators_by_clue_raw.csv     # Extracted from sqlite; fixed input
+│   ├── indicators_consolidated_raw.csv# Extracted from sqlite; fixed input
+│   ├── charades_raw.csv               # Extracted from sqlite; fixed input
+│   ├── charades_by_clue_raw.csv       # Extracted from sqlite; fixed input
+│   ├── publisher_lookup.csv           # Lookup table for metadata extraction; fixed input
+│   ├── id_map.csv                     # Produced by assign_ids.py
 │   ├── puzzle_metadata.csv            # Produced by puzzle_metadata.ipynb
-│   └── clues_filtered.csv             # Produced by structural_filtering.ipynb
-├── notebooks/                         # Shared upstream notebooks (order-independent)
+│   ├── clues_filtered.csv             # Produced by structural_filtering.ipynb
+│   └── wordplay_metadata.csv          # Produced by wordplay_metadata.ipynb
+├── data_preparation/                  # Shared upstream notebooks (act on raw inputs)
+│   ├── 00_data_extraction.ipynb       # sqlite -> 6 raw CSVs
 │   ├── puzzle_metadata.ipynb          # Extracts publisher, series, setter, puzzle_no, clue_direction
 │   ├── structural_filtering.ipynb     # Filters clues_raw.csv to valid CCC clues
+│   ├── wordplay_metadata.ipynb        # Algorithmically verifies wordplay types per clue
+│   ├── assign_ids.py                  # Assigns stable puzzle_id values
 │   └── clue_utils.py                  # Shared definition-finding and delimiter-placement logic
 ├── CLAUDE.md                          # This file
 ├── WORKFLOW.md                        # Shared pipeline documentation
@@ -50,9 +63,25 @@ ccc-project/
 
 ## The Shared Pipeline
 
-Two notebooks and one utility module at the project root produce shared
-artifacts consumed by all components. The notebooks are independent of each
-other and can be run in any order.
+A small set of notebooks and one utility module under `data_preparation/`
+produce shared artifacts consumed by all components. They are mutually
+independent and can be run in any order. "Data preparation" here is the
+broad sense, covering extraction, parsing, filtering, and derivation of
+shared upstream artifacts.
+
+### `00_data_extraction.ipynb`
+
+**Reads:** `data/data.sqlite3`
+**Writes:** `data/clues_raw.csv`, `data/indicators_raw.csv`,
+`data/indicators_by_clue_raw.csv`, `data/indicators_consolidated_raw.csv`,
+`data/charades_raw.csv`, `data/charades_by_clue_raw.csv`
+
+Extracts the six tables from the George Ho SQLite database to CSV, with
+descriptive consistent column names (`rowid` → `clue_id`/`ind_id`/`charade_id`;
+`clue_rowids` → `clue_ids`). All six outputs are treated as fixed shared
+inputs downstream; re-extraction produces byte-identical files (verified
+May 2026), so this notebook is provenance documentation rather than a
+recurring pipeline step.
 
 ### `puzzle_metadata.ipynb`
 
@@ -93,9 +122,9 @@ Filtering steps:
 
 Output columns: `clue_id`, `surface`, `definition`, `answer`.
 
-Definition-in-surface matching uses `clue_utils.py` — the same utility used
-in `02_phrase_construction.ipynb` when placing `<t></t>` delimiters, ensuring
-the two steps are always consistent.
+Definition-in-surface matching uses `data_preparation/clue_utils.py` — the
+same utility used in `02_phrase_construction.ipynb` when placing `<t></t>`
+delimiters, ensuring the two steps are always consistent.
 
 ### `clue_utils.py`
 
@@ -117,12 +146,14 @@ in `DECISIONS.md`.
 
 ## Shared Data Directory Rules
 
-- **Do not modify** `data/clues_raw.csv`, `data/data.sqlite3`, or
+- **Do not modify** `data/data.sqlite3`, the six `data/*_raw.csv` files, or
   `data/publisher_lookup.csv`. These are fixed inputs.
-- **Do not re-extract** from `data.sqlite3`. `clues_raw.csv` is the
-  authoritative extracted form.
-- **Do not regenerate** `puzzle_metadata.csv` or `clues_filtered.csv` without
-  agreement from the team and a documented reason.
+- **Do not re-extract** from `data.sqlite3`. The six `*_raw.csv` files are
+  the authoritative extracted forms (re-extraction is byte-identical but
+  unnecessary).
+- **Do not regenerate** `puzzle_metadata.csv`, `clues_filtered.csv`,
+  `wordplay_metadata.csv`, or `id_map.csv` without agreement from the team
+  and a documented reason.
 - **Do not join** puzzle metadata into `clues_filtered.csv` at this level.
   Components join it in when needed.
 - **Do not modify** anything in `clue_misdirection/` or

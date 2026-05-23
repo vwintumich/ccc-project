@@ -1,9 +1,16 @@
 # Workflow — ccc-project (Shared Pipeline)
 
 This document describes the shared notebooks that sit upstream of all
-project components. Their outputs — `puzzle_metadata.csv`,
-`clues_filtered.csv`, and `wordplay_metadata.csv` — are shared artifacts in
-`ccc-project/data/` and should not be regenerated without a documented reason.
+project components. Their outputs — the six `*_raw.csv` files from George
+Ho's SQLite database, plus `puzzle_metadata.csv`, `clues_filtered.csv`,
+`id_map.csv`, and `wordplay_metadata.csv` — are shared artifacts in
+`ccc-project/data/` and should not be regenerated without a documented
+reason. They live alongside the canonical `data.sqlite3` source and the
+`publisher_lookup.csv` lookup table.
+
+The shared notebooks live in `data_preparation/` at the repo root. "Data
+preparation" here is the broad sense — covering extraction, parsing,
+filtering, and derivation of shared upstream artifacts.
 
 Component-specific workflows (WordNet filtering, phrase construction, model
 training) are documented in their respective `WORKFLOW.md` files.
@@ -14,28 +21,55 @@ training) are documented in their respective `WORKFLOW.md` files.
 
 ```
 ccc-project/
-├── data/                              # SHARED — do not modify
-│   ├── data.sqlite3                   # George Ho source DB (660,613 clues)
+├── data/                              # SHARED — do not modify raw or lookup inputs
+│   ├── data.sqlite3                   # George Ho source DB (660,613 clues) — fixed input
 │   ├── clues_raw.csv                  # Extracted from sqlite; shared input
+│   ├── indicators_raw.csv             # Extracted from sqlite; shared input
+│   ├── indicators_by_clue_raw.csv     # Extracted from sqlite; shared input
+│   ├── indicators_consolidated_raw.csv# Extracted from sqlite; shared input
+│   ├── charades_raw.csv               # Extracted from sqlite; shared input
+│   ├── charades_by_clue_raw.csv       # Extracted from sqlite; shared input
+│   ├── publisher_lookup.csv           # Lookup table for metadata extraction
+│   ├── id_map.csv                     # Produced by assign_ids.py
 │   ├── puzzle_metadata.csv            # Produced by puzzle_metadata.ipynb
 │   ├── clues_filtered.csv             # Produced by structural_filtering.ipynb
-│   ├── wordplay_metadata.csv          # Produced by wordplay_metadata.ipynb
-│   └── publisher_lookup.csv           # Lookup table for metadata extraction
-├── notebooks/
+│   └── wordplay_metadata.csv          # Produced by wordplay_metadata.ipynb
+├── data_preparation/
+│   ├── 00_data_extraction.ipynb       # sqlite -> 6 raw CSVs
 │   ├── puzzle_metadata.ipynb          # Extracts publisher, series, setter, puzzle_no, clue_direction
 │   ├── structural_filtering.ipynb     # Filters clues_raw.csv to valid CCC clues
-│   └── wordplay_metadata.ipynb        # Algorithmically verifies wordplay types from surface + answer
+│   ├── wordplay_metadata.ipynb        # Algorithmically verifies wordplay types from surface + answer
+│   ├── assign_ids.py                  # Assigns stable puzzle_id values from source_url groups
+│   └── clue_utils.py                  # Shared definition-finding and delimiter-placement logic
 ├── DATA_RAW.md                        # Raw data schema and metadata extraction logic
-├── custom_embedding_model/            # Active component
+├── custom_embedding_model/            # Set aside — see Decision 28
 ├── clue_misdirection/                 # Complete — do not modify
 └── indicator_clustering/              # Complete — do not modify
 ```
 
 ---
 
+## `00_data_extraction.ipynb`
+
+**Notebook:** `data_preparation/00_data_extraction.ipynb`
+**Environment:** Local (CPU)
+**Inputs:** `data/data.sqlite3`
+**Outputs:** `data/clues_raw.csv`, `data/indicators_raw.csv`,
+`data/indicators_by_clue_raw.csv`, `data/indicators_consolidated_raw.csv`,
+`data/charades_raw.csv`, `data/charades_by_clue_raw.csv`
+
+Extracts the six core tables from George Ho's SQLite database into CSVs,
+renaming SQLite `rowid` columns to descriptive names (`clue_id`, `ind_id`,
+`charade_id`) for consistency across downstream notebooks. All six outputs
+are treated as fixed inputs by every downstream component — re-extraction
+produces byte-identical files (verified May 2026), so the notebook serves
+as provenance documentation rather than a step that needs to be re-run.
+
+This notebook is independent of every other notebook in `data_preparation/`.
+
 ## `puzzle_metadata.ipynb`
 
-**Notebook:** `notebooks/puzzle_metadata.ipynb`
+**Notebook:** `data_preparation/puzzle_metadata.ipynb`
 **Environment:** Local (CPU)
 **Inputs:** `data/clues_raw.csv`, `data/publisher_lookup.csv`
 **Output:** `data/puzzle_metadata.csv`
@@ -71,7 +105,7 @@ expect multiple matching rows.
 
 ## `structural_filtering.ipynb`
 
-**Notebook:** `notebooks/structural_filtering.ipynb`
+**Notebook:** `data_preparation/structural_filtering.ipynb`
 **Environment:** Local (CPU)
 **Inputs:** `data/clues_raw.csv`
 **Output:** `data/clues_filtered.csv`
@@ -121,7 +155,7 @@ intermediate artifacts not needed downstream.
 
 ## `wordplay_metadata.ipynb`
 
-**Notebook:** `notebooks/wordplay_metadata.ipynb`
+**Notebook:** `data_preparation/wordplay_metadata.ipynb`
 **Environment:** Local (CPU)
 **Inputs:** `data/clues_filtered.csv`
 **Output:** `data/wordplay_metadata.csv`
@@ -164,8 +198,8 @@ and expected, same as `puzzle_metadata.csv`.
 
 ## `clue_utils.py`
 
-**File:** `notebooks/clue_utils.py` (importable from shared notebooks and
-component notebooks alike)
+**File:** `data_preparation/clue_utils.py` (importable from shared notebooks
+and component notebooks alike)
 
 Contains the shared definition-finding and delimiter-placement logic used by
 both `structural_filtering.ipynb` and `custom_embedding_model/notebooks/02_phrase_construction.ipynb`.
@@ -197,6 +231,8 @@ Document any changes in `DECISIONS.md`.
 
 | Artifact | Notebook | Location |
 |----------|----------|----------|
+| Six `*_raw.csv` files | `00_data_extraction.ipynb` | `ccc-project/data/` |
+| `id_map.csv` | `assign_ids.py` | `ccc-project/data/` |
 | `puzzle_metadata.csv` | `puzzle_metadata.ipynb` | `ccc-project/data/` |
 | `clues_filtered.csv` | `structural_filtering.ipynb` | `ccc-project/data/` |
 | `wordplay_metadata.csv` | `wordplay_metadata.ipynb` | `ccc-project/data/` |
@@ -207,9 +243,11 @@ Document any changes in `DECISIONS.md`.
 
 ## Critical Rules
 
-- **Do not modify** `clues_raw.csv`, `data.sqlite3`, or `publisher_lookup.csv`.
-- **Do not regenerate** `puzzle_metadata.csv`, `clues_filtered.csv`, or
-  `wordplay_metadata.csv` without a documented reason agreed on by the team.
+- **Do not modify** `data.sqlite3`, the six `*_raw.csv` files, or
+  `publisher_lookup.csv` — all fixed inputs.
+- **Do not regenerate** `puzzle_metadata.csv`, `clues_filtered.csv`,
+  `wordplay_metadata.csv`, or `id_map.csv` without a documented reason
+  agreed on by the team.
 - **Do not join** puzzle metadata into `clues_filtered.csv` at this stage.
   Downstream components join it in when and if needed.
 - **Do not modify** `clue_misdirection/` or `indicator_clustering/` — both
